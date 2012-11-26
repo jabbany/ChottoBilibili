@@ -1,0 +1,50 @@
+{
+	"name": "__MSG_extension_name__",
+	"version": "1.2.0",
+	"manifest_version": 2,
+
+	"description": "__MSG_extension_description__",
+	"icons": {
+		"16": "assets/icon-small.png",
+		"48": "assets/icon-large.png",
+		"128": "assets/icon-huge.png"
+	},
+	"default_locale": "zh",
+	"browser_action": {
+		"default_icon": "assets/icon-large.png",
+		"default_title":"__MSG_browser_action_title__",
+		"default_popup":"popup.html"
+	},
+
+	"background": {
+		"persistent": false,
+		"scripts": [
+			"org.kanoha/tools.js",
+			"org.kanoha/poll.js",
+			"org.kanoha/settings.js",
+			"org.kanoha/bangumi.js",
+			"org.kanoha/commit.js",
+			"org.kanoha/cachedb.js",
+			"org.kanoha/sectionworker.js",
+			"main.js"]
+	},
+	"content_scripts": [],
+	"homepage_url": "http://kanoha.org/tags/chottobilibili/",
+	"incognito": "spanning",
+	"minimum_chrome_version": "20.0",
+	"offline_enabled": true,
+	"omnibox": { 
+		"keyword": "cb"
+	},
+	"options_page": "options.html",
+	"permissions": [
+		"*://*.bilibili.tv/*",
+		"*://9ch.co/*",
+		"contextMenus",
+		"storage"
+	],
+	"optional_permissions": [
+		"*://*/*",
+		"tabs"
+	]
+}

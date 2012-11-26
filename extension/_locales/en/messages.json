@@ -1,0 +1,44 @@
+{
+	"extension_name":{
+		"message":"ChottoBilibili",
+		"description":"A somewhat moe name."
+	},
+	"extension_description":{
+		"message":"Adds functionality to Bilibili (Danmaku Video Site). Now with a new and improved follow engine.",
+		"description":"A somewhat more serious description."
+	},
+	"browser_action_title":{
+		"message":"My Watch List",
+		"description":"Browser action hover text"
+	},
+	"general_settings":{
+		"message":"Settings",
+		"description":"String: settings"
+	},
+	"general_save":{
+		"message":"Save",
+		"description":"String: save"
+	},
+	"general_save_settings":{
+		"message":"Save",
+		"description":"String: save settings"
+	},
+	"general_cancel":{
+		"message":"Cancel",
+		"description":"String: cancel"
+	},
+	"general_cancel_settings":{
+		"message":"Revert Changes",
+		"description":"String: cancel changes"
+	},
+	"context_menu_search":{
+		"message":"Search for '$search$' on Bilibili",
+		"description":"Search context menu text",
+		"placeholders":{
+			"search":{
+				"content":"$1",
+				"example":"search string"
+			}
+		}
+	}
+}

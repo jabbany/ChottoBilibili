@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>插件选项 - 多一点哔哩哔哩！</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <!-- Scripts by Order -->
+	<script src="assets/js/jquery.js"></script>
+	<script src="org.kanoha/crypto.js"></script>
+	<script src="org.kanoha/common.js"></script>
+	<script src="interfaces/home.js"></script>
+	
+    <link href="assets/css/bootstrap.css" rel="stylesheet">
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+	  .progress.min-margin {
+		margin-bottom: 5px;
+	  }
+	  p.no-margin{
+		margin-bottom: 0px;
+	  }
+    </style>
+    <link href="assets/css/bootstrap-responsive.css" rel="stylesheet">
+	<link href="assets/css/biliver.css" rel="stylesheet">
+  </head>
+  <body>
+
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="#">多一点哔哩哔哩！</a>
+          <div class="nav-collapse">
+            <ul class="nav">
+              <li class="active"><a href="#">主页面</a></li>
+              <li><a href="#about">关于</a></li>
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      <div class="row-fluid">
+        <div class="span3">
+          <div class="well sidebar-nav">
+            <ul class="nav nav-list">
+              <li class="nav-header">插件设置</li>
+              <li class="active"><a href="#" id="menuSettingsHome"><i class="icon-wrench"></i> 设置概览</a></li>
+              <li><a href="#" id="menuSettingsConnection"><i class="icon-signal"></i> 网络设置</a></li>
+              <li><a href="#" id="menuSettingsSite"><i class="icon-eye-open"></i> 站点设置</a></li>
+              <li><a href="#" id="menuSettingsSync"><i class="icon-refresh"></i> 同步设置</a></li>
+              <li class="nav-header">关注列表</li>
+              <li><a href="#" id="menuFollowBangumi"><i class="icon-tasks"></i> 追番列表</a></li>
+              <li><a href="#" id="menuFollowTag"><i class="icon-tags"></i> 关注的专题</a></li>
+              <li><a href="#" id="menuFollowUser"><i class="icon-user"></i> 关注的用户</a></li>
+              <li class="nav-header">服务</li>
+              <li><a href="#" id="menuServiceConnect"><i class="icon-thumbs-up"></i> 分享到</a></li>
+              <li><a href="#" id="menuServiceDonate"><i class="icon-gift"></i> 支持我一下</a></li>
+            </ul>
+          </div><!--/.well -->
+        </div><!--/span-->
+		<!-- Hidden Sections -->
+        <div class="span9" id="viewSettingsHome" style="display:none;">
+			<!-- #UNIT: settingsHome -->
+          <div class="hero-unit">
+            <h1>哟！</h1>
+            <p>欢迎使用新版的B站功能增强插件。</p>
+
+          </div>
+          <div class="row-fluid">
+            <div class="span4">
+              <h2>设置同步</h2>
+              <p>同步将允许你通过使用第三方的服务来把追番列表或用户偏好同步到其他的设备上，包括但不限于Android移动设备。</p>
+              <p><a class="btn" href="#">进入设置 &raquo;</a></p>
+            </div><!--/span-->
+            <div class="span4">
+              <h2>关联社交网站</h2>
+              <p>想自动把进度分享到微博？想发射自己的电波？同步到Bangumi？关联社交网站后，你将能够更加便捷的分享信息到各个分帐号。（需要第三方服务许可）</p>
+              <p><a class="btn" href="#">关联社交网站 &raquo;</a></p>
+            </div><!--/span-->
+            <div class="span4">
+              <h2>编辑追番列表</h2>
+              <p>建立你的追番列表，开始追番和分享进度吧！</p>
+              <p><a class="btn" href="#">追番列表 &raquo;</a></p>
+            </div><!--/span-->
+          </div><!--/row-->
+        </div>
+		
+		<div class="span9" id="viewSettingsConnection" style="display:none;">
+			<!-- #UNIT: settingsConnection -->
+			<div class="row-fluid">
+				<div class="span12">
+					<h1 class="page-header">网络设置 <small>设置插件的网络压力</small></h1>
+					<br>
+					<form class="form-horizontal">
+						<fieldset>
+							<div class="control-group">
+								<label class="control-label" for="sApiKey">备用API Key</label>
+								<div class="controls">
+									<input  id="sApiKey" type="text" value="">
+									<span class="help-inline">留空使用自带API Key</span>
+								</div>
+							</div>
+							<div class="control-group">
+								<label class="control-label" for="sRefreshRate">刷新频率</label>
+								<div class="controls">
+									<div class="input-append">
+										<input id="sRefreshRate" type="text" class="input-medium" value="60"><span class="add-on">分钟</span>
+									</div>
+									<span class="help-inline"><span class="label label-warning">注意</span> 避免过于频繁请求API，请设置在15以上</span>
+								</div>
+							</div>
+							<div class="control-group">
+								<label class="control-label" for="sSyncInterval">同步频率</label>
+								<div class="controls">
+									<div class="input-append">
+										<input id="sSyncInterval" type="text" class="input-medium" value="60"><span class="add-on">分钟</span>
+									</div>
+									<span class="help-inline">只有启用同步后才生效</span>
+								</div>
+							</div>
+							<div class="form-actions">
+								<button type="submit" id="btnCancelSettingsConnection" class="btn btn-primary">保存设置</button>
+								<button class="btn" id="btnCancelSettingsConnection">取消更改</button>
+							</div>
+						</fieldset>
+					</form>
+				</div>
+			</div>
+		</div>
+		
+		<div class="span9" id="viewSettingsSite" style="display:none;">
+			<!-- #UNIT: settingsSite -->
+			<div class="row-fluid">
+				<div class="span12">
+					<h1 class="page-header">站点设置 <small>控制插件如何实现自己的功能</small></h1>
+					<br>
+					<form class="form-horizontal">
+						<fieldset>
+							<div class="control-group">
+								<label class="control-label" for="sProgressUpdateDelay">自动更新进度</label>
+								<div class="controls">
+									<label class="checkbox"><input type="checkbox" id="sProgressUpdateEnable" checked>启用</label>
+									<div class="inline input-prepend input-append"><span class="add-on">等待</span><input class="focused input-small" style="text-align:center;" id="sProgressUpdateDelay" type="text" value="5"><span class="add-on">秒后更新</span></div>
+									<span class="help-inline">播放所追番目视频时自动更新播放进度</span>
+								</div>
+							</div>
+							<div class="control-group">
+								<label class="control-label" for="sNoRaws">不显示生肉</label>
+								<div class="controls">
+									<label class="checkbox inline"><input type="checkbox" id="sNoRaws">为追番启用</label>
+									<label class="checkbox inline"><input type="checkbox" id="sNoRawsTag">为标签关注启用</label>
+								</div>
+							</div>
+							<div class="control-group">
+								<label class="control-label" for="sPrevNextToggle">左右翻</label>
+								<div class="controls">
+									<label class="checkbox"><input type="checkbox" id="sPrevNextToggle" checked>启用</label>
+									<span class="help-inline">在视频的标题增加指向之前或/和之后视频的链接</span>
+								</div>
+							</div>
+							<div class="control-group">
+								<label class="control-label" for="s9chNoWhite">第9频道反反白</label>
+								<div class="controls">
+									<label class="checkbox"><input type="checkbox" id="s9chNoWhite" checked>启用</label>
+									<span class="help-inline">消除官方论坛“9ch.co”上的反白</span>
+								</div>
+							</div>
+							<div class="control-group">
+								<label class="control-label" for="sClickSearchEnabled">右键搜索</label>
+								<div class="controls">
+									<label class="checkbox"><input type="checkbox" id="sClickSearchEnabled" checked>启用</label>
+									<table class="table table-bordered table-condensed" id="sClickSearchSpecial">
+										<thead><tr><th width="200">匹配模板</th><th>跳转网址</th><th width="100">操作</th></tr></thead>
+										<tr><td>av(\d+)</td><td>http://www.bilibili.tv/video/av{1}/</td><td>无法删除</td></tr>
+									</table>
+									<span class="help-inline">控制右键 “用 哔哩哔哩 搜索” 的设置。变更后需重启动插件！</span>
+								</div>
+							</div>
+							<div class="form-actions">
+								<button type="submit" id="btnSubmitSettingsSite" class="btn btn-primary">保存设置</button>
+								<button class="btn" id="btnCancelSettingsSite">取消更改</button>
+							</div>
+						</fieldset>
+					</form>
+				</div>
+			</div>
+		</div>
+		
+		<div class="span9" id="viewSettingsSync" style="display:none;">
+			<!-- #UNIT: settingsSync -->
+			<div class="row-fluid">
+				<div class="span12">
+					<h1 class="page-header">同步设置 <small>将数据同步到第三方</small></h1>
+					<br>
+					<form class="form-horizontal">
+						<fieldset>
+							<div class="control-group">
+								<label class="control-label" for="sSyncEnabled">启用同步</label>
+								<div class="controls">
+									<label class="checkbox"><input type="checkbox" id="sSyncEnabled">启用</label>
+									<span class="help-inline"><span class="label label-warning">注意</span> 启用同步需要给插件访问所有网站的权限。</span>
+								</div>
+							</div>
+							<div class="control-group">
+								<label class="control-label" for="sSyncServer">同步服务器</label>
+								<div class="controls">
+									<input id="sSyncServer" type="text" data-provide="typeahead" value="sync.railgun.in">
+									<span class="help-inline">同步服务器的服务器设置</span>
+								</div>
+							</div>
+							<div class="control-group">
+								<label class="control-label" for="sSyncKey">同步钥匙</label>
+								<div class="controls">
+									<div class="input-prepend">
+										<span class="add-on">SYNC</span><input id="sSyncKey" type="text" value="">
+									</div>
+									<span class="help-inline">请妥善保存同步钥匙，并确保其安全</span>
+								</div>
+							</div>
+							<div class="control-group">
+								<label class="control-label" for="sSyncDevice">设备ID</label>
+								<div class="controls">
+									<div class="input-prepend">
+										<span class="add-on">DEVICE</span><input id="sSyncDevice" type="text" value="">
+									</div>
+									<span class="help-inline">除非出现冲突，请勿更改设备ID</span>
+								</div>
+							</div>
+							<div class="form-actions">
+								<button type="submit" id="btnCancelSettingsConnection" class="btn btn-primary">保存设置</button>
+								<button class="btn" id="btnCancelSettingsConnection">取消更改</button>
+							</div>
+						</fieldset>
+					</form>
+				</div>
+			</div>
+		</div>
+		
+		<div class="span9" id="viewFollowBangumi" style="display:;">
+			<!-- #UNIT: followBangumi -->
+			<div class="row-fluid">
+				<div class="span12">
+					<h1 class="page-header">追番列表 <small>自动追番设置</small></h1>
+					<table class="table table-bordered follow-table" id="flBangumiTbl">
+						<thead><tr><th width="20">ID</th><th>番组名称</th><th width="200">匹配方式</th><th width="100">操作</th></tr></thead>
+						<tr>
+							<td>1<br></td>
+							<td class="follow-record">
+								<img class="follow-image" src="http://i0.hdslb.com/u_f/191cbf52a9a7bdecc757101282d5c128.jpg"/>
+								<div class="follow-image-shadow"><div></div></div>
+								<div class="follow-info">
+									<p class="title">
+										<span class="label label-info">新番二次元</span> 我的代码不可能那么多 <small>(这里是备注名称)</small>
+									</p>
+									<p class="descr">这里是描述</p>
+									<div class="progress progress-striped min-margin"><div class="bar" style="width:50%">7/13</div></div>
+								</div>
+							</td>
+							<td><p>匹配式：<code>测试 (\d+)</code></p><p>排除式：<code></code></p>
+							<p class="no-margin">放送周期：<code>5天</code></p></td>
+							<td><div class="btn-group"><a class="btn btn-small">编辑</a><a class="btn btn-danger btn-small">删除</a></div></td>
+						</tr>
+						<tr>
+							<td>2<br></td>
+							<td class="follow-record">
+								<img class="follow-image" src="http://i1.hdslb.com/u_f/76478f2205b62f4ef813ef96cc6d00e0.jpg"/>
+								<div class="follow-image-shadow"><div></div></div>
+								<div class="follow-info">
+									<p class="title">
+										<span class="label label-info">期刊</span> 你妹的这是毛期刊啊！！ <small>(何ですか！！これ！！)</small>
+									</p>
+									<p class="descr">少年制作伪期刊，暂且先追。</p>
+									<div class="progress progress-striped min-margin"><div class="bar" style="width:30%">4/13</div></div>
+								</div>
+							</td>
+							<td><p></p></td>
+							<td><div class="btn-group"><a class="btn btn-small">编辑</a><a class="btn btn-danger btn-small">删除</a></div></td>
+						</tr>
+					</table>
+				</div>
+			</div>
+		</div>
+		
+		
+		<div class="span9" id="viewServiceConnect" style="display:none;">
+			<!-- #UNIT: serviceConnect -->
+			<div class="row-fluid">
+				<div class="span12">
+					<h1 class="page-header">数据共享 <small>管理使用此插件的分享接口</small></h1>
+					<p>分享接口是一个本插件的开放 API 之一，其他的浏览器扩展可以通过这个接口获取你的实时追番信息。
+					通过第三方插件，一些诸如Bangumi番组计划、电波、新浪微博等站，将受益于可获得的这些信息。</p>
+					<table class="table">
+						<thead><tr><th>插件名称</th><th>版本</th><th>授权ID</th><th>权限</th><th>取消授权</th></tr></thead>
+						<tbody>
+							<tr>
+								<td>Bangumi同步</td>
+								<td>1</td>
+								<td>bNY38ed94dbixwiu3489hudee</td>
+								<td>+Notify +BangumiListChange</td>
+								<td>取消</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+		
+		<div class="span9" id="viewServiceDonate" style="display:none;">
+			<!-- #UNIT: serviceDonate -->
+			<div class="row-fluid">
+				<div class="span12">
+					<h1 class="page-header">支持我一下 <small>程序员苦逼啊</small></h1>
+					<p></p>
+				</div>
+			</div>
+		</div>
+		<!-- /HIDDEN SECTIONS -->
+      </div><!--/row-->
+
+      <hr>
+
+      <footer>
+        <p>ちょっと哔哩哔哩 - Ver. <span id="tVersion">1.1.0</span></p>
+      </footer>
+
+    </div><!--/.fluid-container-->
+
+    
+    <script src="assets/js/bootstrap-transition.js"></script>
+    <script src="assets/js/bootstrap-alert.js"></script>
+    <script src="assets/js/bootstrap-modal.js"></script>
+    <script src="assets/js/bootstrap-dropdown.js"></script>
+    <script src="assets/js/bootstrap-tab.js"></script>
+    <script src="assets/js/bootstrap-tooltip.js"></script>
+    <script src="assets/js/bootstrap-popover.js"></script>
+    <script src="assets/js/bootstrap-button.js"></script>
+    <script src="assets/js/bootstrap-collapse.js"></script>
+    <script src="assets/js/bootstrap-typeahead.js"></script>
+  </body>
+</html>

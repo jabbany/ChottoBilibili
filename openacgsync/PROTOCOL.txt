@@ -1,0 +1,63 @@
+协议规范
+============
+
+OpenACGSync 版本1.0，协议的规范。
+
+1. 传输模式
+OpenACGSync是一个基于HTTP传输协议的一种数据规范。可用于任何兼容HTTP协议的情况。
+我们需要服务器和客户端都支持 Http/1.1 协议。同时若将HTTP协议通过HTTPS 或是隧道
+加密也是可以接受的。
+
+2. 协议数据规范
+协议的数据将以 ASCII 模式传输，不会涉及到二进制等转换问题。数据通过一个HTTP POST
+请求传送的服务器。
+
+3. 数据模式
+所有的传输都是由客户端发起，向服务器的请求，其包含两个有效字段，由空格(SPACE)
+分割，第二个字段还可以产生出若干子字段。同时，一个数据块可能还会有一个认证块
+部分，其由方括号括起，并与下面的信息以一个换行隔开。数据还可能包含一个状态头，
+这个由括号括起 "("。头部与信息部以一个换行 \n 隔开。
+
+[<AUTH BLOCK>]
+(<HEAD>)
+<ACTION> <DATA>
+
+一下是一个认证的传输的样例：
+
+[UIID=2jd0230j923898ej29h834n|SESN=029ff|DEVID=9287KTK-N-R]
+(Time: 2012-01-01 23:58 GMT|Client: ChottoBilibili v1|Protocol: 1)
+NOTIFY BANGUMI WATCHED [5rWL6K+V55Wq5Ymn][8][DvR-7kT](5b6I5aW955yL5ZWK6L+Z5Liq77yB){source:av192837}
+
+下面是一个一般的传输样例
+
+NOTIFY BANGUMI FOLLOW [5rWL6K+V][0][DvR-7kT](5oiR5byA5aeL6L+944CK5rWL6K+V44CL5LqG77yB){site:bilibili,static:none}
+
+4. ACTION字段
+ACTION字段是一个简短的对服务器表明目的的标签
+ACTION 有一下的几个默认实现，这些实现会被所有兼容协议的服务器端实现：
+
+	NOTIFY : 通告服务器一个状态
+	NEGOTIATE : 与服务器协定某个扩展功能（ACTION）是否可用
+	UPDATE : 给服务器提交某种数据变化
+	CREDENTIALS : 提供登陆能力
+	QUERY : 查询某种状态
+
+5. AUTH认证字段
+AUTH认证字段提供给需要认证信息的服务器使用，其中有三个认证模式。
+ a) 会话安全模式认证
+    [UIID=<一个颁发给USER的ID>|SESN=<会话钥匙>|DEVID=<设备ID/客户端ID>]
+
+
+6. HEAD头部
+头部字段是可选字段，其中包含发布的时间/客户端版本等状态信息。客户端可以选择不发送头部来节省带宽。
+头部字段的格式为：
+
+	字段名称 + ": " + 字段内容 + "|" <- 分割线
+
+以下有几个比较常见的头字段和参考的信息格式。头字段中的数据，服务器可以选择不去处理，或用自己的方法处理。
+所以请不要依赖头字段来传输重要的信息。
+
+	Time: YYYY-MM-DD HH:II <TIMEZONE>
+	Client: <CLIENT_IDENT_STRING>
+	Protocol: <PROTOCOL_VERSION>
+	Location: [-]d.d, [-]d.d (South & West Degrees)

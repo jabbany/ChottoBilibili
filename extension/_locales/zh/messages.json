@@ -1,0 +1,44 @@
+{
+	"extension_name":{
+		"message":"ちょっと哔哩哔哩",
+		"description":"一个有点卖萌的名字"
+	},
+	"extension_description":{
+		"message":"让哔哩哔哩的功能稍微多那么一点点。追番引擎全新升级，使用“专题”获取更加可靠的信息！",
+		"description":"一个有点卖萌的解释"
+	},
+	"browser_action_title":{
+		"message":"我订阅的哔哩哔哩",
+		"description":"浏览器图标浮动文本"
+	},
+	"general_settings":{
+		"message":"设定",
+		"description":"字符串：设定"
+	},
+	"general_save":{
+		"message":"保存",
+		"description":"字符串：保存"
+	},
+	"general_save_settings":{
+		"message":"保存设置",
+		"description":"字符串：保存设置"
+	},
+	"general_cancel":{
+		"message":"取消",
+		"description":"字符串：取消"
+	},
+	"general_cancel_settings":{
+		"message":"取消更改",
+		"description":"字符串：取消更改"
+	},
+	"context_menu_search":{
+		"message":"用 哔哩哔哩 搜索 “$search$”",
+		"description":"搜索菜单文字",
+		"placeholders":{
+			"search":{
+				"content":"$1",
+				"example":"文字"
+			}
+		}
+	}
+}

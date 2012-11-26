@@ -1,0 +1,37 @@
+InterPlugin Data Tunnels API
+
+-Notify:
+ + on-watch	() -> (string) avid
+   + on-watchfo	() -> (int) fo-id, (string) avid, (int) episode
+ + on-editfolist	() -> (string) edit-oper, (object) edit-params
+   + on-addfolist	() -> (int) new-id
+   + on-delfolist	() -> (int) old-id
+   + on-reassignid	() -> (int) old-id, (int) new-id
+ + on-editfo	() -> (int) id, (string) edit-field
+   + on-editfo-eps	() -> (int) id, (int) new-eps-total
+   + on-editfo-currenteps	() -> (int) id, (int) new-eps
+   + on-editfo-desc	() -> (int) id, (string) new-desc
+   + on-editfo-title	() -> (int) id, (string) new-title 
+   
+-Query
+ + get-folist () -> (object) folist
+   + get-folist-ids : () -> ((int) array) folist-id-array
+   + get-folist-title2id : (string) title -> (int) id
+   + get-folist-itm-desc : (string) id -> (string) desc
+   + get-folist-itm-epsinfo : (string) id -> (object) {current: (int), total: (int)}
+   + get-folist-itm-title : (string) id -> (string) title
+ + get-plugin () -> ((string) array) plugin-id-list
+   + get-plugin-exists (string) plugin-id -> (bool) exists
+   + get-plugin-version (string) plugin-id -> (int) version
+   
+-Update
+ + set-folist
+   + folist-del
+   + folist-add
+   + folist-upd-eps
+   + folist-upd-title
+
+   
+-GrantedToAll
+ + prompt-install () -> (bool) has-installed
+ + has-privilege (string) priv-name -> (bool) has

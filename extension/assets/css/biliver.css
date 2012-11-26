@@ -1,0 +1,60 @@
+table.follow-table td{
+	overflow : hidden;
+	height: 75px;
+}
+td.follow-record {
+	padding:0 8px 6px 0;
+	position: relative;
+}
+
+td.follow-record .descr{
+	font-size: 11px;
+	color: #555555;
+	margin: 0 0 9px 0;
+}
+
+td.follow-record .title{
+	margin: 0 0 4px 0;
+}
+td.follow-record .follow-image-shadow {
+	background:transparent;
+	position:absolute;
+	top: 0px;
+	left: 0px;
+	height:92px;
+	width: 130px;
+	overflow: hidden;
+}
+td.follow-record .follow-image-shadow div{
+	height:300px;
+	width:300px;
+	position:absolute;
+	top:0;
+	right:5px;
+	box-shadow:-10px -100px 65px 60px #fff inset;
+}
+td.follow-record .follow-image{
+	width: 130px;
+	height: 92px;
+	position: absolute;
+	opacity: 0.8;
+	top: 0;
+	left: -20px;
+	clear: none;
+}
+table.follow-table tr:hover .follow-image{
+	opacity: 1;
+}
+
+table.follow-table tr:hover .follow-image-shadow div{
+	box-shadow:-10px -100px 50px 50px #f5f5f5 inset;
+}
+td.follow-record .follow-info{
+	position:absolute;
+	left: 0;
+	right: 10px;
+	top:0;
+	z-index:9999;
+	padding: 8px 0 0 78px;
+	clear: none;
+}
