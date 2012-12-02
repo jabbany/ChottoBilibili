@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Debugging Console - 调试终端 - Chottobilibili</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+	<link href="assets/css/bootstrap.css" rel="stylesheet">
+	<link href="assets/css/bootstrap-responsive.css" rel="stylesheet">
+	<script src="interfaces/console.js"></script>
+	<style>
+	  body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+	  .nav{
+		background : #fff;
+	  }
+	  .nav li a { color: #a00; }
+	  .nav li a:hover{
+		background-color: #fdd;
+	  }
+	  .well.white {
+		background: #fff;
+	  }
+	  .well.terminal{
+		background:#000; color:#0e0; font-family: Consolas, Courier, "Courier New", monospace;
+		height : 200px; overflow:auto; 
+	  }
+	  .table{
+		background:#fff;
+	  }
+	</style>
+  </head>
+  <body style="background:#fee">
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid" style="background-color:#500;">
+          <a class="brand" href="#" style="font:bold;color:#fff;">Debug Mode - 调试模式</a>
+        </div>
+      </div>
+    </div>
+	<div class="container-fluid">
+		<div class="row-fluid">
+			<div class="span3">
+			<ul id="navbar" class="nav nav-tabs nav-stacked">
+				<li><a href="#home">Debugging Home</a></li>
+				<li><a href="#flags">Flags</a></li>
+				<li><a href="#sync">Sync Data</a></li>
+				<li><a href="#constants">Constants</a></li>
+				<li><a href="#console">BiliScript Console</a></li>
+			</ul>
+			</div>
+			<div id="ihome" class="span9" style="display:none;">
+				<h1 class="page-header">调试终端 <small>底层修改插件参数</small></h1>
+				<p><span class="label label-important" title="There be dragons ahead!">前方有恶龙</span> 
+				错误地使用调试终端可能会把插件玩坏，<strong>请确保你知道你在做什么！</strong></p>
+				<p><span class="label label-warning" title="Future Warning!">世界线注意</span> 
+				调试终端的某些参数是预留参数，
+				现在更改可能不会出现负面效果，但可能破坏未来升级后插件的稳定性。</p>
+				<div class="well white">
+					<p>为了避免不当操作导致的数据毁灭，请先备份：</p>
+					<button type="submit" id="btnBackup" class="btn btn-primary">备份</button> 
+					<button type="submit" id="btnRestore" class="btn">恢复备份</button>
+				</div>
+				<div id="tinput" class="well terminal" contenteditable="true">
+				Chottobilibili Debugging Console<br>
+				Version 1.1 Build 35<br>
+				==============================================================================
+				</div>
+			</div>
+			
+			<div id="iflags"class="span9" >
+				<h1 class="page-header">Flags <small>记得别竖死亡Flag</small></h1>
+				<p><span class="label label-important" title="There be dragons ahead!">前方有恶龙</span> 
+				错误地使用调试终端可能会把插件玩坏，<strong>请确保你知道你在做什么！</strong></p>
+				<table class="table">
+					<thead><tr><th width="200">Flag</th><th>Desc</th><th>Toggle</th></tr></thead>
+					<tbody>
+						<tr>
+							<td>invoke.disableAlarms</td>
+							<td>禁用Chrome闹钟触发模式，改用定时器。注意这样讲无法利用新版的懒载入功能以节约插件消耗的内存。</td>
+							<td><span class="label">未设定</span></td>
+						</tr>
+						<tr>
+							<td>invoke.cacheClean</td>
+							<td>调整清理缓存的间隔，默认为每2d。可选：12hr,1d,2d,3d,4d,5d,disabled</td>
+							<td><span class="label">2d</span></td>
+						</tr>
+						<tr>
+							<td>taskqueue.terminateTimeout</td>
+							<td>调整任务队列的强制结束的等待时间，默认为不强制结束。可选 30s, 1min, 5min, 10min , 30min</td>
+							<td><span class="label">disabled</span></td>
+						</tr>
+						<tr>
+							<td>language.override</td>
+							<td>Override the default i18n for the options page. Possible Settings: 
+							[default, zh, en, ja, moe, tsun]</td>
+							<td><span class="label">default</span></td>
+						</tr>
+						<tr>
+							<td>theme.showHiddenThemes</td>
+							<td>Shows hidden themes. true, false</td>
+							<td><span class="label">false</span></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+  </body>
+</html>

@@ -28,7 +28,24 @@
 			"org.kanoha/sectionworker.js",
 			"main.js"]
 	},
-	"content_scripts": [],
+	"content_scripts": [
+		{
+			"matches": ["*://*.bilibili.tv/*"],
+			"js": ["tv.bilibili/stalker.js","tv.bilibili/fullscreen.js"],
+			"run_at": "document_end"
+		},
+		{
+			"matches": ["*://*.bilibili.tv/sp/*"],
+			"js": ["tv.bilibili/sp.js"],
+			"run_at": "document_end"
+		},
+		{
+			"matches": ["*://secure.bilibili.tv/*"],
+			"js": ["tv.bilibili/fullscreen_inner.js"],
+			"run_at": "document_end",
+			"all_frames":true
+		}
+	],
 	"homepage_url": "http://kanoha.org/tags/chottobilibili/",
 	"incognito": "spanning",
 	"minimum_chrome_version": "20.0",

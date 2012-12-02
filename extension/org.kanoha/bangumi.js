@@ -60,7 +60,7 @@ function BangumiList(ctx, ccbo){
 			}
 			ready = true;
 		}else{
-			chrome.extension.sendRequest({"method": "getBangumiList"}, function(response) {
+			chrome.extension.sendMessage({"method": "getBangumiList"}, function(response) {
 				abstraction = response;
 				ready = true;
 			});
@@ -71,7 +71,7 @@ function BangumiList(ctx, ccbo){
 		if(context == "plugin"){
 			localStorage['bangumiList'] = JSON.stringify(abstraction);
 		}else{
-			chrome.extension.sendRequest({"method": "setBangumiList", "value": abstraction}, function(response) {
+			chrome.extension.sendMessage({"method": "setBangumiList", "value": abstraction}, function(response) {
 			});
 		}
 		if(commitCallbackObject != null)

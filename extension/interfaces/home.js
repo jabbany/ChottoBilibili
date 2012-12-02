@@ -178,4 +178,21 @@ $(document).ready(function(){
 			return false;
 		});
 	}
+	var keys = [65, 66, 39, 37, 39, 37, 40, 40, 38, 38];
+	$(document).keydown(function(e){
+		if(e.keyCode == keys[keys.length - 1]){
+			keys.pop();
+		}else{
+			keys = [65, 66, 39, 37, 39, 37, 40, 40, 38, 38]; //Reset
+		}
+		if(keys.length == 0){
+			if(prompt("进入管理后台，请输入密码：") == "hiddenhand"){
+				document.location.href = "console.html";
+			}else{
+				keys = [65, 66, 39, 37, 39, 37, 40, 40, 38, 38];
+			}
+		}
+	});
 });
+
+$

@@ -105,3 +105,26 @@ var Main = {
 		});
 	}
 }
+/** ADD LISTENERS FOR INCOMING REQUESTS **/
+chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
+	if(sender.tab){
+		if(request.method == null){
+			console.log("[War](Msg)Illegal Msg.Intern");
+			sendMessage({});//Snub it
+			return;
+		}
+		switch(request.method){
+			case "biliStalker":{
+				sendMessage({});
+			}break;
+			case "getSetting":{
+				var sObj = (Main == null) ? new SettingsConnector() : Main.settings;
+				var val = sObj.get(request.key);
+				sendMessage({value:val});
+			}break;
+		}
+	}else{
+		
+	}
+	sendResponse({});/* Snub them */
+});

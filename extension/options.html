@@ -80,6 +80,18 @@
             <p>欢迎使用新版的B站功能增强插件。</p>
 
           </div>
+		  <div class="row-fluid">
+			<div class="span12">
+				<div class="progress">
+					<div class="bar" style="width:30%">新番二次元 2d 10h</div>
+					<div class="bar bar-success" style="width:20%">动画 1d 20h</div>
+					<div class="bar bar-warning" style="width:10%">合集</div>
+					<div class="bar bar-danger" style="width:20%">音乐</div>
+					<div class="bar bar-grey" style="width:20%">其他</div>
+				</div>
+				<hr>
+			</div>
+		  </div>
           <div class="row-fluid">
             <div class="span4">
               <h2>设置同步</h2>
@@ -161,8 +173,17 @@
 							<div class="control-group">
 								<label class="control-label" for="sNoRaws">不显示生肉</label>
 								<div class="controls">
-									<label class="checkbox inline"><input type="checkbox" id="sNoRaws">为追番启用</label>
-									<label class="checkbox inline"><input type="checkbox" id="sNoRawsTag">为标签关注启用</label>
+									<label class="checkbox"><input type="checkbox" id="sNoRaws">为追番启用</label> 
+									<label class="checkbox"><input type="checkbox" id="sNoRawsTag">为标签关注启用</label>
+								</div>
+							</div>
+							<div class="control-group">
+								<label class="control-label" for="sNoRaws">浏览历史</label>
+								<div class="controls">
+									<label class="checkbox"><input type="checkbox" id="sAllowTracking">允许插件记录部分哔哩哔哩观看历史</label> 
+									<span class="help-inline">记录浏览历史帮助插件更好的了解你的口味，你可以随时<a>消除黑历史</a>。
+									浏览历史不会被同步到远程服务器，同时你可以独立设定是否允许第三方插件读取。
+									记录的内容包括：浏览的视频ID及视频信息，在页面的滞留时间</span>
 								</div>
 							</div>
 							<div class="control-group">
