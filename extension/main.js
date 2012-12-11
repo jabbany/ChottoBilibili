@@ -1,7 +1,7 @@
-var Main = {
-	list:new BangumiList("plugin",new CommitCallback()),
-	settings:new SettingsConnector(),
-	startCheck:function (){
+var Main = new function () {
+	this.list = new BangumiList("plugin",new CommitCallback()),
+	this.settings = new SettingsConnector(),
+	this.startCheck = function (){
 		jsPoll.global.xhr = new XMLHttpRequest();
 		var createSectTask = function (section){
 			var worker = new SectionWorker(section, Main.list);
@@ -105,6 +105,7 @@ var Main = {
 		});
 	}
 }
+
 /** ADD LISTENERS FOR INCOMING REQUESTS **/
 chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
 	if(sender.tab){
@@ -128,3 +129,17 @@ chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
 	}
 	sendResponse({});/* Snub them */
 });
+
+/** Create the timers or alarms **/
+if(!chrome.runtime){
+	/* Include support for legacy chrome */
+	var duration = Main.settings.get('refresh.dur');
+	duration = (duration == null ? 15 : duration);
+	setInterval(duration * 60000, function(){
+		Main.startCheck();
+	}); 
+}else{
+	var delay = Main.settings.get("refresh.dur");
+	delay = (delay == null ? 15 : delay);
+	chrome.alarms.create('refresh',{periodInMinutes: delay});
+}

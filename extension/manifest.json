@@ -58,7 +58,8 @@
 		"*://*.bilibili.tv/*",
 		"*://9ch.co/*",
 		"contextMenus",
-		"storage"
+		"storage",
+		"alarms"
 	],
 	"optional_permissions": [
 		"*://*/*",
