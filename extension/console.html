@@ -81,31 +81,39 @@
 						<tr>
 							<td>invoke.disableAlarms</td>
 							<td>禁用Chrome闹钟触发模式，改用定时器。注意这样讲无法利用新版的懒载入功能以节约插件消耗的内存。</td>
-							<td><span class="label">未设定</span></td>
+							<td><span class="label" key="invoke.disableAlarns">未设定</span></td>
 						</tr>
 						<tr>
 							<td>invoke.cacheClean</td>
 							<td>调整清理缓存的间隔，默认为每2d。可选：12hr,1d,2d,3d,4d,5d,disabled</td>
-							<td><span class="label">2d</span></td>
+							<td><span class="label" key="invoke.cacheClean">2d</span></td>
 						</tr>
 						<tr>
 							<td>taskqueue.terminateTimeout</td>
 							<td>调整任务队列的强制结束的等待时间，默认为不强制结束。可选 30s, 1min, 5min, 10min , 30min</td>
-							<td><span class="label">disabled</span></td>
+							<td><span class="label" key="taskqueue.terminateTimeout">disabled</span></td>
 						</tr>
 						<tr>
 							<td>language.override</td>
 							<td>Override the default i18n for the options page. Possible Settings: 
 							[default, zh, en, ja, moe, tsun]</td>
-							<td><span class="label">default</span></td>
+							<td><span class="label" key="language.override" vtype="choice">default</span></td>
 						</tr>
 						<tr>
 							<td>theme.showHiddenThemes</td>
 							<td>Shows hidden themes. true, false</td>
-							<td><span class="label">false</span></td>
+							<td><span class="label" key="theme.showHiddenThemes" vtype="bool">false</span></td>
 						</tr>
 					</tbody>
 				</table>
+			</div>
+			<div id="isync" class="span9" style="display:none;">
+				<h1 class="page-header">同步信息 <small>调试同步信息</small></h1>
+				<div class="well white">
+					<p>同步信息：<span id="sync_data"></span></p>
+					<button type="submit" id="btnForceSync" class="btn btn-primary">强制启动同步</button> 
+					<button type="submit" id="btnSendSyncQuery" class="btn">制作同步请求</button>
+				</div>
 			</div>
 		</div>
 	</div>
