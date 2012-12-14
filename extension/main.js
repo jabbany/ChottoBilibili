@@ -7,7 +7,7 @@ var Main = new function () {
 			var worker = new SectionWorker(section, Main.list);
 			if(worker.done(true))
 				return; /* Nothing to do! */
-			
+				
 			var task = jsPoll.create(function(self){
 				var xhr = self.global.xhr;
 				var local = self.local;
@@ -40,11 +40,17 @@ var Main = new function () {
 								return;
 							}
 						}
+						if(api.code != null && api.code == -1){
+							console.log("[Err](API):" + api.error);
+							//inst.complete();
+							return;
+						}
 						/* Api Data Correctly Read */
-						for(var j=0;j < Math.min(parseInt(api.list.num) - (local.curpage - 1) * 200,200);j++){
-							if(api["" + j] == null)
+						console.log("[Log] Reading...");
+						for(var j=0;j < Math.min(parseInt(api.num) - (local.curpage - 1) * 200,200);j++){
+							if(api.list["" + j] == null)
 								continue;
-							worker.matchInstance(api["" + j]);
+							worker.matchInstance(api.list["" + j]);
 							if(worker.done(true)){
 								break;
 							}
@@ -72,9 +78,9 @@ var Main = new function () {
 				  "&pagesize=200&order=default", true);
 				xhr.send();
 			});
-			task.curpage = 1;
-			task.rempages = 1;
-			task.retryCount = 0;
+			task.local.curpage = 1;
+			task.local.rempages = 1;
+			task.local.retryCount = 0;
 			/** Push this task **/
 			jsPoll.push(task);
 		};
@@ -103,6 +109,9 @@ var Main = new function () {
 			"&btype=2",true);
 			xhr.send();
 		});
+		
+		/** Run The jsPoll~ **/
+		//jsPoll.run();
 	}
 }
 
@@ -111,17 +120,17 @@ chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
 	if(sender.tab){
 		if(request.method == null){
 			console.log("[War](Msg)Illegal Msg.Intern");
-			sendMessage({});//Snub it
+			sendResponse({});//Snub it
 			return;
 		}
 		switch(request.method){
 			case "biliStalker":{
-				sendMessage({});
+				sendResponse({});
 			}break;
 			case "getSetting":{
 				var sObj = (Main == null) ? new SettingsConnector() : Main.settings;
 				var val = sObj.get(request.key);
-				sendMessage({value:val});
+				sendResponse({value:val});
 			}break;
 		}
 	}else{

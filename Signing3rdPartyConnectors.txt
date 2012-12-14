@@ -1,0 +1,12 @@
+3rd party connectors must give a signed message to the extension to request for 
+authentication.
+
+The signing key is generated from the data as follows.
+
+Developer ID: XXXXX-XXXXX-XXXXX-XXXXX-XXXXX (25 alphanumeric)
+Developer Secret: XXXXXXXXXXXXXXXXXX (18 alphanumeric)
+Extension Key (Chrome Extension ID): (Chrome)
+Extension Name: Any String
+
+Extension Marker = sha1(sha1(Extension Name) + ":" + (Extension Key))
+Developer Signature = sha1(Developer ID + ":" + Extension Marker)

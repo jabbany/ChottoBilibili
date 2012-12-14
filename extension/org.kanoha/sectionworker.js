@@ -16,6 +16,7 @@ function SectionWorker(boundSection,bgmlist){
 		}
 		rule.cache = cache;
 	};
+	
 	this.matchInstance = function (inst){
 		/** Matches the Data to commit **/
 		for(var i = 0; i < refreshList.length; i++){
@@ -25,13 +26,14 @@ function SectionWorker(boundSection,bgmlist){
 					var ret = matcher.exec(inst.title);
 					if(ret != null && ret.length > 1){
 						var episodeNumber = Tools.parseTextNumber(ret[1]);
-						if(refreshList[i].watched < episodeNumber){
-							var rIdx = episodeNumber - refreshList[i].watched - 1;
+						console.log("[Log] Found Match " + episodeNumber + ":" + refreshList[i].current);
+						if(refreshList[i].current < episodeNumber){
+							var rIdx = episodeNumber - refreshList[i].current - 1;
 							if(refreshList[i].cache == null)
-								refreshList.cache = [];
+								refreshList[i].cache = [];
 							if(refreshList[i].cache != null && refreshList[i].cache[rIdx] == null){
 								refreshList[i].cache[rIdx] = "av" + inst.aid;
-								CachedDB.add
+								//CachedDB.add
 							}
 						}else{
 							/* Watched and recorded */

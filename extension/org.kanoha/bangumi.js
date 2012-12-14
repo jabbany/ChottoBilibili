@@ -53,10 +53,10 @@ function BangumiList(ctx, ccbo){
 		/** Refreshes the abstraction **/
 		if(context == "plugin"){
 			try{
-				abstraction = JSON.parse(localSotrage["bangumiList"]);
+				abstraction = JSON.parse(localStorage["bangumi"]);
 			}catch(e){
 				abstraction = this.create();
-				localStorage["bangumiList"] = JSON.stringify(abstraction);
+				localStorage["bangumi"] = JSON.stringify(abstraction);
 			}
 			ready = true;
 		}else{
@@ -69,7 +69,7 @@ function BangumiList(ctx, ccbo){
 	this.commit = function () {
 		/** Commits changes of the abstraction to file **/
 		if(context == "plugin"){
-			localStorage['bangumiList'] = JSON.stringify(abstraction);
+			localStorage['bangumi'] = JSON.stringify(abstraction);
 		}else{
 			chrome.extension.sendMessage({"method": "setBangumiList", "value": abstraction}, function(response) {
 			});
@@ -132,20 +132,20 @@ function BangumiList(ctx, ccbo){
 		};
 	};
 	this.needsRefresh = function(rule){
-		if(rule.total == null || rule.current = null)
+		if(rule.total == null || rule.current == null)
 			return false;
 		if(rule.type != 1){
 			if(rule.type == 2){
-				var timediff = Math.floor((new Date()).getTime()/1000) - rule.last;
+				var timediff = (Math.floor((new Date()).getTime()/1000) - rule.last);
 				if(timediff >= rule.interval)
 					return true;
 				return false;
 			}
 			return false;
 		}
-		if(rule.total - rule.current - rule.cache.length > 0)
+		if((rule.total - rule.current - rule.cache.length) > 0)
 			return true;
-		else if(rule.cache.length + rule.current > rule.total){
+		else if((rule.cache.length + rule.current) > rule.total){
 			/* Bad cache - Clear and redo */
 			rule.cache = [];
 			return true;
@@ -197,11 +197,11 @@ function BangumiList(ctx, ccbo){
 		**/
 		var refreshList = [];
 		if(isSafe != true){
-			var sect = abstraction["s:" + abstraction.sections[i]];
-			if(sect == null) return refreshList;
-			for(var j = 0; j < sect.length; j++){
-				if(this.needsRefresh(sect[j])){
-					refreshList.push(sect[j]);
+			var sct = abstraction["s:" + sect];
+			if(sct == null) return refreshList;
+			for(var j = 0; j < sct.length; j++){
+				if(this.needsRefresh(sct[j])){
+					refreshList.push(sct[j]);
 				}
 			}
 			return refreshList;

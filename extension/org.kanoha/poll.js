@@ -17,7 +17,8 @@ var jsPoll = {
 			"complete":function(){
 				self.run();
 			},
-			"global":this.global
+			"global":this.global,
+			"local":{}
 		};
 	}
 }

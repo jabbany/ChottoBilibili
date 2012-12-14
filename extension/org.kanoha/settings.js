@@ -27,6 +27,8 @@ function SettingsConnector(){
 		}
 	};
 	this.getApiKey = function(){
+		if(this.get("api.key") == null)
+			return "30d25295cbcfeedc";
 		return this.get('api.key');
 	};
 	this.get = function (key) {
