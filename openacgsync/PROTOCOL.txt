@@ -25,7 +25,7 @@ OpenACGSync是一个基于HTTP传输协议的一种数据规范。可用于任�
 一下是一个认证的传输的样例：
 
 [UIID=2jd0230j923898ej29h834n|SESN=029ff|DEVID=9287KTK-N-R]
-(Time: 2012-01-01 23:58 GMT|Client: ChottoBilibili v1|Protocol: 1)
+(Time: 2012-01-01 23:58:10 GMT+8|Client: ChottoBilibili v1|Protocol: 1)
 NOTIFY BANGUMI WATCHED [5rWL6K+V55Wq5Ymn][8][DvR-7kT](5b6I5aW955yL5ZWK6L+Z5Liq77yB){source:av192837}
 
 下面是一个一般的传输样例
@@ -57,7 +57,10 @@ AUTH认证字段提供给需要认证信息的服务器使用，其中有三个�
 以下有几个比较常见的头字段和参考的信息格式。头字段中的数据，服务器可以选择不去处理，或用自己的方法处理。
 所以请不要依赖头字段来传输重要的信息。
 
-	Time: YYYY-MM-DD HH:II <TIMEZONE>
+	Time: YYYY-MM-DD HH:II:SS <TIMEZONE>
 	Client: <CLIENT_IDENT_STRING>
 	Protocol: <PROTOCOL_VERSION>
 	Location: [-]d.d, [-]d.d (South & West Degrees)
+	Comment: <TEXT>
+	Privacy: <(PUBLIC|PRIVATE)>
+	
