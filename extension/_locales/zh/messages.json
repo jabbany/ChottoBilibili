@@ -40,5 +40,19 @@
 				"example":"文字"
 			}
 		}
+	},
+	"content_collect":{
+		"message":"+系列",
+		"description":"收集按钮"
+	},
+	"content_collect_sp":{
+		"message":"你确定希望添加《$series$》专题到追番列表中吗？",
+		"description":"专题追番加入",
+		"placeholders":{
+			"series":{
+				"content":"$1",
+				"example":"人类衰退之后"
+			}
+		}
 	}
 }

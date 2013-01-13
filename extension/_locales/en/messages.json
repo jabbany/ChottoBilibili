@@ -40,5 +40,19 @@
 				"example":"search string"
 			}
 		}
+	},
+	"content_collect":{
+		"message":"+Follow",
+		"description":"Add to collection"
+	},
+	"content_collect_sp":{
+		"message":"Add the topic \"$series$\" to the follow list?",
+		"description":"Add a series to the follow list",
+		"placeholders":{
+			"series":{
+				"content":"$1",
+				"example":"Jinrui wa Suitaishimashita"
+			}
+		}
 	}
 }

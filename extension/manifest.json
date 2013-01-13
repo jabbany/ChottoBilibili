@@ -30,8 +30,13 @@
 	},
 	"content_scripts": [
 		{
+			"matches": ["*://*.bilibili.tv/video/*"],
+			"js": ["tv.bilibili/collect.js"],
+			"run_at": "document_end"
+		},
+		{
 			"matches": ["*://*.bilibili.tv/*"],
-			"js": ["tv.bilibili/stalker.js","tv.bilibili/fullscreen.js"],
+			"js": ["tv.bilibili/stalker.js","tv.bilibili/fullscreen.js","tv.bilibili/renew.js"],
 			"run_at": "document_end"
 		},
 		{
@@ -56,7 +61,6 @@
 	"options_page": "options.html",
 	"permissions": [
 		"*://*.bilibili.tv/*",
-		"*://9ch.co/*",
 		"contextMenus",
 		"storage",
 		"alarms"

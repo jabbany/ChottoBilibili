@@ -131,6 +131,35 @@ function BangumiList(ctx, ccbo){
 			lastId: 0
 		};
 	};
+	this.getAllCached = function (mode){
+		/** Runs thru the list to get all caches **/
+		if(mode == null)
+			mode = "flat";
+		var ret = [];
+		for(var i = 0; i < abstraction.sections.length; i++){
+			var s = abstraction["s:" + abstraction.sections[i]];
+			if(s == null)
+				continue;
+			for(var j = 0; j < s.length; j++){
+				var rule = s[j];
+				if(rule.cache.length > 0){
+					if(mode == "object"){
+						ret.push({
+							title: rule.name,
+							id: rule.id,
+							cover: rule.img,
+							videos: rule.cache.slice(0)
+						});
+					}else if(mode == "nested"){
+						ret.push(rule.cache.slice(0));
+					}else{
+						ret = ret.concat(rule.cache);
+					}
+				}
+			}
+		}
+		return ret;
+	};
 	this.needsRefresh = function(rule){
 		if(rule.total == null || rule.current == null)
 			return false;

@@ -1,4 +1,5 @@
 var SC = {
+	opt:new SettingsConnector(),
 	states:{
 		"formEdited":false,
 		"currentForm":"SettingsHome"
@@ -32,7 +33,7 @@ var SC = {
 		"null":function(){return true;},
 		"settingsInit":function(arr){
 			for(var x in arr){
-				var opt = get_option(arr[x].key);
+				var opt = SC.opt.get(arr[x].key);
 				if(typeof opt != "undefined" && opt != null)
 					$("#" + arr[x].elem).each(function(index,val){
 						switch(val.type){

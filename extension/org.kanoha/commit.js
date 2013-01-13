@@ -7,6 +7,8 @@ function CommitCallback(){
 	var isBound = function(){ return binding == null; }
 	this.bind = function(obj) { binding = obj };
 	this.onCommit = function(){
-		console.log('Commit Made!');
+		console.log('[Log]Commit Made!');
+		/** Call the bound functions **/
+		
 	};
 }

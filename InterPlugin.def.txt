@@ -31,6 +31,14 @@ InterPlugin Data Tunnels API
    + folist-upd-eps
    + folist-upd-title
 
+-InterfaceHooks
+ + popup
+   + popup-tab
+   + popup-innerHtml
+   + popup-innerRichtext
+ + fo-dialog
+   + fo-dialog-add-field
+   + fo-dialog-add-tab
    
 -GrantedToAll
  + prompt-install () -> (bool) has-installed

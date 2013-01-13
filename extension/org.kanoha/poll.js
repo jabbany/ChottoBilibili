@@ -3,7 +3,7 @@ var jsPoll = {
 	tasks:[],
 	run:function(){
 		if(this.tasks.length > 0){
-			task = this.tasks.shift();
+			var task = this.tasks.shift();
 			task.execute(task);
 		}
 	},
@@ -17,8 +17,17 @@ var jsPoll = {
 			"complete":function(){
 				self.run();
 			},
+			"onkill":function(){
+				console.log("[War]Task killed!");
+			},
 			"global":this.global,
 			"local":{}
 		};
+	},
+	killall:function(){
+		while(this.tasks.length > 0){
+			task = this.tasks.shift();
+			task.onkill();
+		}
 	}
 }

@@ -21,9 +21,11 @@ function SettingsConnector(){
 		try{
 			chrome.storage.sync.set({"settings":JSON.stringify(abs)},function(){
 				STSyncCommited = true;
+				STSyncReady = true;
 			});
 		}catch(e){
 			console.log("[Err](Storage) Save Settings Failed.");
+			STSyncReady = false;
 		}
 	};
 	this.getApiKey = function(){

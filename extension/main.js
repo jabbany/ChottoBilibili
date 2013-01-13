@@ -1,15 +1,14 @@
 var Main = new function () {
-	this.list = new BangumiList("plugin",new CommitCallback()),
-	this.settings = new SettingsConnector(),
+	this.list = new BangumiList("plugin",new CommitCallback());
+	this.settings = new SettingsConnector();
 	this.startCheck = function (){
-		jsPoll.global.xhr = new XMLHttpRequest();
 		var createSectTask = function (section){
 			var worker = new SectionWorker(section, Main.list);
 			if(worker.done(true))
 				return; /* Nothing to do! */
 				
 			var task = jsPoll.create(function(self){
-				var xhr = self.global.xhr;
+				var xhr = new XMLHttpRequest();
 				var local = self.local;
 				var inst = self;
 				xhr.onreadystatechange = function(){
@@ -22,31 +21,27 @@ var Main = new function () {
 								inst.complete();
 								return;
 							}
-							if(local.retryCount < 3){
+							if(local.retryCount < 5){
 								local.retryCount++;
 								setTimeout(function(){
 									jsPoll.push(task);
-								},1000);
-								inst.complete();
+									inst.complete();
+								},1000 * Math.pow(2,local.retryCount));
 								return;
 							}else{
 								console.log("[Err](API)Resp: E_LIMIT_OVER");
 								/* Flush the worker */
 								worker.flush();
-								setTimeout(function(){
-									local.retryCount = 0;
-								},300000);
 								inst.complete();
 								return;
 							}
 						}
 						if(api.code != null && api.code == -1){
 							console.log("[Err](API):" + api.error);
-							//inst.complete();
+							inst.complete();
 							return;
 						}
 						/* Api Data Correctly Read */
-						console.log("[Log] Reading...");
 						for(var j=0;j < Math.min(parseInt(api.num) - (local.curpage - 1) * 200,200);j++){
 							if(api.list["" + j] == null)
 								continue;
@@ -69,6 +64,7 @@ var Main = new function () {
 							/* Worker is done! */
 							inst.complete();
 						}
+						console.log("[Log] Batch " + (local.curpage - 1)); 
 					}
 				};
 				xhr.open("GET", 
@@ -111,8 +107,17 @@ var Main = new function () {
 		});
 		
 		/** Run The jsPoll~ **/
-		//jsPoll.run();
-	}
+		jsPoll.run();
+	};
+	this.recache = function(){
+		var caches = Main.list.getAllCached();
+		var cacheDB = new CacheDB();
+		cacheDB.refresh();
+		jsPoll.global.xhr = new XMLHttpRequest();
+		jsPoll.create(function(self){
+		
+		});
+	};
 }
 
 /** ADD LISTENERS FOR INCOMING REQUESTS **/
@@ -126,11 +131,13 @@ chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
 		switch(request.method){
 			case "biliStalker":{
 				sendResponse({});
+				return;
 			}break;
 			case "getSetting":{
 				var sObj = (Main == null) ? new SettingsConnector() : Main.settings;
 				var val = sObj.get(request.key);
 				sendResponse({value:val});
+				return;
 			}break;
 		}
 	}else{
@@ -145,10 +152,15 @@ if(!chrome.runtime){
 	var duration = Main.settings.get('refresh.dur');
 	duration = (duration == null ? 15 : duration);
 	setInterval(duration * 60000, function(){
-		Main.startCheck();
+		//Main.startCheck();
 	}); 
 }else{
 	var delay = Main.settings.get("refresh.dur");
 	delay = (delay == null ? 15 : delay);
 	chrome.alarms.create('refresh',{periodInMinutes: delay});
+	chrome.alarms.onAlarm.addListener(function(a){
+		if(a.name == "refresh"){
+			//Main.startCheck();
+		}
+	});
 }
