@@ -148,6 +148,8 @@ function BangumiList(ctx, ccbo){
 							title: rule.name,
 							id: rule.id,
 							cover: rule.img,
+							current: rule.current,
+							total: rule.total,
 							videos: rule.cache.slice(0)
 						});
 					}else if(mode == "nested"){

@@ -127,7 +127,7 @@ body {
 	display:block;
 	clear:both;
 	min-height:30px;
-	padding: 4px;
+	padding: 0px;
 	border:1px dashed #c3c3c3;
 	-webkit-border-radius: 4px;
 	-moz-border-radius: 4px;
@@ -163,7 +163,7 @@ img.preview{
 	height:40px;
 	max-width:53px;
 	float:left;
-	margin:3px 8px 3px 3px;
+	margin:1px 8px 1px 3px;
 	-moz-box-shadow: 1 1 3px #fff;
 	-webkit-box-shadow: 1 1 3px #fff;
 	box-shadow: 1px 1px 3px #fff;

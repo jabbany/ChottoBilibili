@@ -65,20 +65,30 @@ var MenuItem = new function(){
 				$(m).className = "selected";
 			}
 		}
-		try{
+		//try{
 			menuitems[elem]();
-		}catch(e){console.log("MenuData Error");}
+		//}catch(e){console.log("MenuData Error");}
 		this.onSelect(elem);
 	};
 };
 
 function loadRule(c, rule){
-	var pvimg = _("img",{src:"",className:"pvimg"},null);
+	var container = _("div",{className:"selectable opt"},null);
+	var pvimg = _("img",{src:"",className:"preview"},null);
 	if(rule.cover != null){
 		pvimg.src = rule.cover;
 	}else{
-		pvimg.src = rule.videos[0];
+		var cdb = new CacheDB();
+		var vidid = rule.videos[rule.videos.length - 1];
+		cdb.refresh(function(){
+			var video = cdb.get(vidid);
+			pvimg.src = video != null ? video.pic : "";
+		});
 	}
+	container.appendChild(pvimg);
+	container.appendChild(_t(rule.title + " (" + rule.current + "/" + rule.total + ")"));
+	container.appendChild(_("div",{className:"clear"},null));
+	c.appendChild(container);
 };
 
 window.addEventListener('load',function(){
@@ -89,7 +99,7 @@ window.addEventListener('load',function(){
 		clearElem($("output"));
 		var bgms = bgml.getAllCached("object");
 		for(var i = 0; i < bgms.length; i++){
-			$("output").appendChild(_("div",{className:"selectable opt"},_t(bgms[i].title + ":" + bgms[i].videos)));
+			loadRule($("output"), bgms[i]);
 		}
 	});
 	MenuItem.bindMenu("news",function(){
