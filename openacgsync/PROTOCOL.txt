@@ -47,6 +47,53 @@ AUTH认证字段提供给需要认证信息的服务器使用，其中有三个�
  a) 会话安全模式认证
     [UIID=<一个颁发给USER的ID>|SESN=<会话钥匙>|DEVID=<设备ID/客户端ID>]
 
+	获取这些登陆条件，需要由客户端发起一个 CREDENTIALS 请求，类似：
+	[DEVID=<设备ID>]
+	(Time: 2013-02-15 21:45:00 GMT-5|Client: ChottoBilibili v1|Protocol: 1)
+	CREDENTIALS up:dT1qYWJiYW55JnA9UEFTU1dPUkQ=
+	
+	其中 CREDENTIALS 后面跟随一套服务器可能支持的模式。这个有可能需要用户设置同步时进行自定义。
+	我们推荐如下的一些默认 CREDENTIALS 请求的尾缀信息模板
+		
+		i. 用户名/密码 模板
+			up:base64("u=<USERNAME>&p=<PASSWORD>")
+			
+			请注意这个模板不是特别安全，可能导致密码被嗅探，但是本质上跟用户登录一样
+			站点或许可以允许用户设定一个同步用的密码（区别于登陆密码）
+			判断登陆是否成功由服务器决定，所以 u 跟 p 可以是任何身份验证对
+		
+		ii. token 模板
+			tok:<TOKEN>
+			
+			站点给用户颁发一个token，每次通过token 登陆。建议允许用户在站内删除或者解除
+			token有效性来解决可能被冒用的危险。
+		
+		iii. 哈希链（安全！）
+			hc:sha1^<N>(<KEY>)
+			
+			服务器保存一份被 sha1 轮回执行 N+1 次的Hash密码，用户本地保存 <N>与<KEY>。认证时，
+			用户将<KEY>进行 <N>次哈希运算，把结果发送到服务器，服务器比对 
+				sha1(用户传来的KEY) ==  自己保存的KEY，若通过，则用用户传来的 KEY 替换掉原来保存的
+			key。这种方式可以有效阻止重放攻击。当客户端 <N>值即将耗尽的时候，会通知用户生成
+			新的密码系列。
+			
+			
+		vi. 服务器自定义的模板
+			custom:<TEMPLATE>
+			
+			服务器自定义一个模板字符串，跟TOKEN模式非常相似。。。大概
+	
+	服务器的返回：CREDENTIALS协议一般期待服务器返回一种认证钥匙，有时这些钥匙可能是临时的，也有时
+		服务器可以选择给一个长期钥匙
+		
+		认证成功
+		AUTH:OK
+		ASSIGN:UIID=<USER_INDEX_ID>|SESN=<SESSION_KEY>
+		（或者可选择继续供应：IV, LIFE）
+		
+		以后认证发送 sha1(SESSION_KEY + IV) ，服务器端计算 <收到的SESSION_KEY> == sha1(保存的SESSION_KEY + IV)
+		并更新保存的SESSION_KEY = New Session Key, IV = (New Session Key + IV)。如果IV不被劫持，第三方无法计算下次使用的SESSION_KEY。
+		
 
 6. HEAD头部
 头部字段是可选字段，其中包含发布的时间/客户端版本等状态信息。客户端可以选择不发送头部来节省带宽。
