@@ -192,6 +192,9 @@ function BangumiList(ctx, ccbo){
 			return totalCutoffs[i];
 		return -1;
 	};
+	this.lookupSectionName = function(sect_id){
+		return "新番二次元";
+	};
 	this.newRule = function(name,type,matcher,excluder,current,total) {
 		if(type == 1){
 			if(current == null)

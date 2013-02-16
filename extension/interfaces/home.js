@@ -1,4 +1,23 @@
+function _(type,init,inner){
+	var elem = document.createElement(type);
+	for(var i in init){
+		if(i != 'style'){
+			elem[i] = init[i];
+		}else{
+			for(var j in init[i]){
+				elem['style'][j] = init[i][j];
+			}
+		}
+	}
+	if(inner!=null)
+		elem.appendChild(inner);
+	return elem;
+}
+
 var SC = {
+	cdb:null,
+	cdbReady:false,
+	bgmlist:null,
 	opt:new SettingsConnector(),
 	states:{
 		"formEdited":false,
@@ -28,6 +47,60 @@ var SC = {
 			}
 			return false;
 		};
+	},
+	insertRow:function(table, id, rule, sid){
+		var row = table.insertRow(id);
+		var r_id = row.insertCell(0);
+		var r_desc = row.insertCell(1);
+		var r_expr = row.insertCell(2);
+		var r_actions = row.insertCell(3);
+		row.className = "";
+		r_id.appendChild(document.createTextNode(rule.id != null ? rule.id : "0"));
+		r_desc.className = "follow-record";
+		var img = _("img",{src:"", className:"follow-image"});
+		if(rule.img != null)
+			img.src = rule.img;
+		else{
+			if(SC.cdb == null)
+				SC.cdb = new CacheDB();
+			if(rule.cache != null){
+				var vidid = rule.cache[rule.cache.length - 1];
+				if(!SC.cdbReady){
+					SC.cdb.refresh(function(){
+						var video = SC.cdb.get(vidid);
+						img.src = video != null ? video.pic : "";
+						SC.cdbReady = true;
+					});
+				}else{
+					try{
+						var video = SC.cdb.get(vidid);
+						img.src = video != null ? video.pic : "";
+					}catch(e){
+						console.log("[Err] Image URL not in DB");
+					};
+				}
+			}
+		}
+		r_desc.appendChild(img);
+		r_desc.appendChild(_("div",{className:"follow-image-shadow"},_("div")));
+		var info = _("div",{className:"follow-info"},null);
+		var title = _("p",{className:"title"},
+				_("span",{className:"label label-info"},
+						document.createTextNode(SC.bgmlist.lookupSectionName(sid))));
+		title.appendChild(document.createTextNode(" " + rule.name + " "));
+		info.appendChild(title);
+		if(rule.desc != null){
+			var mt = /^\[(.+)\]/.exec(rule.desc);
+			if(mt != null)
+				title.appendChild(_("small",{}, document.createTextNode("(" + mt[1] + ")")));
+			info.appendChild(_("p",{className:"descr"},
+				document.createTextNode(rule.desc.replace(new RegExp("^\\[(.+)\\]"),""))));
+		}
+		info.appendChild(_("div",{className:"progress progress-striped min-margin"},
+			_("div",{className:"bar", style:{width:(rule.current * 100 / rule.total) + "%"}},
+				document.createTextNode(rule.current + "/" + rule.total))));
+		r_desc.appendChild(info);
+		console.log(rule);
 	},
 	func:{
 		"null":function(){return true;},
@@ -146,9 +219,18 @@ var SC = {
 			var tbl = $("#flBangumiTbl")[0];
 			if(tbl != null && tbl.rows.length > 1){
 				while(tbl.rows.length > 1){
-					$("#flBangumiTbl")[0].deleteRow(1);
+					tbl.deleteRow(1);
 				}
-				//Load data unto the table
+				if(SC.bgmlist == null)
+					SC.bgmlist = new BangumiList();
+				var sections = SC.bgmlist.getSections();
+				var index = 1;
+				for(var i = 0; i < sections.length; i++){
+					var rules = SC.bgmlist.getRulesBySection(sections[i]);
+					for(var j = 0; j < rules.length; j++){
+						SC.insertRow(tbl, index++, rules[j], sections[i]);
+					}
+				}
 			}
 			return true;
 		},

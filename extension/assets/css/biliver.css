@@ -42,6 +42,10 @@ td.follow-record .follow-image{
 	left: -20px;
 	clear: none;
 }
+table.follow-table tr:hover {
+	background: #f5f5f5;
+}
+
 table.follow-table tr:hover .follow-image{
 	opacity: 1;
 }
@@ -49,12 +53,17 @@ table.follow-table tr:hover .follow-image{
 table.follow-table tr:hover .follow-image-shadow div{
 	box-shadow:-10px -100px 50px 50px #f5f5f5 inset;
 }
+table.follow-table tr:hover .follow-info{
+	background: #f5f5f5;
+}
 td.follow-record .follow-info{
 	position:absolute;
 	left: 0;
 	right: 10px;
 	top:0;
 	z-index:9999;
-	padding: 8px 0 0 78px;
+	margin: 4px 0 0 74px;
+	padding: 4px 4px 0 4px;
 	clear: none;
+	background:#fff;
 }
