@@ -21,7 +21,7 @@ var Main = new function () {
 								inst.complete();
 								return;
 							}
-							if(local.retryCount < 5){
+							if(local.retryCount < 8){
 								local.retryCount++;
 								setTimeout(function(){
 									jsPoll.push(task);

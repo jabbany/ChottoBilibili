@@ -1,3 +1,20 @@
+.hero-unit{
+	overflow:hidden;
+	position:relative;
+}
+.hero-unit .hero-inner{
+	padding:60px;
+	position:absolute;
+	top:0;left:0;right:0;
+	background:rgba(255, 255, 255, 0.7);
+}
+
+.hero-unit img{
+	-webkit-border-radius: 6px;
+	-moz-border-radius: 6px;
+	border-radius: 6px;
+}
+
 table.follow-table td{
 	overflow : hidden;
 	height: 75px;

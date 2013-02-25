@@ -13,6 +13,7 @@ function _(type,init,inner){
 		elem.appendChild(inner);
 	return elem;
 }
+function _e(e){ return document.getElementById(e); }
 
 var SC = {
 	cdb:null,
@@ -29,8 +30,7 @@ var SC = {
 		{name:"SettingsSite",fname:"fSettingsSite"},
 		{name:"SettingsSync",fname:"fSettingsSync"},
 		{name:"FollowBangumi",fname:"fFollowBangumi"},
-		{name:"FollowTag",fname:"null"},
-		{name:"FollowUser",fname:"null"},
+		{name:"FollowUser",fname:"fFollowUser"},
 		{name:"ServiceConnect",fname:"fServiceConnect"},
 		{name:"ServiceDonate",fname:"fServiceDonate"},
 	],
@@ -178,6 +178,52 @@ var SC = {
 		"fSettingsHome":function(){
 			if(!SC.func.checkCanMove())
 				return false;
+			var hdr = _e("homeHdr");
+			if(hdr != null){
+				if(!SC.cdbReady){
+					if(SC.cdb == null)
+						SC.cdb = new CacheDB();
+					SC.cdb.refresh(function(){
+						var pq = new PQueue();
+						SC.cdb.reduce(function(record, base){
+							pq.insertWithPriority(record.pic, parseInt(record.aid));
+							if(pq.size() > 30){
+								pq.poll();
+							}
+						}, null);
+						var l = [];
+						while(pq.size() > 0){
+							l.push(pq.poll());
+						}
+						for(var j, x, i = l.length; i; j = parseInt(Math.random() * i), x = l[--i], l[i] = l[j], l[j] = x);
+						for(var i = 0; i < l.length; i++){
+							hdr.insertBefore(_("img",{"className":"pull-right","src":l[i]}), 
+								hdr.childNodes[0]);
+						}
+						SC.cdbReady = true;
+					});
+				}else{
+					var pq = new PQueue();
+					SC.cdb.reduce(function(record, base){
+						pq.insertWithPriority(record.pic, parseInt(record.aid));
+						if(pq.size() > 30){
+							pq.poll();
+						}
+					}, null);
+					var l = [];
+					while(pq.size() > 0){
+						l.push(pq.poll());
+					}
+					while(hdr.childNodes.length > 0){
+						hdr.removeChild(hdr.childNodes[0]);
+					}
+					for(var j, x, i = l.length; i; j = parseInt(Math.random() * i), x = l[--i], l[i] = l[j], l[j] = x);
+					for(var i = 0; i < l.length; i++){
+						hdr.insertBefore(_("img",{"className":"pull-right","src":l[i]}), 
+							hdr.childNodes[0]);
+					}
+				}
+			}
 			SC.func.setNewForm("SettingsHome");
 			SC.func.hideAllBut("SettingsHome");
 			return true;
@@ -232,6 +278,13 @@ var SC = {
 					}
 				}
 			}
+			return true;
+		},
+		"fFollowUser":function() {
+			if(!SC.func.checkCanMove())
+				return false;
+			SC.func.setNewForm("FollowUser");
+			SC.func.hideAllBut("FollowUser");
 			return true;
 		},
 		"fServiceConnect":function(){
