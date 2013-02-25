@@ -86,15 +86,40 @@ AUTH认证字段提供给需要认证信息的服务器使用，其中有三个�
 	服务器的返回：CREDENTIALS协议一般期待服务器返回一种认证钥匙，有时这些钥匙可能是临时的，也有时
 		服务器可以选择给一个长期钥匙
 		
-		认证成功
-		AUTH:OK
-		ASSIGN:UIID=<USER_INDEX_ID>|SESN=<SESSION_KEY>
+		-认证成功
+			AUTH:OK
+			ASSIGN:UIID=<USER_INDEX_ID>|SESN=<SESSION_KEY>
 		（或者可选择继续供应：IV, LIFE）
 		
 		以后认证发送 sha1(SESSION_KEY + IV) ，服务器端计算 <收到的SESSION_KEY> == sha1(保存的SESSION_KEY + IV)
 		并更新保存的SESSION_KEY = New Session Key, IV = (New Session Key + IV)。如果IV不被劫持，第三方无法计算下次使用的SESSION_KEY。
+		LIFE是一个整形数字 (0-2147483647)，如果给出每次计算新的SESSION_KEY都回递减一次 LIFE，当LIFE达到 0 时客户端将放弃当前的SESSION_KEY
+		强制重新发送 CREDENTIALS
 		
-
+		当然这不能防止第三方在第一时间截获 SESN 与 IV 并先行发送请求。一般来说对于大部分网络服务这种等级的安全是充足的
+		（甚至还会稍高于需求）
+		
+		-认证需要提升了的安全等级
+			AUTH:UPGRADE
+			ASSIGN:UIID=<USER_INDEX_ID>
+			EXCHANGE:<ENCRYPTED KEY>
+		
+		提升的安全等级会在交换钥匙时采用安全的方法，EXCHANGE返回的KEY是服务器加密后的会话钥匙，客户端拿到EXCHANGE后，将生成一个与
+		EXCHANGE位数长度相等的一次性钥匙并XOR加密]返回服务器。
+		
+			[UIID=<USER_INDEX_ID>|EXCHANGE=<生成的新钥匙>|DEVID=<设备ID>]
+			(Time: 2013-02-15 21:45:00 GMT-5|Client: ChottoBilibili v1|Protocol: 1)
+			CREDENTIALS EXPECT UPGRADE
+		
+		这时候服务器应该从收到的EXCHANGE上去除自己的加密，**并丢弃当初加密EXCHANGE的钥匙**。服务器将结果返回客户端。
+		
+			AUTH:UPGRADED
+			EXCHANGE:<DECRYPTED_ENCRYPTED_KEY>
+			
+		这时客户端只要使用自己的临时密码再次解密后就可以安全的获取交换到的KEY了。如果第三方发起主动攻击，由于服务器端的KEY会在
+		第三方试图获取新的EXCHANGE后丢弃，即使第三方能借此获取当初KEY加密的
+		
+		
 6. HEAD头部
 头部字段是可选字段，其中包含发布的时间/客户端版本等状态信息。客户端可以选择不发送头部来节省带宽。
 头部字段的格式为：
