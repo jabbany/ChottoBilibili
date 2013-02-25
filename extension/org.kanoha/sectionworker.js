@@ -37,9 +37,11 @@ function SectionWorker(boundSection,bgmlist){
 	};
 	this.matchInstance = function (inst){
 		/** Matches the Data to commit **/
-		if(FlagCatcher != null && FlagCatcher.get("debug.outputIterations",false)){
-			console.log("[Log] (av" + inst.aid + ") " + inst.title);
-		}
+		try{
+			if(FlagCatcher != null && FlagCatcher.get("debug.outputIterations",false)){
+				console.log("[Log] (av" + inst.aid + ") " + inst.title);
+			}
+		}catch(e){}
 		for(var i = 0; i < refreshList.length; i++){
 			try{
 				if(typeof refreshList[i].matcher == "string"){
