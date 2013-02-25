@@ -1,6 +1,9 @@
 /** Refreshes the bilibili interface **/
 var $f = function(e){return document.getElementsByClassName(e);};
+var $t = function(e){return document.getElementsByTagName(e);};
 var removeElement = function(e){
+	if(e == null)
+		return;
 	var par = e.parentNode;
 	if(par != null)
 		par.removeChild(e);
@@ -19,3 +22,4 @@ for(var i = 0; i < adNodeNames.length; i++){
 			removeElement(adNodes[j]);
 		}
 }
+removeElement(document.getElementById("taobaoid"));

@@ -31,7 +31,7 @@ if(elems != null && elems.length > 0){
 		elems[0].onclick = function(){};
 		elems[0].addEventListener("click",function(){
 			var d = fetchData();
-			if(confirm(chrome.i18n.getMessage("content_collect_sp", [d.title])){
+			if(confirm(chrome.i18n.getMessage("content_collect_sp", [d.title]))){
 				/** Add this **/
 			}
 		});
