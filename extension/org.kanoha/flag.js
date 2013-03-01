@@ -11,4 +11,7 @@ var FlagCatcher = new function(){
 		}
 		return flags[key];
 	};
+	this.toString = function(){
+		return JSON.stringify(flags);
+	}
 }

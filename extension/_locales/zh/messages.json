@@ -54,5 +54,9 @@
 				"example":"人类衰退之后"
 			}
 		}
+	},
+	"dialog_enter_console":{
+		"message":"进入管理后台，请输入密码：",
+		"description":"后台管理密码窗口",
 	}
 }

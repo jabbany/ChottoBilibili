@@ -8,6 +8,9 @@
     <meta name="author" content="">
 	<link href="assets/css/bootstrap.css" rel="stylesheet">
 	<link href="assets/css/bootstrap-responsive.css" rel="stylesheet">
+	<script src="org.kanoha/flag.js"></script>
+	<script src="org.kanoha/crypto.js"></script>
+	<script src="org.kanoha/transient.js"></script>
 	<script src="interfaces/console.js"></script>
 	<style>
 	  body {
@@ -64,10 +67,9 @@
 					<button type="submit" id="btnBackup" class="btn btn-primary">备份</button> 
 					<button type="submit" id="btnRestore" class="btn">恢复备份</button>
 				</div>
-				<div id="tinput" class="well terminal" contenteditable="true">
-				Chottobilibili Debugging Console<br>
-				Version 1.1 Build 35<br>
-				==============================================================================
+				<div id="tinput" class="well terminal">
+				Chottobilibili Debugging Console (Version 1.1 Build 36)<br>
+				=======================================================
 				</div>
 			</div>
 			
@@ -106,6 +108,7 @@
 						</tr>
 					</tbody>
 				</table>
+				<button type="submit" id="btnClearTransient" class="btn btn-primary">清除Transient数据</button> 
 			</div>
 			<div id="isync" class="span9" style="display:none;">
 				<h1 class="page-header">同步信息 <small>调试同步信息</small></h1>

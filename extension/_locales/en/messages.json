@@ -54,5 +54,9 @@
 				"example":"Jinrui wa Suitaishimashita"
 			}
 		}
+	},
+	"dialog_enter_console":{
+		"message":"Please input the password to access the console:",
+		"description":"Console password prompt",
 	}
 }

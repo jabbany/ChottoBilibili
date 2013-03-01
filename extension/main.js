@@ -139,6 +139,15 @@ chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
 				sendResponse({value:val});
 				return;
 			}break;
+			case "getBangumiList":{
+				try{
+					var bgml = JSON.parse(localStorage["bangumi"]);
+					sendResponse(bgml);
+				}catch(e){
+					sendResponse({});
+				}
+				return;
+			}break;
 		}
 	}else{
 		

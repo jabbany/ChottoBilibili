@@ -19,4 +19,7 @@ function TransientPrayer(){
 		/** Forces a cleanup of the transients **/
 		localStorage["transient"] = "{}";
 	};
+	this.toString = function(){
+		return JSON.stringify(tp);
+	}
 }
