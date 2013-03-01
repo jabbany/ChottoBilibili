@@ -177,5 +177,5 @@ function PQueue(){
 	};
 	this.size = function(){
 		return size;
-	}
+	};
 }
