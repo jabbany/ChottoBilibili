@@ -78,9 +78,22 @@ td.follow-record .follow-info{
 	left: 0;
 	right: 10px;
 	top:0;
-	z-index:9999;
 	margin: 4px 0 0 74px;
 	padding: 4px 4px 0 4px;
 	clear: none;
 	background:#fff;
+}
+.bar-watchlist{
+	cursor:default;
+	user-select: none;
+	-webkit-user-select: none;
+}
+.bar-watchlist:hover{
+	background:#2eb0e2;
+}
+.bar-watchlist.bar-warning:hover{
+	background:#ffc040;
+}
+.bar-watchlist.bar-success:hover{
+	background:#7ed97e;
 }

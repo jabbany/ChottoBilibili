@@ -19,7 +19,7 @@ function hookStalkModule(){
 		});
 	});
 	div.click(); /* Hook Close tracker! */
-	chrome.extension.sendRequest({
+	chrome.extension.sendMessage({
 		"method": "biliStalker", 
 		"url": document.location.href,
 		"event": "onEnterPage"

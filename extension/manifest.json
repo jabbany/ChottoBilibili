@@ -15,13 +15,13 @@
 		"default_title":"__MSG_browser_action_title__",
 		"default_popup":"popup.html"
 	},
-
 	"background": {
 		"persistent": false,
 		"scripts": [
 			"org.kanoha/tools.js",
 			"org.kanoha/poll.js",
 			"org.kanoha/settings.js",
+			"org.kanoha/plugins.js",
 			"org.kanoha/bangumi.js",
 			"org.kanoha/commit.js",
 			"org.kanoha/cachedb.js",

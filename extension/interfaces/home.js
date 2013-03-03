@@ -96,9 +96,34 @@ var SC = {
 			info.appendChild(_("p",{className:"descr"},
 				document.createTextNode(rule.desc.replace(new RegExp("^\\[(.+)\\]"),""))));
 		}
-		info.appendChild(_("div",{className:"progress progress-striped min-margin"},
-			_("div",{className:"bar", style:{width:(rule.current * 100 / rule.total) + "%"}},
-				document.createTextNode(rule.current + "/" + rule.total))));
+		var progress = _("div",{className:"progress min-margin"});
+		info.appendChild(progress);
+		progress.appendChild(_("div",{
+					className:"bar bar-watchlist bar-success", 
+					style:{
+						width:(rule.current * 100 / rule.total) + "%"
+					}},
+				document.createTextNode(rule.current + "/" + rule.total)));
+		try{
+			var genFunction = function (vid){
+				return function(){
+					if(SC.cdbReady){
+						var vidData = SC.cdb.get(vid);
+						if(vidData != null){
+							img.src = vidData.pic;
+						}
+					}
+				};
+			}
+			for(var i = 0; i < rule.cache.length; i++){
+				var b = _("div",{
+						className:"bar bar-watchlist" + (i == rule.cache.length - 1 ? "" : " bar-warning"), 
+						style:{width:(100 / rule.total) + "%"}
+						},document.createTextNode(rule.current + i + 1));
+				b.addEventListener("mouseover",genFunction(rule.cache[i]));
+				progress.appendChild(b);
+			}
+		}catch(e){console.log("Cache Error");}
 		r_desc.appendChild(info);
 		console.log(rule);
 	},
@@ -304,16 +329,19 @@ var SC = {
 	}
 };
 $(document).ready(function(){
+	//Hook All Buttons
+	$("button").click(function(){
+			return false;
+	});
 	//Hook all the interfaces
 	for(var i=0;i<SC.menu.length; i++){
 		var lf = SC.menu[i].fname;
 		var ln = SC.menu[i].name;
 		$("#menu" + ln).click(SC.menuHook(ln,lf));
-		//Hook All Buttons
-		$("button").click(function(){
-			return false;
-		});
 	}
+	$("#btnEnterBangumi").click(function(){
+		SC.menuHook("FollowBangumi","fFollowBangumi");
+	});
 	var keys = [65, 66, 39, 37, 39, 37, 40, 40, 38, 38];
 	$(document).keydown(function(e){
 		if(e.keyCode == keys[keys.length - 1]){

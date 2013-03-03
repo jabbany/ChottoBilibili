@@ -1,5 +1,6 @@
-/** 
-	Section Worker - Depends on CacheDB and Tools 
+/**
+	Section Worker
+	Deps: cachedb.js, tools.js
 	Author: Jabbany
 **/
 function SectionWorker(boundSection,bgmlist){

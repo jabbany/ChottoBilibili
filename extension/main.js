@@ -155,6 +155,40 @@ chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
 	sendResponse({});/* Snub them */
 });
 
+/** Allow other extensions to connect **/
+chrome.extension.onMessageExternal.addListener(
+	function(request, sender, sendResponse) {
+		var blacklist = Main.settings.get('plugins.blocked');
+		if (blacklist != null && blacklist.indexOf(sender.id) < 0)
+			return;
+		if(request.method == null)
+			sendResponse({"error":"Method not provided"});
+		switch(request.method){
+			case "prompt-install":{
+				var success = Plugins.install({
+					id:sender.id,
+					name:request.name,
+					key:request.key,
+					permissions:request.permissions,
+					version:request.version
+				});
+				sendResponse({
+					installed: success
+				});
+			}return;
+			case "has-permission":{
+				if(Plugins.exists(sender.id)){
+					var Priv = Plugins.getPriv(sender.id);
+					sendResponse({
+						has:(Priv.indexOf(request["permission"]) >= 0)
+					});
+					return;
+				}
+				sendResponse({has:false});
+			}return;
+		}
+	});
+
 /** Create the timers or alarms **/
 if(!chrome.runtime){
 	/* Include support for legacy chrome */

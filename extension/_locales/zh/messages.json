@@ -11,6 +11,10 @@
 		"message":"我订阅的哔哩哔哩",
 		"description":"浏览器图标浮动文本"
 	},
+	"page_action_title":{
+		"message":"分享视频",
+		"description":"通过插件推送哔哩哔哩视频"
+	},
 	"general_settings":{
 		"message":"设定",
 		"description":"字符串：设定"
@@ -57,6 +61,6 @@
 	},
 	"dialog_enter_console":{
 		"message":"进入管理后台，请输入密码：",
-		"description":"后台管理密码窗口",
+		"description":"后台管理密码窗口"
 	}
 }

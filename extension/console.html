@@ -91,6 +91,11 @@
 							<td><span class="label" key="invoke.cacheClean">2d</span></td>
 						</tr>
 						<tr>
+							<td>header.imgOrder</td>
+							<td>设置首页头图的图片集合排序。可选：randomNewest, orderNewest</td>
+							<td><span class="label" key="header.imgOrder">randomNewest</span></td>
+						</tr>
+						<tr>
 							<td>taskqueue.terminateTimeout</td>
 							<td>调整任务队列的强制结束的等待时间，默认为不强制结束。可选 30s, 1min, 5min, 10min , 30min</td>
 							<td><span class="label" key="taskqueue.terminateTimeout">disabled</span></td>
@@ -109,6 +114,8 @@
 					</tbody>
 				</table>
 				<button type="submit" id="btnClearTransient" class="btn btn-primary">清除Transient数据</button> 
+				<button type="submit" id="btnOptimizeCache" class="btn btn-primary">优化缓存数据库 (CacheDB)</button> 
+				<button type="submit" id="btnClearCache" class="btn btn-danger">清空缓存（危险）</button> 
 			</div>
 			<div id="isync" class="span9" style="display:none;">
 				<h1 class="page-header">同步信息 <small>调试同步信息</small></h1>
