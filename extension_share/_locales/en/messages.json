@@ -1,0 +1,14 @@
+{
+	"extension_name":{
+		"message":"ChottoBilibili Share",
+		"description":"A somewhat moe name."
+	},
+	"extension_description":{
+		"message":"",
+		"description":"A somewhat more serious description."
+	},
+	"page_action_title":{
+		"message":"Share to...",
+		"description":"Share the current video using Plugin"
+	}
+}

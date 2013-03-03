@@ -1,0 +1,14 @@
+{
+	"extension_name":{
+		"message":"ちょっと哔哩哔哩（分享）",
+		"description":"一个有点卖萌的名字"
+	},
+	"extension_description":{
+		"message":"在哔哩哔哩视频页面显示分享按钮",
+		"description":"一个有点卖萌的解释"
+	},
+	"page_action_title":{
+		"message":"分享视频",
+		"description":"通过插件推送哔哩哔哩视频"
+	}
+}

@@ -41,5 +41,5 @@ InterPlugin Data Tunnels API
    + fo-dialog-add-tab
    
 -GrantedToAll
- + prompt-install () -> (bool) has-installed
- + has-privilege (string) priv-name -> (bool) has
+ + prompt-install () -> (bool) installed
+ + has-permission (string) permission -> (bool) has
