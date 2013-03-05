@@ -9,6 +9,7 @@ Format 格式
 Sample 样例
 ------
 注意是**样例**
+
 	{
 		"follow_list_version":1,
 		"timestamp":<TIMESTAMP>,
@@ -114,7 +115,8 @@ Sample 样例
 			}
 		}
 	}
-	
+
+
 1. Specification
 ------
 (MAND) : Defines a mandatory field or property, any export file without this field should be labelled incorrect and no further efforts should be made to parse it. 这个标签定义了一个必要的属性或者字段，任何一个 export 的 follow list 如果缺少这个字段将会被视为无效，并放弃解析。
