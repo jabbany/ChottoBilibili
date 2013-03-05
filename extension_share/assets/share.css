@@ -11,9 +11,9 @@ a{
 .wrapper{
 	width:150px;
 	min-height:50px;
-	max-height:400px;
-	overflow:auto;
 	padding:0;
+	overflow: hidden;
+	background: #faa;
 }
 
 .btn {
@@ -49,6 +49,73 @@ a{
 	box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
+.btn:hover,
+.btn:active,
+.btn.active,
+.btn.disabled,
+.btn[disabled] {
+  background-color: #e6e6e6;
+  *background-color: #d9d9d9;
+}
+
+.btn:active,
+.btn.active {
+  background-color: #cccccc \9;
+}
+
+.btn:first-child {
+  *margin-left: 0;
+}
+
 .btn {
-	width:120px;
+	width:128px;
+}
+
+.btn:hover {
+  color: #333333;
+  text-decoration: none;
+  background-color: #e6e6e6;
+  *background-color: #d9d9d9;
+  /* Buttons in IE7 don't get borders, so darken on hover */
+
+  background-position: 0 -15px;
+  -webkit-transition: background-position 0.1s linear;
+     -moz-transition: background-position 0.1s linear;
+      -ms-transition: background-position 0.1s linear;
+       -o-transition: background-position 0.1s linear;
+          transition: background-position 0.1s linear;
+}
+
+.btn:focus {
+  outline: thin dotted #333;
+  outline: 5px auto -webkit-focus-ring-color;
+  outline-offset: -2px;
+}
+
+.btn.active,
+.btn:active {
+  background-color: #e6e6e6;
+  background-color: #d9d9d9 \9;
+  background-image: none;
+  outline: 0;
+  -webkit-box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
+     -moz-box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
+          box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.btn.disabled,
+.btn[disabled] {
+  cursor: default;
+  background-color: #e6e6e6;
+  background-image: none;
+  opacity: 0.65;
+  filter: alpha(opacity=65);
+  -webkit-box-shadow: none;
+     -moz-box-shadow: none;
+          box-shadow: none;
+}
+
+.btn {
+  border-color: #ccc;
+  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
 }
