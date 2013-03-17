@@ -1,5 +1,6 @@
-function CacheDB(){
+function CacheDB(dbName){
 	//Caching Database uses ChromeStorage Local Storage
+	var databaseName = dbName != null ? dbName : "cachedb";
 	var storage = chrome.storage.local;
 	var db = {};
 	var pool = 0;
@@ -13,7 +14,9 @@ function CacheDB(){
 			return;
 		}
 		saveInProgress = true;
-		chrome.storage.local.set({cachedb:db}, function(){
+		var dbObject = {};
+		dbObject[databaseName] = db;
+		chrome.storage.local.set(dbObject, function(){
 			pool = 0;
 			saveInProgress = false;
 		});
@@ -73,9 +76,9 @@ function CacheDB(){
 	};
 	this.refresh = function(callback){
 		var slf = this;
-		chrome.storage.local.get("cachedb",function(items){
-			if(items != null && items.cachedb != null){
-				var tdb = items.cachedb;
+		chrome.storage.local.get(databaseName,function(items){
+			if(items != null && items[databaseName] != null){
+				var tdb = items[databaseName];
 				/** Make sure the root is clean or else force a commit **/
 				var needCommit = (pool == 0);
 				for(titm in tdb){
@@ -97,6 +100,51 @@ function CacheDB(){
 				}
 		});
 	};
+}
+
+function ReadOnlyCacheDB(dbName){
+	//Creates a read only queryable cache db better in memory usage
+	if(dbName == null) dbName = "cachedb";
+	var db = {};
+	var eventDispatcher = {
+		"onloaded":function(){},
+		"onerror":function(){}
+	};
+	var dispatchEvent = function(eventName, eventObject){
+		if(eventDispatcher[eventName] != null)
+			eventDispatcher[eventName](eventObject);
+	};
+	this.query = function(filter, shouldRetain){
+		chrome.storage.local.get(dbName,function(items){
+			if(items != null && items.cachedb != null){
+				for(var x in items.cachedb){
+					if(filter(x,items.cachedb[x]))
+						db[x] = items.cachedb[x];
+				}
+				dispatchEvent("onloaded",db);
+			}else{
+				dispatchEvent("onerror",db);
+			}
+		});
+	};
+	this.lastQuery = function(){
+		return db;
+	};
+	this.addEventListener = function(event, listener){
+		if(typeof listener != "function")
+			return;
+		if(eventDispatcher[event] != null){
+			var oldFunction = eventDispatcher[event];
+			eventDispatcher[event] = function(e){
+				listener(e);
+				oldFunction(e);
+			}
+		}
+	};
+	this.clearEventListeners - function(event){
+		if(eventDispatcher[event] != null)
+			eventDispatcher[event] = function(){};
+	}
 }
 
 function PQueue(){
