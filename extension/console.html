@@ -8,9 +8,12 @@
     <meta name="author" content="">
 	<link href="assets/css/bootstrap.css" rel="stylesheet">
 	<link href="assets/css/bootstrap-responsive.css" rel="stylesheet">
+	
 	<script src="org.kanoha/flag.js"></script>
+	<script src="org.kanoha/settings.js"></script>
 	<script src="org.kanoha/crypto.js"></script>
 	<script src="org.kanoha/transient.js"></script>
+	<script src="interfaces/console.scripting.js"></script>
 	<script src="interfaces/console.js"></script>
 	<style>
 	  body {
@@ -29,10 +32,17 @@
 	  }
 	  .well.terminal{
 		background:#000; color:#0e0; font-family: Consolas, Courier, "Courier New", monospace;
-		height : 200px; overflow:auto; 
+		height : 200px; overflow:auto;
+		position:relative;ling-height:105%;
+		margin-bottom:3px;
+		padding:10px;
 	  }
 	  .table{
 		background:#fff;
+	  }
+	  #command-line{
+		background:#000; color:#0e0; font-family: Consolas, Courier, "Courier New", monospace;
+		font-size:14px;
 	  }
 	</style>
   </head>
@@ -66,11 +76,15 @@
 					<p>为了避免不当操作导致的数据毁灭，请先备份：</p>
 					<button type="submit" id="btnBackup" class="btn btn-primary">备份</button> 
 					<button type="submit" id="btnRestore" class="btn">恢复备份</button>
+					<div id="restore-div" style="margin:15px 0 0 0;display:none;">
+						<textarea class="span10" style="height:200px;"></textarea>
+					</div>
 				</div>
 				<div id="tinput" class="well terminal">
 				Chottobilibili Debugging Console (Version 1.1 Build 36)<br>
 				=======================================================
 				</div>
+				<input id="command-line" type="text" class="span12" value="">
 			</div>
 			
 			<div id="iflags"class="span9" >

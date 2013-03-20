@@ -1,13 +1,20 @@
 /** Plugin manager **/
 var Plugins = new function(){
-	var plugins = {};
-	try{
-		JSON.parse(localStorage["settings"]);
-	}catch(e){
-		localStorage["settings"] = "{}";
+	var s = new SettingsConnector();
+	var plugins = s.get("plugins");
+	if(typeof plugins != "object"){
+		plugins = {
+			"security":{}
+		};
+		s.set("plugins",{"security":{}});
+		commit();
 	}
 	var commit = function(){
-		localStorage["settings"] = JSON.stringify(plugins);
+		if(!s.commit()){
+			s.reload();
+			return false;
+		}
+		return true;
 	};
 	var checkValid = function(p){
 		if(typeof p.key != "string" || typeof p.name != "string")
@@ -38,12 +45,14 @@ var Plugins = new function(){
 			return false;
 		}else{
 			if(checkValid(plugin)){
-				plugins[plugin.id] = {
+				plugins["p:" + plugin.id] = {
 					"name":plugin.name,
 					"key":plugin.key,
 					"version":plugin.version,
 					"permissions":plugin.permissions
 				};
+				if(!commit())
+					this.install(plugin);//Call self again
 				return true;
 			}else{
 				return false;
@@ -51,9 +60,9 @@ var Plugins = new function(){
 		}
 	};
 	this.getPriv = function(pluginId){
-		return plugins[pluginId].permissions;
+		return plugins["p:" + pluginId].permissions;
 	};
 	this.exists = function(pluginId){
-		return plugins[pluginId] != null;
+		return plugins["p:" + pluginId] != null;
 	};
 }

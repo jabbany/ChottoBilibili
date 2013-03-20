@@ -1,32 +1,33 @@
 function SettingsConnector(){
-	var abs = {};
-	var STSyncCommited = false, STSyncReady = false;
+	var abs = {".head":0};
 	try{
 		abs = JSON.parse(localStorage["settings"]);
-	}catch(e){}
-	try{
-		var ref = this;
-		chrome.storage.sync.get("settings",function(items){
-			if(items == null || items.settings == null){
-				ref.commit();
-				return;
-			}
-			abs = JSON.parse(items.settings);
-			localStorage["settings"] = items.settings;
-		});
-	}catch(e){STSyncReady = false;}
-	
-	this.commit = function(){
-		localStorage["settings"] = JSON.stringify(abs);
+		if(abs[".head"] == null)
+			abs[".head"] = 0;
+	}catch(e){
+		localStorage["settings"] == JSON.stringify(abs);
+	}
+	this.reload = function(){
 		try{
-			chrome.storage.sync.set({"settings":JSON.stringify(abs)},function(){
-				STSyncCommited = true;
-				STSyncReady = true;
-			});
+			abs = JSON.parse(localStorage["settings"]);
+		}catch(e){}
+	};
+	this.commit = function(){
+		try{
+			var check = JSON.parse(localStorage["settings"]);
 		}catch(e){
-			console.log("[Err](Storage) Save Settings Failed.");
-			STSyncReady = false;
+			//Invalid settings, overwrite
+			localStorage["settings"] = JSON.stringify(abs);
+			return true;
 		}
+		if(check[".head"] == null)
+			check[".head"] = abs[".head"]; 
+		if(check[".head"] != abs[".head"]){
+			return false;
+		}
+		abs[".head"]++;
+		localStorage["settings"] = JSON.stringify(abs);
+		return true;
 	};
 	this.getApiKey = function(){
 		if(this.get("api.key") == null)

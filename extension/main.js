@@ -139,6 +139,11 @@ chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
 				sendResponse({value:val});
 				return;
 			}break;
+			case "invokeSync":{
+				//Invoke a sync operation
+				sendResponse({});
+				return;
+			}break;
 			case "getBangumiList":{
 				try{
 					var bgml = JSON.parse(localStorage["bangumi"]);
@@ -192,13 +197,13 @@ chrome.extension.onMessageExternal.addListener(
 /** Create the timers or alarms **/
 if(!chrome.runtime){
 	/* Include support for legacy chrome */
-	var duration = Main.settings.get('refresh.dur');
+	var duration = Main.settings.get('timers.refresh');
 	duration = (duration == null ? 15 : duration);
 	setInterval(duration * 60000, function(){
 		//Main.startCheck();
 	}); 
 }else{
-	var delay = Main.settings.get("refresh.dur");
+	var delay = Main.settings.get("timers.refresh");
 	delay = (delay == null ? 15 : delay);
 	chrome.alarms.create('refresh',{periodInMinutes: delay});
 	chrome.alarms.onAlarm.addListener(function(a){

@@ -3,6 +3,10 @@ var $ = function(elem) {
 		return document.getElementById(elem);
 	return elem;
 };
+var inst = {
+	settings:new SettingsConnector()
+}
+
 
 function createBackup(){
 	//This creates a backup of the entire file
@@ -21,10 +25,22 @@ function loadPage(pageIdent){
 	if(pageIdent == null) return;
 	switch(pageIdent){
 		case "flags":{
-			if(FlagCatcher == null)
+			if(FlagCatcher == null){
+				console.log("[Err] Flags interface uninitialized");
 				return;
+			}
 		}break;
-		
+		case "sync":{
+			if(inst.settings == null)
+				inst.settings = new SettingsConnector();
+			var enabled = inst.settings.get("sync.enabled");
+			var lastmsg = inst.settings.get("sync.lastMessage");
+			if(!enabled){
+				$("sync_data").innerText = "Disabled";	
+			}else{
+				$("sync_data").innerText = lastmsg;
+			}
+		}
 	}
 }
 
@@ -46,6 +62,13 @@ function onHashChanged(){
 	};
 }
 
+function writeToConsole(text){
+	var div = $("tinput");
+	div.appendChild(document.createElement("br"));
+	div.appendChild(document.createTextNode(text));
+	div.scrollTop = div.scrollHeight;
+}
+
 $(window).addEventListener("load",function(){
 
 	$("btnClearTransient").addEventListener("click",function(){
@@ -64,6 +87,29 @@ $(window).addEventListener("load",function(){
 	$("btnBackup").addEventListener("click",function(){
 		createBackup();
 	});
+	$("btnRestore").addEventListener("click",function(){
+		try{
+			$("restore-div").style.display = ($("restore-div").style.display != "none" ? "none" : "");
+		}catch(e){}
+	});
+	$("command-line").addEventListener("keydown",function(e){
+		if(e.keyCode == 13){
+			try{
+				if($("command-line").value != ""){
+					ScriptingEngine.execute($("command-line").value);
+				}
+			}catch(e){
+				writeToConsole("[Error] Scripting command raised exception!");
+			}
+			$("command-line").value = "";
+		}else if(e.keyCode == 38){
+			try{
+				$("command-line").value = ScriptingEngine.getHistory();
+			}catch(e){}
+		}
+	});
+	ScriptingEngine.hookTerminal($('tinput'));
+	ScriptingEngine.hookInput($("command-line"));
 	var a = $("navbar").getElementsByTagName('a');
 	for( var n = 0; n < a.length; n++ ){
 		var elem = a[n];
