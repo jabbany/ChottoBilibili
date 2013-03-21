@@ -36,14 +36,8 @@
 		"description":"String: cancel changes"
 	},
 	"context_menu_search":{
-		"message":"Search for '$search$' on Bilibili",
-		"description":"Search context menu text",
-		"placeholders":{
-			"search":{
-				"content":"$1",
-				"example":"search string"
-			}
-		}
+		"message":"Search Bilibili for '%s'",
+		"description":"Search context menu text"
 	},
 	"content_collect":{
 		"message":"+Follow",

@@ -36,14 +36,8 @@
 		"description":"字符串：取消更改"
 	},
 	"context_menu_search":{
-		"message":"用 哔哩哔哩 搜索 “$search$”",
-		"description":"搜索菜单文字",
-		"placeholders":{
-			"search":{
-				"content":"$1",
-				"example":"文字"
-			}
-		}
+		"message":"用 哔哩哔哩 搜索 “%s”",
+		"description":"搜索菜单文字"
 	},
 	"content_collect":{
 		"message":"+系列",
