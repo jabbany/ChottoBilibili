@@ -145,6 +145,12 @@ var ScriptingEngine = function(iv){
 				terminal.innerHTML = "";
 				return;
 			}
+			case "logout":
+			case "exit":{
+				print("Logging out.");
+				window.location.href = "options.html";
+				return;
+			}
 			case "get":{
 				if(command.length < 2){
 					print("usage: get [type] [key]");

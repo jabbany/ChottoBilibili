@@ -350,10 +350,30 @@ $(document).ready(function(){
 			keys = [65, 66, 39, 37, 39, 37, 40, 40, 38, 38]; //Reset
 		}
 		if(keys.length == 0){
-			if(prompt("进入管理后台，请输入密码：") == "hiddenhand"){
+			if(prompt(chrome.i18n.getMessage("dialog_enter_console")) == "hiddenhand"){
 				document.location.href = "console.html";
 			}else{
 				keys = [65, 66, 39, 37, 39, 37, 40, 40, 38, 38];
+			}
+		}
+		//Also take care of keyboard navigated pageswitching
+		if(e.keyCode == 40){
+			for(var i = 0; i < SC.menu.length; i++){
+				if(SC.menu[i].name == SC.states.currentForm){
+					if(i+1 < SC.menu.length && !SC.states.formEdited){
+						$("#menu" + SC.menu[i+1].name).trigger("click");
+						break;
+					}
+				}
+			}
+		}else if (e.keyCode == 38){
+			for(var i = 0; i < SC.menu.length; i++){
+				if(SC.menu[i].name == SC.states.currentForm ){
+					if(i-1 >= 0  && !SC.states.formEdited){
+						$("#menu" + SC.menu[i-1].name).trigger("click");
+						break;
+					}
+				}
 			}
 		}
 	});

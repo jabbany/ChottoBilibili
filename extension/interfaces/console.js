@@ -20,6 +20,15 @@ function createBackup(){
 	chrome.tabs.create({"url":window.URL.createObjectURL(blb)});
 }
 
+function importDialog(){
+	var data = prompt(chrome.i18n.getMessage("dialog_import_old"));
+	if(data == null){
+		return;
+	}else{
+		//Process stuff
+	}
+}
+
 function loadPage(pageIdent){
 	if(pageIdent == null) return;
 	switch(pageIdent){
@@ -93,15 +102,20 @@ $(window).addEventListener("load",function(){
 			$("restore-div").style.display = ($("restore-div").style.display != "none" ? "none" : "");
 		}catch(e){}
 	});
+	
+	$("btnImportOldFormat").addEventListener("click",function(){
+		importDialog();
+	});
+	
 	$("command-line").addEventListener("keydown",function(e){
 		if(e.keyCode == 13){
-			//try{
+			try{
 				if($("command-line").value != ""){
 					SE.execute($("command-line").value);
 				}
-			//}catch(e){
-			//	writeToConsole("[Error] Scripting command raised exception!");
-			//}
+			}catch(e){
+				writeToConsole("[Error] Scripting command raised exception!");
+			}
 			$("command-line").value = "";
 		}else if(e.keyCode == 38){
 			try{
@@ -113,6 +127,9 @@ $(window).addEventListener("load",function(){
 		SE.hookTerminal($('tinput'));
 		SE.hookInput($("command-line"));
 	}catch(e){console.log("Scritping Engine Hook Error");}
+	
+	$("command-line").focus();
+	
 	var a = $("navbar").getElementsByTagName('a');
 	for( var n = 0; n < a.length; n++ ){
 		var elem = a[n];

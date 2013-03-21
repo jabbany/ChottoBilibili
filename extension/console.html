@@ -9,6 +9,8 @@
 	<link href="assets/css/bootstrap.css" rel="stylesheet">
 	<link href="assets/css/bootstrap-responsive.css" rel="stylesheet">
 	
+	<script src="interfaces/console.defaults.js"></script>
+	
 	<script src="org.kanoha/flag.js"></script>
 	<script src="org.kanoha/settings.js"></script>
 	<script src="org.kanoha/crypto.js"></script>
@@ -31,17 +33,17 @@
 		background: #fff;
 	  }
 	  .well.terminal{
-		background:#000; color:#0e0; font-family: Consolas, Courier, "Courier New", monospace;
+		background:#000; color:#ddd; font-family: Courier, "Courier New", Consolas, monospace;
 		height : 200px; overflow:auto;
-		position:relative;ling-height:105%;
-		margin-bottom:3px;
+		position:relative;line-height:105%;
+		margin-bottom:3px;font-size:14px;
 		padding:10px;
 	  }
 	  .table{
 		background:#fff;
 	  }
 	  #command-line{
-		background:#000; color:#0e0; font-family: Consolas, Courier, "Courier New", monospace;
+		background:#000; color:#ddd; font-family: Consolas, Courier, "Courier New", monospace;
 		font-size:14px;
 	  }
 	</style>
@@ -130,14 +132,23 @@
 				<button type="submit" id="btnClearTransient" class="btn btn-primary">清除Transient数据</button> 
 				<button type="submit" id="btnOptimizeCache" class="btn btn-primary">优化缓存数据库 (CacheDB)</button> 
 				<button type="submit" id="btnClearCache" class="btn btn-danger">清空缓存（危险）</button> 
+				<button type="submit" id="btnImportOldFormat" class="btn btn-success">导入旧版追番列表</button> 
 			</div>
 			<div id="isync" class="span9" style="display:none;">
-				<h1 class="page-header">同步信息 <small>调试同步信息</small></h1>
+				<h1 class="page-header">Sync <small>Debug Sync</small></h1>
 				<div class="well white">
-					<p>同步信息：<span id="sync_data"></span></p>
+					<p>Sync Info：<span id="sync_data"></span></p>
 					<button type="submit" id="btnForceSync" class="btn btn-primary">强制启动同步</button> 
-					<button type="submit" id="btnSendSyncQuery" class="btn">制作同步请求</button>
+					<button type="submit" id="btnSendSyncQuery" class="btn">Create Request</button>
 				</div>
+			</div>
+			
+			<div id="iconstants" class="span9" style="display:none;">
+				<h1 class="page-header">Constants <small>Define setting objects</small></h1>
+			</div>
+			
+			<div id="iconsole" class="span9" style="display:none;">
+				<h1 class="page-header">Terminal <small>Terminal for running BiliLisp</small></h1>
 			</div>
 		</div>
 	</div>
