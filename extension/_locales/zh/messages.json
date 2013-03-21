@@ -56,5 +56,9 @@
 	"dialog_enter_console":{
 		"message":"进入管理后台，请输入密码：",
 		"description":"后台管理密码窗口"
+	},
+	"dialog_import_old":{
+		"message":"导入旧版追番进度？",
+		"description":"导入旧版进度对话框"
 	}
 }

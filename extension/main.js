@@ -160,6 +160,7 @@ if(Main.settings.get("interface.contextMenu.enabled")){
 		}
 	});
 }
+
 /** ADD LISTENERS FOR INCOMING REQUESTS **/
 chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
 	if(sender.tab){

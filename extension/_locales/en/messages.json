@@ -56,5 +56,9 @@
 	"dialog_enter_console":{
 		"message":"Please input the password to access the console:",
 		"description":"Console password prompt"
+	},
+	"dialog_import_old":{
+		"message":"Import old watchlist?",
+		"description":"Import old watchlist prompt"
 	}
 }
