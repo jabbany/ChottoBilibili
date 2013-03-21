@@ -7,7 +7,6 @@ var inst = {
 	settings:new SettingsConnector()
 }
 
-
 function createBackup(){
 	//This creates a backup of the entire file
 	var backup = "BLBK:1:" + Math.round((new Date()).getTime() / 1000) + ":";
@@ -70,7 +69,9 @@ function writeToConsole(text){
 }
 
 $(window).addEventListener("load",function(){
-
+	try{
+		var SE = new ScriptingEngine();
+	}catch(e){};
 	$("btnClearTransient").addEventListener("click",function(){
 		if(confirm("You are about to clear the Transient State store. Are you sure?")){
 			var t = new TransientPrayer();
@@ -94,22 +95,24 @@ $(window).addEventListener("load",function(){
 	});
 	$("command-line").addEventListener("keydown",function(e){
 		if(e.keyCode == 13){
-			try{
+			//try{
 				if($("command-line").value != ""){
-					ScriptingEngine.execute($("command-line").value);
+					SE.execute($("command-line").value);
 				}
-			}catch(e){
-				writeToConsole("[Error] Scripting command raised exception!");
-			}
+			//}catch(e){
+			//	writeToConsole("[Error] Scripting command raised exception!");
+			//}
 			$("command-line").value = "";
 		}else if(e.keyCode == 38){
 			try{
-				$("command-line").value = ScriptingEngine.getHistory();
+				$("command-line").value = SE.getHistory();
 			}catch(e){}
 		}
 	});
-	ScriptingEngine.hookTerminal($('tinput'));
-	ScriptingEngine.hookInput($("command-line"));
+	try{
+		SE.hookTerminal($('tinput'));
+		SE.hookInput($("command-line"));
+	}catch(e){console.log("Scritping Engine Hook Error");}
 	var a = $("navbar").getElementsByTagName('a');
 	for( var n = 0; n < a.length; n++ ){
 		var elem = a[n];

@@ -28,7 +28,7 @@ function hookStalkModule(){
 
 chrome.extension.sendMessage({
 		"method": "getSetting",
-		"key": "bili.stalker"
+		"key": "privacy.history.allow"
 	},function(resp){
 		if(resp != null && resp.value == "true")
 			hookStalkModule();

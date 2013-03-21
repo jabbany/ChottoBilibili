@@ -119,7 +119,47 @@ var Main = new function () {
 		});
 	};
 }
-
+/** Manage Context Menus **/
+if(Main.settings.get("interface.contextMenu.enabled")){
+	chrome.contextMenus.create({
+		"title":chrome.i18n.getMessage("contextMenu"),
+		"contexts":["selection"],
+		"onclick":function(clickData, tab){
+			var selection = clickData.selectionText;
+			var matchers = Main.settings.get("interface.contextMenu.matchers");
+			if(matchers != null){
+				for(var i in matchers){
+					var m = (new RegExp(i)).exec(selection);
+					if(m != null && m.length > 0){
+						var addr = matchers[i];
+						for(var i = 0; i < m.length; i++){
+							addr.replace("{" + i + "}", m[i]);
+						}
+						//Navigate to address
+						chrome.tabs.create({
+							url:addr
+						});
+						return;
+					}
+				}
+			}
+			//Not found or no matchers
+			chrome.tabs.create({
+				url:"http://www.bilibili.tv/search?keyword=" + encodeURIComponent(selection) + "&orderby=&formsubmit="
+			});
+		}
+	},function(){
+		if(chrome.extension.lastError != undefined &&
+			chrome.extension.lastError != null){
+			Main.settings.set("interface.contextMenu.enabled",false);
+			Main.settings.set("interface.contextMenu.error",chrome.extension.lastError.message);
+		}else{
+			/** Successfully added the menu item
+				We probably needn't add it again anymore
+			 **/
+		}
+	});
+}
 /** ADD LISTENERS FOR INCOMING REQUESTS **/
 chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
 	if(sender.tab){

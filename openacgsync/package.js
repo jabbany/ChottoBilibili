@@ -13,7 +13,7 @@ function OpenACGSync(host){
 		ts += (d.getHours() > 9 ? d.getHours() : ("0" + d.getHours())) + ":";
 		ts += (d.getMinutes() > 9 ? d.getMinutes() : ("0" + d.getMinutes())) + ":";
 		ts += (d.getSeconds() > 9 ? d.getSeconds() : ("0" + d.getSeconds())) + " ";
-		ts += "GMT" + (d.getTimezoneOffset() > 0 ? ("+" + (d.getTimezoneOffset() / 60)) : (d.getTimezoneOffset() / 60));
+		ts += "GMT" + (d.getTimezoneOffset() > 0 ? ("+" + (d.getTimezoneOffset() / 60)) : "-" + (d.getTimezoneOffset() / 60));
 		return ts;
 	};
 	var createSessionToken = function(authkey, salt){

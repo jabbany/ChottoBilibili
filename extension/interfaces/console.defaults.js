@@ -54,7 +54,7 @@ var CONSOLE_FIX_DEFAULTS = {
 		},
 		"privacy":{
 			"history":{
-				"allow":true
+				"allow":true,
 				"bangumi":0,
 				"douga":0,
 				"collection":0,
@@ -99,7 +99,8 @@ var CONSOLE_FIX_DEFAULTS = {
 		"language.override":"default",
 		"theme.showHiddenThemes":false,
 		"theme.experimentalHeader":false,
-		"sync.ignorePermissions":false
+		"sync.ignorePermissions":false,
+		"automation.executeMacros":false
 	}
 };
 
