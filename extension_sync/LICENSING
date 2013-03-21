@@ -1,0 +1,16 @@
+Unlicensed Bangumi API
+======
+
+Attention
+----
+This plugin uses an experimental and unlicensed version of the Bangumi番组计划 API.
+This API is known to work but it is not officially documented or supported. Please
+be cautious when using. Also, remember, the API may change without prior notice 
+which may render this extension temporarily broken.
+
+Please do NOT use in critical systems.
+
+注意
+----
+本插件使用了一些未经授权的Bangumi番组计划接口，这些API接口目前可以稳定工作，但是由于没有得到官方的
+授权或者支持，请在使用时多加小心。不要依赖本插件完成重要任务。

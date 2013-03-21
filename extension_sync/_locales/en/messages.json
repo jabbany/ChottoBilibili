@@ -1,0 +1,10 @@
+{
+	"extension_name":{
+		"message":"Bangumi Watchlist Sync for ChottoBilibili",
+		"description":"Somewhat not moe name"
+	},
+	"extension_description":{
+		"message":"Provides support for integration with Bangumi.tv's watchlist features.",
+		"description":"Somewhat Simple explantion"
+	}
+}

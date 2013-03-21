@@ -1,0 +1,10 @@
+{
+	"extension_name":{
+		"message":"Bangumi番组计划同步数据端 for ちょっと哔哩哔哩",
+		"description":"一个有点卖萌的名字"
+	},
+	"extension_description":{
+		"message":"提供对Bangumi番组计划进度同步的支持",
+		"description":"一个有点卖萌的解释"
+	}
+}

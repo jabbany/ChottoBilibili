@@ -1,0 +1,23 @@
+{
+	"name": "__MSG_extension_name__",
+	"version": "0.9.0",
+	"manifest_version": 2,
+	"description": "__MSG_extension_description__",
+	"icons": {
+		"48": "assets/bgm38-38.png",
+		"64": "assets/bgm38-64.png"
+	},
+	"default_locale": "zh",
+	"background": {
+		"persistent": false,
+		"scripts": ["main.js"]
+	},
+	"incognito": "spanning",
+	"minimum_chrome_version": "20.0",
+	"offline_enabled": true,
+	"permissions": [
+		"*://*.bgm.tv/*",
+		"*://*.bangumi.tv/*",
+		"*://*.chii.in/*"
+	]
+}
