@@ -23,7 +23,7 @@ function hookStalkModule(){
 		"method": "biliStalker", 
 		"url": document.location.href,
 		"event": "onEnterPage"
-		}, function(resp) {/* Snub it */});	
+	}, function(resp) {/* Snub it */});	
 }
 
 chrome.extension.sendMessage({
