@@ -10,5 +10,9 @@
 	"page_action_title":{
 		"message":"Share to...",
 		"description":"Share the current video using Plugin"
+	},
+	"error_no_url":{
+		"message":"No Video Data",
+		"description":"Could not get video's url"
 	}
 }

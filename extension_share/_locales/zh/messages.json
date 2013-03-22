@@ -10,5 +10,9 @@
 	"page_action_title":{
 		"message":"分享视频",
 		"description":"通过插件推送哔哩哔哩视频"
+	},
+	"error_no_url":{
+		"message":"无法获取视频信息",
+		"description":"获取信息失败"
 	}
 }

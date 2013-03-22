@@ -8,6 +8,7 @@
 		"48": "assets/icon-small-38.png"
 	},
 	"default_locale": "zh",
+	"options_page":"bind.html",
 	"page_action":{
 		"default_icon": {
 			"19": "assets/icon-small-19.png",

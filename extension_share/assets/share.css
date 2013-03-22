@@ -15,6 +15,11 @@ a{
 	overflow: hidden;
 }
 
+.wrapper p{
+	padding:10px;
+	text-align:center;
+}
+
 .btn {
 	outline: 0;
 	display: inline-block;

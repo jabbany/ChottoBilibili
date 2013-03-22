@@ -39,7 +39,16 @@ InterPlugin Data Tunnels API
  + fo-dialog
    + fo-dialog-add-field
    + fo-dialog-add-tab
-   
+
+- Invokers
+ + offer-data
+
 -GrantedToAll
  + prompt-install () -> (bool) installed
  + has-permission (string) permission -> (bool) has
+ 
+
+Permissions
+ * shared-settings
+
+

@@ -10,7 +10,12 @@ chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
 				}catch(e){
 					var tabref = {};
 				}
-				tabref[sender.tab.id] = request.url;
+				tabref[sender.tab.id] = {
+					"url":request.url,
+					"pic":request.pic,
+					"desc":request.desc,
+					"title":request.title
+				};
 				localStorage['tabref'] = JSON.stringify(tabref);
 				sendResponse({});
 				return;

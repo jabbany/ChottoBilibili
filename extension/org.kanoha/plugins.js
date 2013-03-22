@@ -19,7 +19,7 @@ var Plugins = new function(){
 	var checkValid = function(p){
 		if(typeof p.key != "string" || typeof p.name != "string")
 			return false;
-		if(typeof p.version != number)
+		if(typeof p.version != "number")
 			return false;
 		if(typeof p.permissions == "object" && Array.isArray){
 			if(!Array.isArray(p.permissions))
