@@ -14,5 +14,13 @@
 	"error_no_url":{
 		"message":"No Video Data",
 		"description":"Could not get video's url"
+	},
+	"msg_bind_success":{
+		"message":"Linked",
+		"description":"linked"
+	},
+	"msg_bind_fail":{
+		"message":"Not Linked",
+		"description":"not linked"
 	}
 }

@@ -26,11 +26,11 @@ function bindToParent(callback){
 window.addEventListener("load",function(){
 	if(localStorage["isBound"] == "true"){
 		var t = document.getElementById("bindState");
-		t.innerText = "已绑定";
+		t.innerText = chrome.i18n.getMessage("msg_bind_success");
 		t.style.background = "#6cc644";
 	}else{
 		var t = document.getElementById("bindState");
-		t.innerText = "未绑定";
+		t.innerText = chrome.i18n.getMessage("msg_bind_fail");
 		t.style.background = "#bd2c00";
 		t.style.cursor = "pointer";
 		t.addEventListener("click",function(){
@@ -39,4 +39,13 @@ window.addEventListener("load",function(){
 			});
 		});
 	}
+	//Bind rechecker
+	var rc = document.getElememntById("recheck");
+	rc.addEventListener("click",function(e){
+		bindToParent(function(){
+			window.location.reload();
+		});
+		if(e != null && e.preventDefault != null)
+			e.preventDefault(); 
+	});
 });

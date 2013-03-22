@@ -5,9 +5,28 @@
 		<title>绑定ちょっと嗶哩嗶哩本体</title>
 		<script type="text/javascript" src="bind.js"></script>
 		<style>
+		body{
+			font: 13px Helvetica, arial, freesans, clean, sans-serif;
+			line-height: 1.4;
+		}
 		.wrapper{
 			margin:0;
 			padding:0;
+		}
+		.wrapper:before{
+			display: block;
+			height: 0;
+			width: 0;
+			border: 10px solid #EEE;
+			border-width: 10px 10px 10px 0;
+			border-color: transparent #EEE transparent transparent;
+			position: absolute;
+			left: -10px;
+			top: 15px;
+		}
+		.wrapper{
+			max-width:400px;
+			margin:100px auto;
 		}
 		.wrapper .state-indicator{
 			min-width:100px;
@@ -25,8 +44,13 @@
 		</style>
 	</head>
 	<body>
-		<div class="wrapper">
-		<div id="bindState" class="state-indicator">未绑定</div>
+		<div>
+			<div class="wrapper">
+				<h2>目前插件的链接状态</h2>
+				<p>把插件绑定到ちょっと嗶哩嗶哩主插件将会允许更加高级的功能，比如观看信息推送等。建议进行绑定操作。</p>
+				<div id="bindState" class="state-indicator"></div>
+				<a href="" id="recheck">重新检测</a>
+			</div>
 		</div>
 	</body>
 </html>
