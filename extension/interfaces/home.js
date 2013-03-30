@@ -186,11 +186,22 @@ var SC = {
 			return true;
 		},
 		"hideAllBut":function(form){
-			for(var i = 0; i< SC.menu.length;i++){
-				if(SC.menu[i].name == form){
-					$('#view' + form).css('display','');
-				}else{
-					$('#view' + SC.menu[i].name).css("display","none");
+			var animate = SC.opt.get("interface.animate");
+			if(animate){
+				for(var i = 0; i< SC.menu.length;i++){
+					if(SC.menu[i].name != form){
+						$('#view' + SC.menu[i].name).hide();
+					}
+				}
+				$('#view' + form).show(400);
+			}else{
+				for(var i = 0; i< SC.menu.length;i++){
+					if(SC.menu[i].name == form){
+						$('#view' + form).css('display','');
+					}else{
+						//$('#view' + SC.menu[i].name).hide(400);
+						$('#view' + SC.menu[i].name).css("display","none");
+					}
 				}
 			}
 		},
@@ -297,7 +308,7 @@ var SC = {
 				var sections = SC.bgmlist.getSections();
 				var index = 1;
 				for(var i = 0; i < sections.length; i++){
-					var rules = SC.bgmlist.getRulesBySection(sections[i]);
+					var rules = SC.bgmlist.getRulesBySection(sections[i], true);
 					for(var j = 0; j < rules.length; j++){
 						SC.insertRow(tbl, index++, rules[j], sections[i]);
 					}
@@ -341,6 +352,31 @@ $(document).ready(function(){
 	}
 	$("#btnEnterBangumi").click(function(){
 		SC.menuHook("FollowBangumi","fFollowBangumi");
+	});
+	var aboutMode = 0;
+	$("#home-nav").click(function(){
+		if(aboutMode == 1){
+			$("#about-page").hide(400,function(){
+				$("#home-page").show(400,function(){
+					aboutMode = 0;
+				});
+			});
+			$("#home-nav").parent().toggleClass("active");
+			$("#about-nav").parent().toggleClass("active");
+			aboutMode = -1;
+		}
+	});
+	$("#about-nav").click(function(){
+		if(aboutMode == 0){
+			$("#home-page").hide(400,function(){
+				$("#about-page").show(400,function(){
+					aboutMode = 1;
+				});
+			});
+			$("#home-nav").parent().toggleClass("active");
+			$("#about-nav").parent().toggleClass("active");
+			aboutMode = -1;
+		}
 	});
 	var keys = [65, 66, 39, 37, 39, 37, 40, 40, 38, 38];
 	$(document).keydown(function(e){

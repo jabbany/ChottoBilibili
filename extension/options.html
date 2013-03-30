@@ -46,15 +46,31 @@
           <a class="brand" href="#">多一点哔哩哔哩！</a>
           <div class="nav-collapse">
             <ul class="nav">
-              <li class="active"><a href="#">主页面</a></li>
-              <li><a href="#about">关于</a></li>
+              <li class="active"><a id="home-nav" href="#">主页面</a></li>
+              <li><a id="about-nav" href="#about">关于</a></li>
             </ul>
           </div><!--/.nav-collapse -->
         </div>
       </div>
     </div>
-
-    <div class="container-fluid">
+    
+	<div id="about-page" class="container-fluid" style="display:none;">
+		<div class="row-fluid">
+			<div class="span2"></div>
+			<div class="span8">
+				<h1 class="page-header">关于 <small>介绍一下这个插件</small></h1>
+				<p style="font-size:1.2em;"><strong>ChottoBilibili 多一点哔哩哔哩！ </strong>- 非官方用户体验改善插件<br>（其实写的有点太大了，大概功能已经早超越追番范围超越B站了）</p>
+				<hr>
+				<p>作者: jabbany （<a href="mailto:knh.jabbany@gmail.com">knh.jabbany@gmail.com</a>)</p>
+				<p>项目网址: <a href="http://kanoha.org/tags/chottobilibili/">http://kanoha.org/tags/chottobilibili/</a></p>
+				<p>非常高兴有人在用这个插件什么的，要是你还点开了关于就更要祝贺一下了～ <br>多谢大家的支持。另外非常欢迎功能创意和 Bug 提交。</p>
+				<p><span class="label label-info">Tips</span> 进入插件后台的方法是在设置页面（这个页面）内按下 <code>上上下下左右左右BA</code>，会弹出密码输入框。密码是 <code>hiddenhand</code> （至于这两个NETA的出处，要是知道的话有加分哟^_-☆kya），注意不要玩坏，多多备份。</p>
+			</div>
+			<div class="span2"></div>
+		</div>
+	</div>
+    
+    <div id="home-page" class="container-fluid" style="display:;">
       <div class="row-fluid">
         <div class="span3">
           <div class="well sidebar-nav">
@@ -180,6 +196,7 @@
 									<label class="checkbox"><input type="checkbox" id="sNoRaws">为追番启用</label> 
 									<label class="checkbox"><input type="checkbox" id="sNoRawsTag">为标签关注启用</label>
 								</div>
+
 							</div>
 							<div class="control-group">
 								<label class="control-label" for="sNoRaws">浏览历史</label>
@@ -340,7 +357,7 @@
 					<h1 class="page-header">数据共享 <small>管理使用此插件的分享接口</small></h1>
 					<p>分享接口是一个本插件的开放 API 之一，其他的浏览器扩展可以通过这个接口获取你的实时追番信息。
 					通过第三方插件，一些诸如Bangumi番组计划、电波、新浪微博等站，将受益于可获得的这些信息。</p>
-					<table class="table">
+					<table id="pluginTbl" class="table">
 						<thead><tr><th>插件名称</th><th>版本</th><th>授权ID</th><th>权限</th><th>取消授权</th></tr></thead>
 						<tbody>
 							<tr>

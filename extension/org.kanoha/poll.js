@@ -20,6 +20,9 @@ var jsPoll = {
 			"onkill":function(){
 				console.log("[War]Task killed!");
 			},
+			"onsuspend":function(){
+				console.log("[War]Task suspend cannot revive");
+			},
 			"global":this.global,
 			"local":{}
 		};
@@ -28,6 +31,12 @@ var jsPoll = {
 		while(this.tasks.length > 0){
 			task = this.tasks.shift();
 			task.onkill();
+		}
+	},
+	suspendall:function(){
+		while(this.tasks.length > 0){
+			task = this.tasks.shift();
+			task.onsuspend();
 		}
 	}
 }

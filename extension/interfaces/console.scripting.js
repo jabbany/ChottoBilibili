@@ -1,4 +1,5 @@
 var ScriptingEngine = function(iv){
+	this.depth = 0;
 	var terminal = null;
 	var vars = {};
 	if(typeof iv == "object"){
@@ -108,6 +109,11 @@ var ScriptingEngine = function(iv){
 	};
 
 	this.execute = function(text, quiet){
+		console.log(this.depth);
+		if(this.depth > 20){
+			print("Call stack depth exceeded.");
+			return;
+		}
 		var command = tokenize(text);
 		command = replaceVariables(command);
 		if(command.length == 0)
@@ -262,7 +268,8 @@ var ScriptingEngine = function(iv){
 					print("please make sure that you know what you are doing and that you ",true);
 					print("have backups!",true);
 					print("");
-					print("  [Something]: settings, settings-head, transients, cache");
+					print("  [Something]: settings, settings-head, defaults, transients, cache");
+					return;
 				}
 				switch(command[1]){
 					case "settings":{
@@ -300,7 +307,7 @@ var ScriptingEngine = function(iv){
 								print("Cancelled");
 							}
 						}else{
-							print("Cancelled");
+							print("Cancelled.");
 						}
 						return;
 					}
@@ -317,7 +324,7 @@ var ScriptingEngine = function(iv){
 				}
 				if(typeof command[1] == "boolean" && command[1]){
 					vars[command[3]].run([]);
-				}else if(command.length == 6){
+				}else if(command.length == 6 && command[4] == "else"){
 					vars[command[5]].run([]);
 				}
 				return;
@@ -329,6 +336,7 @@ var ScriptingEngine = function(iv){
 					print("  to end definition, type \"nufed\"");
 					return;
 				}
+				var parentDepth = this.depth;
 				vars[command[1]] = new function(){
 					/** Init Parameters **/
 					var heap = [];
@@ -343,6 +351,7 @@ var ScriptingEngine = function(iv){
 						se = new ScriptingEngine(x);
 						se.hookTerminal(terminal);
 						se.hookInput(stdin);
+						se.depth == parentDepth + 1;
 						for(var i = 0; i < heap.length; i++){
 							se.execute(heap[i], true);
 						}
@@ -448,10 +457,35 @@ var ScriptingEngine = function(iv){
 						print_r(vars[command[0].substring(1)]);
 					}else if (command.length == 3 || command.length == 5){
 						if(command[1] == "="){
-							createVar(command[0].substring(1),command[2]);
-							if(!quiet)
-								print(command[0].substring(1) + " : " + (typeof vars[command[0].substring(1)]));
-							return;
+							if(command.length == 3){
+								createVar(command[0].substring(1),command[2]);
+								if(!quiet)
+									print(command[0].substring(1) + " : " + (typeof vars[command[0].substring(1)]));
+								return;
+							}else if(command.length == 5){
+								if(typeof command[4] != typeof command[2]){
+									print("Type mismatch for arguments 2,4");
+									return;
+								}
+								switch(command[3]){
+									case "+":
+										createVar(command[0].substring(1),command[2] + command[4]);
+									break;
+									case "-":
+										createVar(command[0].substring(1),command[2] + command[4]);
+									break;
+									case "*":
+										createVar(command[0].substring(1),command[2] * command[4]);
+									break;
+									case "/":
+										if(command[4] == 0)
+											return print("No: Division by zero.");
+										createVar(command[0].substring(1),command[2] / command[4]);
+									break;
+									default:
+										return print("Unrecognized operator : " + command[3]);
+								}
+							}
 						}else if(command[1] == "==" || command[1] == ">" || command[1] == "<"
 							|| command[1] == "+" || command[1] == "-" || command[1] == "*"
 							|| command[1] == "/" || command[1] == "%"){

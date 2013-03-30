@@ -47,40 +47,47 @@ function SectionWorker(boundSection,bgmlist){
 			try{
 				if(typeof refreshList[i].matcher == "string"){
 					var matcher = new RegExp(refreshList[i].matcher);
-					var ret = matcher.exec(inst.title);
-					if(ret != null && ret.length > 1){
-						var episodeNumber = Tools.parseTextNumber(ret[1]);
-						console.log("[Log] Found Match " + episodeNumber + ":" + refreshList[i].current);
-						if(refreshList[i].current < episodeNumber){
-							var rIdx = episodeNumber - refreshList[i].current - 1;
-							if(refreshList[i].total != -1 && episodeNumber >= refreshList[i].total){
-								if(!this.isEnd(inst.title)){
-									refreshList[i].total = bgml.findClosestTotal(episodeNumber);
-								}else{
-									refreshList[i].total = episodeNumber;
-								}
-							}
-							this.cacheRefresh(refreshList[i]);
-							if(refreshList[i].cache != null){
-								if(refreshList[i].cache[rIdx] == null){
-									refreshList[i].cache[rIdx] = "av" + inst.aid;
-									cacheDB.write("av" + inst.aid, inst);
-								}else if(refreshList[i].cache[rIdx] != "av" + inst.aid && 
-									refreshList[i].cache[rIdx] != "-av" + inst.aid){
-									refreshList[i].cache[rIdx] = "av" + inst.aid;
-									cacheDB.write("av" + inst.aid, inst);
-								}else
-									refreshList.splice(i,1);
-							}
-						}else{
-							/* Watched and recorded */
-							refreshList.splice(i,1);
-						}
-						break;
-					}
 				}else{
-					var matcher = refreshList[i].matcher;
+					var matcher = new RegExp(refreshList[i].matcher["m"]);
+					if(refreshList[i].matcher["e"] != null && refreshList[i].matcher["e"] != ""){
+						var excluder = new RegExp(refreshList[i].matcher["e"]);
+					}
 				}
+				var ret = matcher.exec(inst.title);
+				
+				if(ret != null && ret.length > 1){
+					if(excluder != null && excluder.test(inst.title))
+						continue; // Found exclusion
+					var episodeNumber = Tools.parseTextNumber(ret[1]);
+					console.log("[Log] Found Match " + episodeNumber + ":" + refreshList[i].current);
+					if(refreshList[i].current < episodeNumber){
+						var rIdx = episodeNumber - refreshList[i].current - 1;
+						if(refreshList[i].total != -1 && episodeNumber >= refreshList[i].total){
+							if(!this.isEnd(inst.title)){
+								refreshList[i].total = bgml.findClosestTotal(episodeNumber);
+							}else{
+								refreshList[i].total = episodeNumber;
+							}
+						}
+						this.cacheRefresh(refreshList[i]);
+						if(refreshList[i].cache != null){
+							if(refreshList[i].cache[rIdx] == null){
+								refreshList[i].cache[rIdx] = "av" + inst.aid;
+								cacheDB.write("av" + inst.aid, inst);
+							}else if(refreshList[i].cache[rIdx] != "av" + inst.aid && 
+								refreshList[i].cache[rIdx] != "-av" + inst.aid){
+									refreshList[i].cache[rIdx] = "av" + inst.aid;
+								cacheDB.write("av" + inst.aid, inst);
+							}else
+								refreshList.splice(i,1);
+						}
+					}else{
+						/* Watched and recorded */
+						refreshList.splice(i,1);
+					}
+					break;
+				}
+				
 			}catch(e){
 				/* Wrong Rules. */
 				console.log("[War](Worker)Rule Error");
@@ -97,6 +104,7 @@ function SectionWorker(boundSection,bgmlist){
 			if(nc == true)
 				return true;
 			bgml.commit();
+			cacheDB.commit();
 			return true;
 		}
 		return false;
@@ -107,5 +115,6 @@ function SectionWorker(boundSection,bgmlist){
 		**/
 		console.log("[Log](Worker)Flushed!");
 		bgml.commit();
+		cacheDB.commit();
 	};
 }

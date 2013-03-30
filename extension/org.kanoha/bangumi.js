@@ -165,6 +165,8 @@ function BangumiList(ctx, ccbo){
 	this.needsRefresh = function(rule){
 		if(rule.total == null || rule.current == null)
 			return false;
+		if(rule.type == 3 || rule.type > 10)
+			return false; // 10 and above are designated as managed by other plugins
 		if(rule.type != 1){
 			if(rule.type == 2){
 				var timediff = (Math.floor((new Date()).getTime()/1000) - rule.last);
@@ -174,12 +176,17 @@ function BangumiList(ctx, ccbo){
 			}
 			return false;
 		}
-		if((rule.total - rule.current - rule.cache.length) > 0)
+		if((rule.total - rule.current - rule.cache.length) > 0){
 			return true;
+		}
 		else if((rule.cache.length + rule.current) > rule.total){
 			/* Bad cache - Clear and redo */
 			rule.cache = [];
 			return true;
+		}
+		for(var i = 0; i < rule.cache.length; i++){
+			if(rule.cache[i] == null)
+				return true;
 		}
 		return false;
 	};
@@ -193,56 +200,64 @@ function BangumiList(ctx, ccbo){
 		return -1;
 	};
 	this.lookupSectionName = function(sect_id){
-		return "新番二次元";
+		if(SettingsConnector == null)
+			return "?";
+		var SC = new SettingsConnector();
+		var tids = SC.get("matcher.tid");
+		if(typeof tids != "object")	
+			return;
+		for(var x in tids){
+			if(tids[x] == sect_id)
+				return x;
+		}
+		return "?";
 	};
-	this.newRule = function(name,type,matcher,excluder,current,total) {
+	this.newRule = function(rname,type,matcher,current,total) {
 		if(type == 1){
+			/** Type 1 is traditional **/
 			if(current == null)
 				current = 0;
 			if(total == null)
-				total = findClosestTotal(current);
+				total = this.findClosestTotal(current);
 			return {
-				name : name,
-				type : 1,
-				matcher : matcher,
-				current : current,
-				total : total
+				"name" : rname,
+				"type" : 1,
+				"matcher" : matcher,
+				"current" : current,
+				"total" : total
 			}
 		}else if(type == 2){
 			/** Type 2 is for weekly **/
 			if(current == null)
 				current = 0;
 			if(total == null)
-				total = findClosestTotal(current);
+				total = this.findClosestTotal(current);
 			return {
-				name : name,
-				type : 2,
-				matcher : matcher,
-				current : current,
-				total : total,
-				last: 0,
-				interval: 432000
+				"name" : rname,
+				"type" : 2,
+				"matcher" : matcher,
+				"current" : current,
+				"total" : total,
+				"last" : 0,
+				"interval" : 432000
 			}
+		}else if(type == 3){
+			/** Type 3 is for  **/
 		}
 	};
-	this.getRulesBySection = function(sect,isSafe){
+	this.getRulesBySection = function(sect,noCheck){
 		/** Create a list of rules that need to be checked by section
-			Will only return a safe array if isSafe is set to true.
+			Will return everything
 		**/
 		var refreshList = [];
-		if(isSafe != true){
-			var sct = abstraction["s:" + sect];
-			if(sct == null) return refreshList;
-			for(var j = 0; j < sct.length; j++){
-				if(this.needsRefresh(sct[j])){
-					refreshList.push(sct[j]);
-				}
+		var sct = abstraction["s:" + sect];
+		if(sct == null) return refreshList;
+		for(var j = 0; j < sct.length; j++){
+			if(noCheck || this.needsRefresh(sct[j])){
+				refreshList.push(sct[j]);
 			}
-			return refreshList;
-		}else{
-			/** Not implemented. Too lazy **/
-			return [];
 		}
+		return refreshList;
 	};
 	this.getSections = function(){
 		/** Gets a safe implementation of sections **/

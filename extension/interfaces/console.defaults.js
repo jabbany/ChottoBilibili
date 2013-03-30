@@ -94,7 +94,7 @@ var CONSOLE_FIX_DEFAULTS = {
 			"hardFailLimit":""
 		}
 	},
-	"transient":[],
+	"transient":{},
 	"flags":{
 		"invoke.disableAlarms":"undefined",
 		"invoke.cacheClean":"2d",

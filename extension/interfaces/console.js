@@ -1,3 +1,12 @@
+function trimText(text){
+	text = text.replace(/\(\\d\+.*$/g,"");
+	text = text.replace(/\(\[.*$/g,"");
+	text = text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "");
+	text = text.replace(/\u3010(.*?)\u3011/g,"");
+	text = text.replace(/\u7B2C$/,"");
+	return text;
+}
+
 var $ = function(elem) {
 	if(typeof elem == "string")
 		return document.getElementById(elem);
@@ -26,6 +35,35 @@ function importDialog(){
 		return;
 	}else{
 		//Process stuff
+		var p = data.split(":");
+		if(p.length != 3 || p[0] != "ChottoBilibili"){
+			alert("Error: Format illegal. Please Check.");
+			return;
+		}
+		if(parseInt(p[1]) > 2){
+			if(!confirm("Warning: Version too new, still import?")){
+				return;	
+			}
+		}
+		try{
+			var list = JSON.parse(knCrypto.base64_decode(p[2]));
+		}catch(e){
+			alert("Error: Data corrupt or illegal. Please check!");
+			return;
+		}
+		var BGML = new BangumiList();
+		//Iterate through the old list to get an understanding of the stuff
+		var sections = list.sections;
+		for(var i = 0; i < sections.length; i++){
+			var sect = list["sect_" + sections[i]];
+			for(var j = 0; j < sect.length; j++){
+				BGML.add(BGML.newRule(trimText(sect[j].matcher),1,
+					{"m":sect[j].matcher,"e":sect[j].excluder},
+					sect[j].watched),sections[i]);
+			}
+		}
+		BGML.commit();
+		alert("Loaded! Please force a new check NOW!");
 	}
 }
 

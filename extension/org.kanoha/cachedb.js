@@ -1,7 +1,6 @@
 function CacheDB(dbName){
 	//Caching Database uses ChromeStorage Local Storage
 	var databaseName = dbName != null ? dbName : "cachedb";
-	var storage = chrome.storage.local;
 	var db = {};
 	var pool = 0;
 	var addPool = [];
@@ -141,7 +140,7 @@ function ReadOnlyCacheDB(dbName){
 			}
 		}
 	};
-	this.clearEventListeners - function(event){
+	this.clearEventListeners = function(event){
 		if(eventDispatcher[event] != null)
 			eventDispatcher[event] = function(){};
 	}
