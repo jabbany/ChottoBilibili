@@ -4,6 +4,9 @@ var Main = new function () {
 	this.startCheck = function (){
 		var createSectTask = function (section){
 			var worker = new SectionWorker(section, Main.list);
+			if(Main.settings.get("watchlist.hideRaws.series"))
+				worker.setRawsMode(true);
+
 			if(worker.done(true))
 				return; /* Nothing to do! */
 				

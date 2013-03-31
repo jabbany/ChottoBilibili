@@ -94,7 +94,7 @@ body {
 	padding:0;
 }
 #output{
-	max-height:400px;
+	max-height:380px;
 	overflow:auto;
 }
 .scr::-webkit-scrollbar {

@@ -6,6 +6,7 @@
 function SectionWorker(boundSection,bgmlist){
 	var bgml = bgmlist;
 	var boundSection = boundSection;
+	var excludeRaws = false;
 	var refreshList = bgml.getRulesBySection(boundSection);
 	var cacheDB = new CacheDB();
 	var createCache = function (rule,cacheLength){
@@ -17,6 +18,9 @@ function SectionWorker(boundSection,bgmlist){
 				cache.push("");
 		}
 		rule.cache = cache;
+	};
+	this.setRawsMode = function(mode){
+		excludeRaws = mode;
 	};
 	this.cacheRefresh = function(rule){
 		/** Checks the refresh cache to work **/
@@ -57,6 +61,8 @@ function SectionWorker(boundSection,bgmlist){
 				var ret = matcher.exec(inst.title);
 				
 				if(ret != null && ret.length > 1){
+					if(excludeRaws && /\u751F\u8089/.test(inst.title))
+						continue; // sheng rou
 					if(excluder != null && excluder.test(inst.title))
 						continue; // Found exclusion
 					var episodeNumber = Tools.parseTextNumber(ret[1]);
