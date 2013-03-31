@@ -138,7 +138,11 @@ var SC = {
 							}break;
 							case "radiobox":
 							case "checkbox":{
-								val.selected = is_true(opt,"true",null);
+								val.checked = opt ? "true" : null;
+								if(opt)
+									val.setAttribute("checked", "true");
+								else
+									val.removeAttribute("checked");
 							}break;
 						}
 						var handler = function(){
@@ -156,8 +160,13 @@ var SC = {
 					$("#" + arr[x].elem).each(function(i,v){
 						if(v.type == "text")
 							v.value = arr[x].def;
-						else
-							v.checked = is_true(arr[x].def,"true",null);
+						else{
+							v.checked = arr[x].def ? "true" : null;
+							if(arr[x].def)
+								v.setAttribute("checked","true");
+							else
+								v.removeAttribute("checked");
+						}
 						var opt = arr[x].def;
 						var handler = function(){
 							if(this.type =="text" && this.value != opt){

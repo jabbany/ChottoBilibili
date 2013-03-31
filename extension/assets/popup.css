@@ -91,17 +91,18 @@ body {
 .wrapper{
 	width:320px;
 	min-height:50px;
-	max-height:400px;
-	overflow:auto;
 	padding:0;
 }
-
-.b-w::-webkit-scrollbar {
+#output{
+	max-height:400px;
+	overflow:auto;
+}
+.scr::-webkit-scrollbar {
 	height: 16px;
 	overflow: visible;
 	width: 16px;
 }
-.b-w::-webkit-scrollbar-thumb {
+.scr::-webkit-scrollbar-thumb {
 	background-color: rgba(0, 0, 0, .2);
 	background-clip: padding-box;
 	border: solid transparent;
@@ -110,16 +111,16 @@ body {
 	box-shadow: inset 1px 1px 0 rgba(0,0,0,.1),inset 0 -1px 0 rgba(0,0,0,.07);
 	border-width: 1px 1px 1px 6px;
 }
-.b-w::-webkit-scrollbar-button {
+.scr::-webkit-scrollbar-button {
 	height: 0;
 	width: 0;
 }
-.b-w::-webkit-scrollbar-track {
+.scr::-webkit-scrollbar-track {
 	background-clip: padding-box;
 	border: solid transparent;
 	border-width: 0 0 0 4px;
 }
-.b-w::-webkit-scrollbar-corner {
+.scr::-webkit-scrollbar-corner {
 	background: transparent;
 }
 
@@ -161,7 +162,7 @@ a.redlink{
 
 img.preview{
 	height:40px;
-	max-width:53px;
+	width:53px;
 	float:left;
 	margin:1px 8px 1px 3px;
 	-moz-box-shadow: 1 1 3px #fff;
