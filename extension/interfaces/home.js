@@ -14,10 +14,9 @@ function _(type,init,inner){
 	return elem;
 }
 function _e(e){ return document.getElementById(e); }
-
+function is_true(bool, t ,f){return bool ? t : f;}
 var SC = {
-	cdb:null,
-	cdbReady:false,
+	cdb:new CacheDB(),
 	bgmlist:null,
 	opt:new SettingsConnector(),
 	states:{
@@ -64,14 +63,10 @@ var SC = {
 			if(SC.cdb == null)
 				SC.cdb = new CacheDB();
 			if(rule.cache != null){
-				var vidid = rule.cache[rule.cache.length - 1];
-				if(!SC.cdbReady){
-					SC.cdb.refresh(function(){
-						var video = SC.cdb.get(vidid);
-						img.src = video != null ? video.pic : "";
-						SC.cdbReady = true;
-					});
-				}else{
+				if(rule.cache.length == 0)
+					img.src = SC.cdb.get("img:" + rule.id);
+				else{
+					var vidid = rule.cache[rule.cache.length - 1];
 					try{
 						var video = SC.cdb.get(vidid);
 						img.src = video != null ? video.pic : "";
@@ -99,33 +94,36 @@ var SC = {
 		var progress = _("div",{className:"progress min-margin"});
 		info.appendChild(progress);
 		progress.appendChild(_("div",{
-					className:"bar bar-watchlist bar-success", 
-					style:{
+					"className":"bar bar-watchlist bar-success", 
+					"style":{
 						width:(rule.current * 100 / rule.total) + "%"
-					}},
+					},
+					"title":rule.current + "/" + rule.total
+					},
 				document.createTextNode(rule.current + "/" + rule.total)));
 		try{
 			var genFunction = function (vid){
 				return function(){
-					if(SC.cdbReady){
-						var vidData = SC.cdb.get(vid);
-						if(vidData != null){
-							img.src = vidData.pic;
-						}
+					var vidData = SC.cdb.get(vid);
+					if(vidData != null){
+						img.src = vidData.pic;
 					}
+					$(this).tooltip("toggle");
 				};
 			}
 			for(var i = 0; i < rule.cache.length; i++){
+				var vdata = SC.cdb.get(rule.cache[i]);
 				var b = _("div",{
-						className:"bar bar-watchlist" + (i == rule.cache.length - 1 ? "" : " bar-warning"), 
-						style:{width:(100 / rule.total) + "%"}
-						},document.createTextNode(rule.current + i + 1));
+							"title":(vdata != null ? vdata.title : rule.cache[i]),
+							"data-toggle":"tooltip",
+							"className":"bar bar-watchlist" + (i == rule.cache.length - 1 ? "" : " bar-warning"), 
+							"style":{width:(100 / rule.total) + "%"}
+						},rule.total > 40 ? null : document.createTextNode(rule.current + i + 1));
 				b.addEventListener("mouseover",genFunction(rule.cache[i]));
 				progress.appendChild(b);
 			}
 		}catch(e){console.log("Cache Error");}
 		r_desc.appendChild(info);
-		console.log(rule);
 	},
 	func:{
 		"null":function(){return true;},
@@ -216,48 +214,28 @@ var SC = {
 				return false;
 			var hdr = _e("homeHdr");
 			if(hdr != null){
-				if(!SC.cdbReady){
-					if(SC.cdb == null)
-						SC.cdb = new CacheDB();
-					SC.cdb.refresh(function(){
-						var pq = new PQueue();
-						SC.cdb.reduce(function(record, base){
-							pq.insertWithPriority(record.pic, parseInt(record.aid));
-							if(pq.size() > 30){
-								pq.poll();
-							}
-						}, null);
-						var l = [];
-						while(pq.size() > 0){
-							l.push(pq.poll());
-						}
-						for(var j, x, i = l.length; i; j = parseInt(Math.random() * i), x = l[--i], l[i] = l[j], l[j] = x);
-						for(var i = 0; i < l.length; i++){
-							hdr.insertBefore(_("img",{"className":"pull-right","src":l[i]}), 
-								hdr.childNodes[0]);
-						}
-						SC.cdbReady = true;
-					});
-				}else{
-					var pq = new PQueue();
-					SC.cdb.reduce(function(record, base){
+				var pq = new PQueue();
+				SC.cdb.reduce(function(record, base){
+					if(record.pic != null){
+						if(record.aid == null)
+							record.aid = 0;
 						pq.insertWithPriority(record.pic, parseInt(record.aid));
 						if(pq.size() > 30){
 							pq.poll();
 						}
-					}, null);
-					var l = [];
-					while(pq.size() > 0){
-						l.push(pq.poll());
 					}
-					while(hdr.childNodes.length > 0){
-						hdr.removeChild(hdr.childNodes[0]);
-					}
-					for(var j, x, i = l.length; i; j = parseInt(Math.random() * i), x = l[--i], l[i] = l[j], l[j] = x);
-					for(var i = 0; i < l.length; i++){
-						hdr.insertBefore(_("img",{"className":"pull-right","src":l[i]}), 
-							hdr.childNodes[0]);
-					}
+				}, null);
+				var l = [];
+				while(pq.size() > 0){
+					l.push(pq.poll());
+				}
+				while(hdr.childNodes.length > 0){
+					hdr.removeChild(hdr.childNodes[0]);
+				}
+				for(var j, x, i = l.length; i; j = parseInt(Math.random() * i), x = l[--i], l[i] = l[j], l[j] = x);
+				for(var i = 0; i < l.length; i++){
+					hdr.insertBefore(_("img",{"className":"pull-right","src":l[i]}), 
+						hdr.childNodes[0]);
 				}
 			}
 			SC.func.setNewForm("SettingsHome");
@@ -270,9 +248,9 @@ var SC = {
 			SC.func.setNewForm("SettingsConnection");
 			SC.func.hideAllBut("SettingsConnection");
 			SC.func.settingsInit([
-				{key:"ApiKey",elem:"sApiKey",def:""},
-				{key:"CheckInterval",elem:"sRefreshRate",def:60},
-				{key:"SyncInterval",elem:"sSyncInterval",def:60},
+				{key:"api.key",elem:"sApiKey",def:""},
+				{key:"timers.refresh",elem:"sRefreshRate",def:60},
+				{key:"timers.sync",elem:"sSyncInterval",def:60},
 			]);
 			return true;
 		},
@@ -281,6 +259,15 @@ var SC = {
 				return false;
 			SC.func.setNewForm("SettingsSite");
 			SC.func.hideAllBut("SettingsSite");
+			SC.func.settingsInit([
+				{key:"watchlist.autoupdate.enabled",elem:"sProgressUpdateEnable",def:false},
+				{key:"watchlist.autoupdate.delay",elem:"sProgressUpdateDelay",def:5},
+				{key:"watchlist.hideRaws.series",elem:"sNoRaws",def:false},
+				{key:"watchlist.hideRaws.tags",elem:"sNoRawsTag",def:false},
+				{key:"privacy.history.allow",elem:"sAllowTracking",def:false},
+				{key:"interface.pnToggle",elem:"sPrevNextToggle",def:true},
+				{key:"interface.contextMenu.enabled",elem:"sClickSearchEnabled",def:true}
+			]);
 			return true;
 		},
 		"fSettingsSync":function(){
@@ -288,6 +275,12 @@ var SC = {
 				return false;
 			SC.func.setNewForm("SettingsSync");
 			SC.func.hideAllBut("SettingsSync");
+			SC.func.settingsInit([
+				{key:"sync.enabled",elem:"sSyncEnabled",def:false},
+				{key:"sync.server",elem:"sSyncServer",def:""},
+				{key:"sync.key",elem:"sSyncKey",def:""},
+				{key:"sync.deviceId",elem:"sSyncDevice",def:""},
+			]);
 			$("#sSyncServer").typeahead({
 				source:["sync.railgun.in","api.mymoe.com/sync/chottobilibili","tools.kanoha.org/dev/sync"]
 			});

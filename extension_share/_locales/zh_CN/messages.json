@@ -1,0 +1,26 @@
+{
+	"extension_name":{
+		"message":"ちょっと哔哩哔哩（分享）",
+		"description":"一个有点卖萌的名字"
+	},
+	"extension_description":{
+		"message":"在哔哩哔哩视频页面显示分享按钮",
+		"description":"一个有点卖萌的解释"
+	},
+	"page_action_title":{
+		"message":"分享视频",
+		"description":"通过插件推送哔哩哔哩视频"
+	},
+	"error_no_url":{
+		"message":"无法获取视频信息",
+		"description":"获取信息失败"
+	},
+	"msg_bind_success":{
+		"message":"已绑定",
+		"description":"绑定成功"
+	},
+	"msg_bind_fail":{
+		"message":"未绑定",
+		"description":"尚未绑定"
+	}
+}

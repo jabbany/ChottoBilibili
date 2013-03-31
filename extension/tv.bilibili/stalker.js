@@ -2,28 +2,26 @@
 * Stalker Unit for BiliBili
 * Registers on open and close of a Bilibili Page 
 **/
-function callMothership(){
+function callMothership(duration){
 	chrome.extension.sendMessage({
 		"method": "biliStalker", 
 		"url": document.location.href,
-		"event": "onExitPage"
-		}, function(resp) {/* Snub it */});
+		"duration": duration,
+		"section": 0
+	}, function(resp) {/* Snub it */});
 }
 
 function hookStalkModule(){
+	var hookTime = Math.round((new Date()).getTime() / 1000);
 	var div = document.createElement("div");
 	div.addEventListener("click",function(){
 		window.addEventListener("beforeunload",function(){
-			callMothership();
+			var dur = Math.round((new Date()).getTime / 1000) - hookTime;
+			callMothership(dur);
 			return null; /* No Warning */
 		});
 	});
 	div.click(); /* Hook Close tracker! */
-	chrome.extension.sendMessage({
-		"method": "biliStalker", 
-		"url": document.location.href,
-		"event": "onEnterPage"
-	}, function(resp) {/* Snub it */});	
 }
 
 chrome.extension.sendMessage({

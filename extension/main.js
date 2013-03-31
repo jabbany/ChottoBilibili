@@ -97,8 +97,23 @@ var Main = new function () {
 			task.local.rempages = 1;
 			task.local.retryCount = 0;
 			/** Set a handler **/
-			task.onKill = function(){
+			task.onkill = function(){
 				worker.flush();
+			};
+			task.onsuspend = function(){
+				worker.flush();
+				try{
+					var suspends = JSON.parse(localStorage["__suspend"]);
+				}catch(e){
+					var suspends = [];
+				}
+				suspends.push({
+					"type":"sectionworker",
+					"curpage":task.local.curpage,
+					"rempages":task.local.rempages,
+					"section":section
+				})
+				localStorage["__suspend"] = JSON.stringify(suspends);
 			};
 			/** Push this task **/
 			jsPoll.push(task);
@@ -124,7 +139,7 @@ var Main = new function () {
 					}
 				}
 			};
-			xhr.open("GET","http://api.bilibili.tv/bangumi?type=json&appkey" + Main.settings.getApiKey() +
+			xhr.open("GET","http://api.bilibili.tv/bangumi?type=json&appkey=" + Main.settings.getApiKey() +
 			"&btype=2",true);
 			xhr.send();
 		});
@@ -135,11 +150,60 @@ var Main = new function () {
 	this.recache = function(){
 		var caches = Main.list.getAllCached();
 		var cacheDB = new CacheDB();
-		cacheDB.refresh();
-		jsPoll.global.xhr = new XMLHttpRequest();
-		jsPoll.create(function(self){
-		
-		});
+		var createTask = function (avid){
+			var task = jsPoll.create(function(self){
+				var inst = self;
+				console.log(avid);
+				var xhr = new XMLHttpRequest();
+				xhr.onreadystatechange = function(){
+					if(xhr.readyState == 4){
+						try{
+							var data = JSON.parse(xhr.responseText);
+						}catch(e){
+							console.log("[Err]Parse failed for recache of " + avid);
+							inst.complete();
+							return;
+						}
+						if(data.code != null && data.code != 0){
+							console.log("[Err]" + data.code + ":" + data.error);
+							if(task.local.retryCount > 5){
+								inst.complete();
+								return;
+							}
+							if(data.code == -503){
+								jsPoll.push(task);
+								setTimeout(function(){
+									inst.complete();
+								},1000 * Math.pow(2, task.local.retryCount));
+								task.local.retryCount++;
+							}else
+								inst.complete();
+							return;
+						}else{
+							try{
+								data.aid = parseInt(avid);
+							}catch(e){}
+							cacheDB.write("av" + avid, data);
+							cacheDB.commit();
+							setTimeout(function(){
+								inst.complete();
+							},500);
+							return;
+						}
+					}
+				}
+				xhr.open("GET","http://api.bilibili.tv/view?type=json&appkey=" + Main.settings.getApiKey() + "&id=" + avid,true);
+				xhr.send();
+			});
+			task.local.retryCount = 0;
+			jsPoll.push(task);
+		}
+		for(var i = 0; i < caches.length; i++){
+			if(caches[i] == null)
+				continue;
+			createTask(caches[i].replace(/^-{0,1}av/,""));
+		}
+		jsPoll.run();
 	};
 	this.resumeHold = function(){
 		if(localStorage["__suspend"] == null)
@@ -150,6 +214,8 @@ var Main = new function () {
 		for(var i = 0; i < susp.length; i++){
 			//Resume task
 			if(susp[i].type == "sectworker"){
+				
+			}else{
 				
 			}
 		}
@@ -216,6 +282,17 @@ chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
 			return;
 		}
 		switch(request.method){
+			case "addFollowDlg":{
+				var trans = new TransientPrayer();
+				var matchingSection = Main.settings.get("matcher.tid");
+				trans.set("add.data",{
+					"title":request.title,
+					"section": Tools.sectionToId(matchingSection, request.section),
+					"avid":request.avid
+				});
+				sendResponse({"accepted":true});
+				break;
+			}break;
 			case "biliStalker":{
 				sendResponse({});
 				return;
@@ -228,6 +305,11 @@ chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
 			}break;
 			case "invokeSync":{
 				//Invoke a sync operation
+				sendResponse({});
+				return;
+			}break;
+			case "invokeRecache":{
+				Main.recache();
 				sendResponse({});
 				return;
 			}break;
@@ -260,7 +342,7 @@ chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
 chrome.extension.onMessageExternal.addListener(
 	function(request, sender, sendResponse) {
 		var blacklist = Main.settings.get('plugins.blocked');
-		if (blacklist != null && blacklist.indexOf(sender.id) < 0)
+		if (blacklist != null && blacklist.indexOf(sender.id) >= 0)
 			return;
 		if(request.method == null)
 			sendResponse({"error":"Method not provided"});
@@ -295,16 +377,16 @@ if(!chrome.runtime){
 	/* Include support for legacy chrome */
 	var duration = Main.settings.get('timers.refresh');
 	duration = (duration == null ? 15 : duration);
-	setInterval(duration * 60000, function(){
-		//Main.startCheck();
-	}); 
+	setInterval(function(){
+		Main.startCheck();
+	},duration * 60000); 
 }else{
 	var delay = Main.settings.get("timers.refresh");
 	delay = (delay == null ? 15 : delay);
 	chrome.alarms.create('refresh',{periodInMinutes: delay});
 	chrome.alarms.onAlarm.addListener(function(a){
 		if(a.name == "refresh"){
-			//Main.startCheck();
+			Main.startCheck();
 		}else if(a.name == "resume"){
 			chrome.alarms.clear("resume");
 			Main.resumeHold();
@@ -313,5 +395,6 @@ if(!chrome.runtime){
 	chrome.runtime.onSuspend = function(){
 		/** Remember unfinished state **/
 		chrome.alarms.create("resume",{periodInMinutes: 2});
+		jsPoll.suspendall();
 	};
 }

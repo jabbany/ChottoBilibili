@@ -145,6 +145,40 @@ $(window).addEventListener("load",function(){
 		importDialog();
 	});
 	
+	$("btnRebuildCache").addEventListener("click",function(){
+		chrome.extension.sendMessage({"method": "invokeRecache"}, function(response) {
+			alert("Rebuilt CacheDB.");
+		});
+	});
+	
+	$("btnOptimizeCache").addEventListener("click",function(){
+		var needsRebuild = false;
+		var BGML = new BangumiList();
+		var CDB = new CacheDB();
+		var cached = BGML.getAllCached();
+		CDB.map(function(record,obj){
+			if(cached.indexOf(record) < 0)
+				return null;
+			cached.splice(cached.indexOf(record), 1);
+			return obj;
+		});
+		for(var i = 0; i < cached.length; i++){
+			if(cached[i] != null){
+				needsRebuild = true;
+				break;
+			}
+		}
+		CDB.commit();
+		if(needsRebuild){
+			if(confirm("The CacheDB is incomplete. Attempt to rebuild it?")){
+				chrome.extension.sendMessage({"method": "invokeRecache"}, function(response) {
+					alert("Rebuilt CacheDB.");
+				});
+			}
+		}
+		alert("Optimize finished.");
+	});
+	
 	$("command-line").addEventListener("keydown",function(e){
 		if(e.keyCode == 13){
 			try{

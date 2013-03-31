@@ -8,9 +8,6 @@ function SectionWorker(boundSection,bgmlist){
 	var boundSection = boundSection;
 	var refreshList = bgml.getRulesBySection(boundSection);
 	var cacheDB = new CacheDB();
-	cacheDB.refresh(function(){
-		cacheDB.commit();
-	});
 	var createCache = function (rule,cacheLength){
 		var cache = [];
 		for(var i = 0; i < cacheLength; i++){
@@ -31,7 +28,11 @@ function SectionWorker(boundSection,bgmlist){
 	};
 	this.isEnd = function(title){
 		/** Test to see if this is the end of a series **/
-		if(/\u5B8C\u7ED3/.test(title) || /fin/i.test(title)){
+		if(/\u5B8C\u7ED3/.test(title) || 
+			/\u3010fin\u3011/i.test(title) || 
+			/\(fin\)/i.test(title) ||
+			/\[fin\]/i.test(title) || 
+			/fin\s*$/i.test(title)){
 			return true; /* Wanjie or fin */
 		}
 		return false;
@@ -70,14 +71,19 @@ function SectionWorker(boundSection,bgmlist){
 							}
 						}
 						this.cacheRefresh(refreshList[i]);
+						if(cacheDB.get("img:" + refreshList[i].aid) == null){
+							cacheDB.write("img:" + refreshList[i].aid, inst.pic);
+						}
 						if(refreshList[i].cache != null){
 							if(refreshList[i].cache[rIdx] == null){
 								refreshList[i].cache[rIdx] = "av" + inst.aid;
 								cacheDB.write("av" + inst.aid, inst);
+								cacheDB.commit();
 							}else if(refreshList[i].cache[rIdx] != "av" + inst.aid && 
 								refreshList[i].cache[rIdx] != "-av" + inst.aid){
 									refreshList[i].cache[rIdx] = "av" + inst.aid;
 								cacheDB.write("av" + inst.aid, inst);
+								cacheDB.commit();
 							}else
 								refreshList.splice(i,1);
 						}

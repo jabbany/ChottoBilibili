@@ -43,6 +43,16 @@
 		"message":"+Follow",
 		"description":"Add to collection"
 	},
+	"content_collect_title":{
+		"message":"Add \"$series$\" To My Watchlist - ChottoBilibili",
+		"description":"Add to watchlist",
+		"placeholders":{
+			"series":{
+				"content":"$1",
+				"example":"Add to watchlist"
+			}
+		}
+	},
 	"content_collect_sp":{
 		"message":"Add the topic \"$series$\" to the follow list?",
 		"description":"Add a series to the follow list",

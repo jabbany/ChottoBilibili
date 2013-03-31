@@ -1,33 +1,17 @@
 function CacheDB(dbName){
-	//Caching Database uses ChromeStorage Local Storage
 	var databaseName = dbName != null ? dbName : "cachedb";
 	var db = {};
-	var pool = 0;
-	var addPool = [];
-	var saveInProgress = false;
+	try{
+		db = JSON.parse(localStorage["db:" + databaseName]);	
+	}catch(e){
+		localStorage["db:" + databaseName] = JSON.stringify(db);
+	}
+	
 	this.commit = function(){
-		if(pool == 0)
-			return;
-		if(saveInProgress){
-			console.log("[War](CacheDB)Commit during save.");
-			return;
-		}
-		saveInProgress = true;
-		var dbObject = {};
-		dbObject[databaseName] = db;
-		chrome.storage.local.set(dbObject, function(){
-			pool = 0;
-			saveInProgress = false;
-		});
-	};
-	this.checkCommit = function(){
-		//Commits the current pool if it gets too full
-		if(pool > 5) this.commit();
+		localStorage["db:" + databaseName] = JSON.stringify(db);
 	};
 	this.write = function(index,record){
 		db[index] = record;
-		pool++;
-		this.checkCommit();
 	};
 	this.get = function(index){
 		return db[index];
@@ -52,9 +36,9 @@ function CacheDB(dbName){
 	this.map = function(mapFunction){
 		for(elm in db){
 			db[elm] = mapFunction(elm,db[elm]);
-			pool++;
+			if(db[elm] == null)
+				delete db[elm];
 		}
-		this.checkCommit();
 	};
 	this.getIndex = function(index){
 		var list = [];
@@ -69,81 +53,14 @@ function CacheDB(dbName){
 		for(elm in db){
 			if(chk(elm,db[elm])){
 				delete db[elm];
-				pool++;
 			}
 		}
 	};
 	this.refresh = function(callback){
-		var slf = this;
-		chrome.storage.local.get(databaseName,function(items){
-			if(items != null && items[databaseName] != null){
-				var tdb = items[databaseName];
-				/** Make sure the root is clean or else force a commit **/
-				var needCommit = (pool == 0);
-				for(titm in tdb){
-					if(db[titm] == null)
-						db[titm] = tdb[titm];
-					else
-						needCommit = true;
-				}
-				if(needCommit)
-					slf.commit();
-			}else{
-				slf.commit();
-			}
-			if(callback != null)
-				try{
-					callback();
-				}catch(e){
-					console.log("[Err](CacheDB) Callback failed");
-				}
-		});
+		db = JSON.parse(localStorage["db:" + databaseName]);
+		if(callback != null)
+			callback();
 	};
-}
-
-function ReadOnlyCacheDB(dbName){
-	//Creates a read only queryable cache db better in memory usage
-	if(dbName == null) dbName = "cachedb";
-	var db = {};
-	var eventDispatcher = {
-		"onloaded":function(){},
-		"onerror":function(){}
-	};
-	var dispatchEvent = function(eventName, eventObject){
-		if(eventDispatcher[eventName] != null)
-			eventDispatcher[eventName](eventObject);
-	};
-	this.query = function(filter, shouldRetain){
-		chrome.storage.local.get(dbName,function(items){
-			if(items != null && items.cachedb != null){
-				for(var x in items.cachedb){
-					if(filter(x,items.cachedb[x]))
-						db[x] = items.cachedb[x];
-				}
-				dispatchEvent("onloaded",db);
-			}else{
-				dispatchEvent("onerror",db);
-			}
-		});
-	};
-	this.lastQuery = function(){
-		return db;
-	};
-	this.addEventListener = function(event, listener){
-		if(typeof listener != "function")
-			return;
-		if(eventDispatcher[event] != null){
-			var oldFunction = eventDispatcher[event];
-			eventDispatcher[event] = function(e){
-				listener(e);
-				oldFunction(e);
-			}
-		}
-	};
-	this.clearEventListeners = function(event){
-		if(eventDispatcher[event] != null)
-			eventDispatcher[event] = function(){};
-	}
 }
 
 function PQueue(){

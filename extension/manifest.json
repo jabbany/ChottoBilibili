@@ -19,6 +19,7 @@
 		"persistent": false,
 		"scripts": [
 			"org.kanoha/tools.js",
+			"org.kanoha/transient.js",
 			"org.kanoha/poll.js",
 			"org.kanoha/settings.js",
 			"org.kanoha/plugins.js",

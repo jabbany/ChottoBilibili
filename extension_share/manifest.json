@@ -1,13 +1,13 @@
 {
 	"name": "__MSG_extension_name__",
-	"version": "1.0.0",
+	"version": "0.8.0",
 	"manifest_version": 2,
 	"description": "__MSG_extension_description__",
 	"icons": {
 		"16": "assets/icon-small-19.png",
 		"48": "assets/icon-small-38.png"
 	},
-	"default_locale": "zh",
+	"default_locale": "zh_CN",
 	"options_page":"bind.html",
 	"page_action":{
 		"default_icon": {

@@ -46,5 +46,18 @@ var Tools = {
 			}
 			return literal;
 		}
+	},
+	sectionToId : function (table, text){
+		if(table == null)
+			return 0;
+		var sectLib = table;
+		var sectNames = text.split('_');
+		for(var k = sectNames.length - 1; k>=0; k--){
+			if(sectLib[sectNames[k]] != null)
+				return sectLib[sectNames[k]];
+		}
+		if(sectLib[sectionName] != null)
+			return sectLib[sectionName];
+		return 0;
 	}
 };
