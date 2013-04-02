@@ -30,7 +30,7 @@ function SettingsConnector(){
 		return true;
 	};
 	this.getApiKey = function(){
-		if(this.get("api.key") == null)
+		if(this.get("api.key") == null || this.get("api.key") == "")
 			return "30d25295cbcfeedc";
 		return this.get('api.key');
 	};

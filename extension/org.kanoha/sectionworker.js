@@ -96,6 +96,7 @@ function SectionWorker(boundSection,bgmlist){
 					}else{
 						/* Watched and recorded */
 						refreshList.splice(i,1);
+						bgml.commit();
 					}
 					break;
 				}
@@ -128,5 +129,12 @@ function SectionWorker(boundSection,bgmlist){
 		console.log("[Log](Worker)Flushed!");
 		bgml.commit();
 		cacheDB.commit();
+	};
+	this.getRemRules = function(){
+		var ids = [];
+		for(var i = 0; i < refreshList.length; i++)
+			ids.push(refreshList[i].id);
+		}
+		return ids;
 	};
 }

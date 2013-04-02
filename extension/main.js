@@ -102,6 +102,7 @@ var Main = new function () {
 			/** Set a handler **/
 			task.onkill = function(){
 				worker.flush();
+				task.complete();
 			};
 			task.onsuspend = function(){
 				worker.flush();
@@ -114,9 +115,11 @@ var Main = new function () {
 					"type":"sectionworker",
 					"curpage":task.local.curpage,
 					"rempages":task.local.rempages,
-					"section":section
+					"section":section,
+					"unfinished":worker.getRemRules()
 				})
 				localStorage["__suspend"] = JSON.stringify(suspends);
+				task.complete();
 			};
 			/** Push this task **/
 			jsPoll.push(task);
@@ -222,6 +225,7 @@ var Main = new function () {
 				
 			}
 		}
+		localStorage["__suspend"] = "[]";
 	};
 }
 
@@ -312,8 +316,14 @@ chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
 				return;
 			}break;
 			case "invokeRecache":{
-				Main.recache();
-				sendResponse({});
+				if( request.feedStatus == true )
+					Main.recache(function(status){
+						sendResponse(status);
+					});
+				else{
+					Main.recache();
+					sendResponse({});
+				}
 				return;
 			}break;
 			case "getBangumiList":{
@@ -333,6 +343,7 @@ chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
 			case "quickCheck":{
 				//Invoke a quick action check
 				sendResponse({"status":404});
+				return;
 			}break;
 		}
 	}else{

@@ -1,9 +1,10 @@
 var jsPoll = {
 	global:{},
 	tasks:[],
+	current: null,
 	run:function(){
 		if(this.tasks.length > 0){
-			var task = this.tasks.shift();
+			this.current = this.tasks.shift();
 			task.execute(task);
 		}
 	},
@@ -15,6 +16,7 @@ var jsPoll = {
 		return {
 			"execute":task,
 			"complete":function(){
+				self.current = null;
 				self.run();
 			},
 			"onkill":function(){
@@ -29,14 +31,18 @@ var jsPoll = {
 	},
 	killall:function(){
 		while(this.tasks.length > 0){
-			task = this.tasks.shift();
+			var task = this.tasks.shift();
 			task.onkill();
 		}
+		if(this.current != null)
+			this.current.onkill();
 	},
 	suspendall:function(){
 		while(this.tasks.length > 0){
-			task = this.tasks.shift();
+			var task = this.tasks.shift();
 			task.onsuspend();
 		}
+		if(this.current != null)
+			this.current.onsuspend();
 	}
 }
