@@ -14,7 +14,7 @@ var removeElement = function(e){
 	}
 }
 
-var adNodeNames = ["ad-e","ad-e1","ad-e2","ad-f","ad-e4","ad-p","ad-c","ad-b","ad-b2","ad-b4","ad-c","ad-c3","ad-c4"];
+var adNodeNames = ["ad-e","ad-e1","ad-e2","ad-f","ad-e4","ad-p","ad-c","ad-b","ad-b2","ad-b4","ad-b5","ad-c","ad-c3","ad-c4"];
 for(var i = 0; i < adNodeNames.length; i++){
 	var adNodes = $f(adNodeNames[i]);
 	if(adNodes != null)

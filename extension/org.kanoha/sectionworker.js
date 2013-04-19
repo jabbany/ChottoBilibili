@@ -79,6 +79,7 @@ function SectionWorker(boundSection,bgmlist){
 						this.cacheRefresh(refreshList[i]);
 						if(cacheDB.get("img:" + refreshList[i].aid) == null){
 							cacheDB.write("img:" + refreshList[i].aid, inst.pic);
+							cacahDB.commit();
 						}
 						if(refreshList[i].cache != null){
 							if(refreshList[i].cache[rIdx] == null){
@@ -132,7 +133,7 @@ function SectionWorker(boundSection,bgmlist){
 	};
 	this.getRemRules = function(){
 		var ids = [];
-		for(var i = 0; i < refreshList.length; i++)
+		for(var i = 0; i < refreshList.length; i++){
 			ids.push(refreshList[i].id);
 		}
 		return ids;

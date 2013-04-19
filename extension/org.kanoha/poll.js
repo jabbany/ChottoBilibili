@@ -5,7 +5,7 @@ var jsPoll = {
 	run:function(){
 		if(this.tasks.length > 0){
 			this.current = this.tasks.shift();
-			task.execute(task);
+			this.current.execute(this.current);
 		}
 	},
 	push:function(task){

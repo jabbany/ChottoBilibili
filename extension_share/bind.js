@@ -1,4 +1,4 @@
-var parentExtensionId = "imnpnkekmhafpbpdalpikoenniilllcj";
+var parentExtensionId = "pgcobehcmjndpjmglaeiipckahfmmpga";
 function bindToParent(callback){
 	if(localStorage["bindParent"] != null)
 		var bind = localStorage["bindParent"];
@@ -40,7 +40,7 @@ window.addEventListener("load",function(){
 		});
 	}
 	//Bind rechecker
-	var rc = document.getElememntById("recheck");
+	var rc = document.getElementById("recheck");
 	rc.addEventListener("click",function(e){
 		bindToParent(function(){
 			window.location.reload();

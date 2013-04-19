@@ -21,6 +21,7 @@ var Main = new function () {
 						}catch(e){
 							if(xhr.responseText == "error"){
 								console.log("[Err](API)Resp: E_API_ERROR");
+								worker.flush();
 								inst.complete();
 								return;
 							}
@@ -211,6 +212,16 @@ var Main = new function () {
 		}
 		jsPoll.run();
 	};
+	this.cacheClean = function(options){
+		/** Cleans the cache and removes unused cache or/may fix **/
+		if(options == null){
+			options = {
+				remove: false,
+				autofix: false
+			};
+		}
+		
+	};
 	this.resumeHold = function(){
 		if(localStorage["__suspend"] == null)
 			return;
@@ -232,7 +243,7 @@ var Main = new function () {
 /** ADD INSTALL HOOK TO MANAGE CONTEXT MENUS **/
 chrome.runtime.onInstalled.addListener(function() {
 	if(Main == null)
-		Main = {};
+		var Main = {};
 	if(Main.settings == null)
 		Main.settings = new SettingsConnector();
 	if(Main.settings.get("interface.contextMenu.enabled")){
@@ -251,34 +262,36 @@ chrome.runtime.onInstalled.addListener(function() {
 				 **/
 			}
 		});
-		chrome.contextMenus.onClicked.addListener(function(clickData, tab){
-			if(clickData.menuItemId != "default-menu")
-				return;
-			var matchers = Main.settings.get("interface.contextMenu.matchers");
-			var selection = clickData.selectionText;
-			if(matchers != null){
-				for(var i in matchers){
-					var m = (new RegExp(i)).exec(selection);
-					if(m != null && m.length > 0){
-						var addr = matchers[i];
-						for(var i = 0; i < m.length; i++){
-							addr.replace("{" + i + "}", m[i]);
-						}
-						//Navigate to address
-						chrome.tabs.create({
-							url:addr
-						});
-						return;
-					}
-				}
-			}
-			//Not found or no matchers
-			chrome.tabs.create({
-				url:"http://www.bilibili.tv/search?keyword=" + encodeURIComponent(selection) + "&orderby=&formsubmit="
-			});
-		});	
 	}
 });
+
+chrome.contextMenus.onClicked.addListener(function(clickData, tab){
+	if(clickData.menuItemId != "default-menu")
+		return;
+	var settings = new SettingsConnector();
+	var matchers = settings.get("interface.contextMenu.matchers");
+	var selection = clickData.selectionText;
+	if(matchers != null){
+		for(var i in matchers){
+			var m = (new RegExp(i)).exec(selection);
+			if(m != null && m.length > 0){
+				var addr = matchers[i];
+				for(var i = 0; i < m.length; i++){
+					addr = addr.replace("{" + i + "}", m[i]);
+				}
+				//Navigate to address
+				chrome.tabs.create({
+					url:addr
+				});
+				return;
+			}
+		}
+	}
+	//Not found or no matchers
+	chrome.tabs.create({
+		url:"http://www.bilibili.tv/search?keyword=" + encodeURIComponent(selection) + "&orderby=&formsubmit="
+	});
+});	
 
 /** ADD LISTENERS FOR INCOMING REQUESTS **/
 chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
@@ -400,14 +413,23 @@ if(!chrome.runtime){
 	chrome.alarms.create('refresh',{periodInMinutes: delay});
 	chrome.alarms.onAlarm.addListener(function(a){
 		if(a.name == "refresh"){
+			Main.settings.set("logs.lastStartCheck", (new Date()).getTime());
 			Main.startCheck();
+			Main.settings.commit();
 		}else if(a.name == "resume"){
 			chrome.alarms.clear("resume");
 			Main.resumeHold();
+		}else if(a.name == "sync"){
+			if(!Main.settings.get("sync.enabled"))
+				return;
+			Main.settings.set("logs.lastSyncInit", (new Date()).getTime());
+			Main.settings.commit();
 		}
 	});
 	chrome.runtime.onSuspend = function(){
 		/** Remember unfinished state **/
+		Main.settings.set("logs.lastSuspSig", (new Date()).getTime());
+		Main.settings.commit();
 		chrome.alarms.create("resume",{periodInMinutes: 2});
 		jsPoll.suspendall();
 	};

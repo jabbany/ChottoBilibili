@@ -57,7 +57,14 @@ function addCollectInterface(){
 			trigger.appendChild(document.createTextNode(
 				chrome.i18n.getMessage("content_collect")
 			));
-			infoBlock.appendChild(trigger);
+			if($("stow_count") != null){
+				infoBlock.insertBefore(trigger, $("stow_count").nextSibling);
+				$("stow_count").style.marginRight = "0px";
+				trigger.style.marginRight="13px";
+				var text = trigger.innerText;
+				trigger.innerText = "(" + text + ")";
+			}else
+				infoBlock.appendChild(trigger);
 		}
 	}catch(e){
 		console.log("[ChottoBilibili] Matcher returned illegal reference.");
