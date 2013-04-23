@@ -154,8 +154,12 @@ var Main = new function () {
 		/** Run The jsPoll~ **/
 		jsPoll.run();
 	};
-	this.recache = function(){
-		var caches = Main.list.getAllCached();
+	this.recache = function(missingList){
+		if(missingList != null){
+			var caches = missingList;
+		}else{
+			var caches = Main.list.getAllCached();
+		}
 		var cacheDB = new CacheDB();
 		var createTask = function (avid){
 			var task = jsPoll.create(function(self){
@@ -217,10 +221,48 @@ var Main = new function () {
 		if(options == null){
 			options = {
 				remove: false,
-				autofix: false
+				autofix: {
+					missing: false,
+					broken: false
+				}
 			};
 		}
-		
+		var missing = [];
+		var broken = [];
+		var unlinked = [];
+		var c = Main.list.getAllCached("flat");
+		var cdb = new CacheDB();
+		for(var i = 0; i < c.length; i++){
+			if(cdb.get(c[i]) == null){
+				missing.push(c[i]);
+				continue;
+			}
+			var cachedItem = cdb.get(c[i]);
+			if(cachedItem.title == null ||
+				cachedItem.pic == null){
+				broken.push(c[i]);
+				continue;
+			}
+		}
+		var idx = cdb.getIndex();
+		for(var j = 0; j < idx.length; j++){
+			if(idx[j].indexOf("av") != 0)
+				continue;
+			if(c.indexOf(idx[j])<0){
+				unlinked.push(idx[j]);
+			}
+		}
+		if(options.autofix.missing){
+			Main.recache(missing);
+		}
+		if(options.autofix.broken){
+			Main.recache(broken);
+		}
+		return {
+			"missing": missing,
+			"broken": broken,
+			"gc": unlinked 
+		};
 	};
 	this.resumeHold = function(){
 		if(localStorage["__suspend"] == null)
@@ -311,7 +353,7 @@ chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
 					"avid":request.avid
 				});
 				sendResponse({"accepted":true});
-				break;
+				return;
 			}break;
 			case "biliStalker":{
 				sendResponse({});
