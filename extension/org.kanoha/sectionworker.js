@@ -9,6 +9,7 @@ function SectionWorker(boundSection,bgmlist){
 	var excludeRaws = false;
 	var refreshList = bgml.getRulesBySection(boundSection);
 	var cacheDB = new CacheDB();
+	var logger = null;
 	var createCache = function (rule,cacheLength){
 		var cache = [];
 		for(var i = 0; i < cacheLength; i++){
@@ -21,6 +22,9 @@ function SectionWorker(boundSection,bgmlist){
 	};
 	this.setRawsMode = function(mode){
 		excludeRaws = mode;
+	};
+	this.hookLogger = function(cons){
+		logger = cons;
 	};
 	this.cacheRefresh = function(rule){
 		/** Checks the refresh cache to work **/
@@ -44,9 +48,8 @@ function SectionWorker(boundSection,bgmlist){
 	this.matchInstance = function (inst){
 		/** Matches the Data to commit **/
 		try{
-			if(FlagCatcher != null && FlagCatcher.get("debug.outputIterations",false)){
-				console.log("[Log] (av" + inst.aid + ") " + inst.title);
-			}
+			if(logger != null)
+				logger.log("[Log](" + boundSection + ":av" + inst.aid + ") " + inst.title);
 		}catch(e){}
 		for(var i = 0; i < refreshList.length; i++){
 			try{
@@ -77,8 +80,8 @@ function SectionWorker(boundSection,bgmlist){
 							}
 						}
 						this.cacheRefresh(refreshList[i]);
-						if(cacheDB.get("img:" + refreshList[i].aid) == null){
-							cacheDB.write("img:" + refreshList[i].aid, inst.pic);
+						if(cacheDB.get("img:" + refreshList[i].id) == null){
+							cacheDB.write("img:" + refreshList[i].id, inst.pic);
 							cacahDB.commit();
 						}
 						if(refreshList[i].cache != null){
@@ -128,6 +131,8 @@ function SectionWorker(boundSection,bgmlist){
 			Not used here. Only to log unexpected ends.
 		**/
 		console.log("[Log](Worker)Flushed!");
+		if(logger != null)
+			logger.log("[War](" + boundSection + ")Worker Flushed!");
 		bgml.commit();
 		cacheDB.commit();
 	};

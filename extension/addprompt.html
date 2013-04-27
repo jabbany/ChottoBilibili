@@ -3,34 +3,43 @@
 	<head>
 		<meta charset="utf-8">
 		<title></title>
+		<script src="org.kanoha/tools.js"></script>
+		<script src="org.kanoha/bangumi.js"></script>
 		<script src="org.kanoha/transient.js"></script>
 		<script src="interfaces/prompt.js"></script>
 		<link href="assets/css/bootstrap.css" rel="stylesheet">
 		<link href="assets/css/bootstrap-responsive.css" rel="stylesheet">
 		<style>
+		body{ font-family: "Helvetica Neue", Helvetica, Arial,simsun, sans-serif;}
 		.nav li a.selected{ color: #fff; }
+		.navbar-inner {padding-left:0;}
+		@media (max-width: 979px){
+			.navbar-fixed-top .navbar-inner, .navbar-fixed-bottom .navbar-inner {
+				padding: 0;
+			}
+			.navbar {
+				margin-bottom:0;
+			}
+		}
 		.leavespace { margin-top:10px; }
 		.form-horizontal .control-label { text-align:left !important; width:70px; padding-left: 5px; }
 		.form-horizontal .controls { margin-left:80px; }
 		.help-inline { color: #bbb; }
-		textarea { width:440px; }
+		textarea { width:400px; }
 		#bangumiNameGuess{ color: #F93; }
 		#bangumiTypeGuess{ color: #fe3676; }
+		.form-actions {position:fixed; bottom:0; left:0; right:0;margin:0; padding-left:20px !important;}
 		</style>
 	</head>
 	<body>
-		<div class="container-fluid">
-			<div class="row-fluid">
-				<div class="span12">
-					<div class="navbar-inner">
-						<div class="navbar">
-						<ul class="nav">
-							<li><a class="selected">添加 <span id="bangumiNameGuess"></span> 到 <span id="bangumiTypeGuess"></span></a></li>
-						</ul>
-						</div>
-					</div>
-				</div>
+		<div class="navbar navbar-fixed-top">
+			<div class="navbar-inner">
+			<ul class="nav">
+				<li><a class="selected">添加 <span id="bangumiNameGuess"></span> 到 <span id="bangumiTypeGuess"></span></a></li>
+			</ul>
 			</div>
+		</div>
+		<div class="container-fluid">
 			<div class="row-fluid leavespace">
 				<div class="span12">
 					<form class="form-horizontal">
@@ -50,10 +59,17 @@
 								</div>
 							</div>
 							<div class="control-group">
-								<label class="control-label" for="pProgress">分类</label>
+								<label class="control-label" for="pType">分类</label>
 								<div class="controls">
-									<span class="label label-info">追番列表</span> 
-									<span class="label label-info">想看列表</span>
+									<span id="type_follow" class="label label-info">追番列表</span>
+									<span id="type_wish" class="label label-info">想看列表</span>
+								</div>
+							</div>
+							<div class="control-group" id="cg_regex">
+								<label class="control-label" for="pRegexp">匹配公式</label>
+								<div class="controls">
+									<input id="pRegexp" type="text" style="width:400px;" value="">
+									<span id="cg_msg" class="help-inline">一般情况下你不需要改动这个（<a id="cg_addExcl">设定排除式</a>）</span>
 								</div>
 							</div>
 							<div class="control-group">
@@ -61,13 +77,18 @@
 								<div class="controls">
 									<input id="pProgress" type="text" class="input-mini" value="0" style="text-align:right;"> / 
 									<input id="pTotal" type="text" class="input-mini" value="0">
-									<span class="help-inline">记录追番的进度</span>
+									<span class="help-inline">记录追番的进度，总集数会自动智能更新</span>
 								</div>
+							</div>
+							<div class="form-actions">
+								<button type="submit" id="btnCancelSettingsConnection" class="btn btn-primary">确认添加</button>
 							</div>
 						</fieldset>
 					</form>
+					
 				</div>
 			</div>
 		</div>
+		
 	</body>
 </html>

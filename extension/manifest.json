@@ -26,6 +26,7 @@
 			"org.kanoha/bangumi.js",
 			"org.kanoha/commit.js",
 			"org.kanoha/cachedb.js",
+			"org.kanoha/logger.js",
 			"org.kanoha/sectionworker.js",
 			"main.js"]
 	},

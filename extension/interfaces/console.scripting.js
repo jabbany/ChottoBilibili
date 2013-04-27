@@ -109,7 +109,6 @@ var ScriptingEngine = function(iv){
 	};
 
 	this.execute = function(text, quiet){
-		console.log(this.depth);
 		if(this.depth > 20){
 			print("Call stack depth exceeded.");
 			return;
@@ -264,7 +263,7 @@ var ScriptingEngine = function(iv){
 			case "reset":{
 				if(command.length != 2){
 					print("usage : reset [something]");
-					print("  reset some system value, usually this means clearing the value");
+					print("  reset some system value, usually this means clearing the value\n");
 					print("please make sure that you know what you are doing and that you ",true);
 					print("have backups!",true);
 					print("");
@@ -379,6 +378,103 @@ var ScriptingEngine = function(iv){
 				}
 				return;
 			}
+			case "nasu":{
+				if(command[1] == "--help" || command[1] == "-h"){
+					print("nasu - its a mini-game. Catch the falling eggplant");
+					print(" -n : no guideline");
+					return;
+				}else if(command[1] == "-n"){
+					var guide = false;
+				}else
+					var guide = true;
+				var lr = function(e){
+					if(e.keyCode == 37)
+						p = Math.max(p -1, 0);
+					else if(e.keyCode == 39)
+						p = Math.min(p +1, 19);
+					else if(e.keyCode == 27){
+						terminal.innerHTML = "";
+						clearInterval(iv);
+						print("Exited Game",true);
+						stdin.removeEventListener(lr);
+					}
+				}
+				var r = 0.1, adv = 0;
+				var slotsH = 20, slotsV = 13, p = 10;
+				var score = 0, mt = 0;
+				var items = [];
+				for(var i = 0; i < slotsV; i++) items[i] = [];
+				//Output the playing field
+				var iv = setInterval(function(){
+					terminal.innerHTML = "";
+					print("Score: " + score + " r: " + Math.round(r * 100),true);
+					print("");
+					mt++;
+					if(mt == 10)
+						mt = 0;
+					if(mt == 0 && Math.random() < r){
+						items[0][Math.floor(Math.random() * slotsH)] = 1;
+						r -= adv;r += 0.01;adv = 0;
+					}else if(mt == 0){
+						r += 0.05;adv+= 0.05;
+					}
+					for(var i = 0; i < slotsV; i++){
+						for(var j = 0; j < slotsH; j++){
+							if(items[i][j] == null || items[i][j] == 0){
+								if(j == p && guide)
+									print(".",true);
+								else
+									print(" ",true);
+							}else if(items[i][j] == 1){
+								if(mt == 0){
+									items[i][j] = 0;
+									if(i+1 < slotsV){
+										items[i+1][j] = 2;
+									}else{
+										if(p == j)
+											score++;
+										else{
+											score-=2;
+											if(score < 0){
+												clearInterval(iv);
+												terminal.innerHTML = "";
+												print("Game Over",false);
+												stdin.removeEventListener(lr);
+												return;
+											}
+										}
+									}
+									print(" ",true);
+								}else{
+									print("#", true);
+								}
+							}else if(items[i][j] == 2){
+								items[i][j] = 1;
+								print("#",true);
+							}
+						}
+						print("");
+					}
+					for(var j = 0; j < slotsH; j++){
+						if(j == p)
+							print("_", true);
+						else
+							print(" ", true);
+					}
+				},100);
+				stdin.addEventListener("keydown",lr);
+				return;
+			}
+			case "ps":{
+				//Prints working task q
+				var s = new SettingsConnector();
+				var d = s.get("logs.lastStartCheck");
+				var dateObj = new Date(d == null ? 0 : d);
+				print("Last Updated: " + dateObj.getFullYear() + "-" + (dateObj.getMonth()+1)
+					+"-"+dateObj.getDate() + " " + dateObj.getHours() + ":" + dateObj.getMinutes() +
+					":" + dateObj.getSeconds() + " (" + (d != null ? Math.round(((new Date()).getTime() -d)/60000): 0) + " mins ago)");
+				return;
+			}
 			case "pwd":{
 				print("/");
 				return;
@@ -438,11 +534,13 @@ var ScriptingEngine = function(iv){
 					"help : displays this help",
 					"var : creates temporary variable",
 					"json : parses json within a variable",
+					"serialize : serializes a json object",
 					"get : get system value",
 					"set : set system value",
 					"console : changes how this console behaves",
 					"reset : dumps stuff [dangerous]",
 					"clear : clears display",
+					"ps : shows status about the running sync/checks",
 					"defun : defines a function"
 				];
 				print("Available commands: ");

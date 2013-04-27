@@ -2,11 +2,15 @@ var Main = new function () {
 	this.list = new BangumiList("plugin",new CommitCallback());
 	this.settings = new SettingsConnector();
 	this.startCheck = function (){
+		if(Main.settings.get("logs.logNext")){
+			var logger = new Logger(4096);
+		}
 		var createSectTask = function (section){
 			var worker = new SectionWorker(section, Main.list);
 			if(Main.settings.get("watchlist.hideRaws.series"))
 				worker.setRawsMode(true);
-
+			if(logger!= null)
+				worker.hookLogger(logger);
 			if(worker.done(true))
 				return; /* Nothing to do! */
 				
@@ -27,12 +31,16 @@ var Main = new function () {
 							}
 							if(local.retryCount < 8){
 								local.retryCount++;
+								if(logger != null)
+									logger.log("[War](API)Hit Limit(" + local.retryCount + ")");
 								setTimeout(function(){
 									jsPoll.push(task);
 									inst.complete();
 								},500 * Math.pow(2,local.retryCount));
 								return;
 							}else{
+								if(logger != null)
+									logger.log("[Err](API)E_LIMIT_OVER");
 								console.log("[Err](API)Resp: E_LIMIT_OVER");
 								/* Flush the worker */
 								worker.flush();
