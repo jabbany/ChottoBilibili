@@ -146,9 +146,11 @@ $(window).addEventListener("load",function(){
 	});
 	
 	$("btnRebuildCache").addEventListener("click",function(){
-		chrome.extension.sendMessage({"method": "invokeRecache"}, function(response) {
-			alert("Rebuilt CacheDB.");
-		});
+		if(confirm("Are you sure you want to rebuild the entire CacheDB?")){
+			chrome.extension.sendMessage({"method": "invokeRecache"}, function(response) {
+				alert("Rebuilt CacheDB.");
+			});
+		}
 	});
 	
 	$("btnOptimizeCache").addEventListener("click",function(){
@@ -171,7 +173,7 @@ $(window).addEventListener("load",function(){
 		CDB.commit();
 		if(needsRebuild){
 			if(confirm("The CacheDB is incomplete. Attempt to rebuild it?")){
-				chrome.extension.sendMessage({"method": "invokeRecache"}, function(response) {
+				chrome.extension.sendMessage({"method": "invokeRecache", "isConservative": true}, function(response) {
 					alert("Rebuilt CacheDB.");
 				});
 			}

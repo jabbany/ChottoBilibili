@@ -529,6 +529,74 @@ var ScriptingEngine = function(iv){
 				print(JSON.stringify(command[1]));
 				return;
 			}
+			case "dmesg":{
+				if(command.length < 2){
+					var dmesg = localStorage.debuglog;
+					if(dmesg == null || dmesg == ""){
+						print("");
+					}else{
+						var d = JSON.parse(dmesg);
+						for(var i = d.length - 1; i >= 0; i--){
+							print(d[i]);
+						}
+					}
+				}else{
+					if(command[1] == "-c" || command[1] == "--clear"){
+						localStorage.debuglog = "[]";
+					}else if(command[1] == "-f" || command[1] == "--filter"){
+						if(command[2] != null){
+							try{
+								var r = new RegExp(command[2]);
+								var dmesg = localStorage.debuglog;
+								var d = JSON.parse(dmesg);
+								for(var i = d.length - 1; i >= 0; i--){
+									if(r.test(d[i]))
+										print(d[i]);
+								}	
+							}catch(er){
+								print("Filter error. Invalid Regex");
+							}
+						}else{
+							print("Filter error. Not specified");
+						}
+					}else if(command[1] == "-l" || command[1] == "--lines"){
+						try{
+							if(typeof command[2] == "string")
+								var lines = parseInt(command[2]);
+							else
+								var lines = command[2];
+							var dmesg = localStorage.debuglog;
+							var d = JSON.parse(dmesg);
+							for(var i = d.length - 1; i >= 0; i--){
+								if(lines-- > 0)
+									print(d[i]);
+							}	
+						}catch(e){
+							
+						}
+					}else if(command[1] == "-h" || command[1] == "--help"){
+						print("dmesg - outputs debugging messages");
+						print(" usage: dmesg -[f <filterRegex>|l <lines>|h]");
+						print("   -s : schedules debug on next check");
+						print("   -u : unschedules debug on next check");
+					}else if(command[1] == "-s"){
+						var sc = new SettingsConnector();
+						sc.set("logs.logNext",true);
+						if(sc.commit())
+							print("Scheduled Successfully.");
+						else
+							print("Schedule failed");
+					}else if(command[1] == "-u"){
+						var sc = new SettingsConnector();
+						sc.set("logs.logNext",false);
+						if(sc.commit())
+							print("UnScheduled Successfully.");
+						else
+							print("UnSchedule failed");
+					}
+				}
+				return;
+			}
 			case "help":{
 				var commands = [
 					"help : displays this help",
@@ -541,6 +609,7 @@ var ScriptingEngine = function(iv){
 					"reset : dumps stuff [dangerous]",
 					"clear : clears display",
 					"ps : shows status about the running sync/checks",
+					"dmesg : outputs the debugging messages",
 					"defun : defines a function"
 				];
 				print("Available commands: ");

@@ -2,8 +2,14 @@ var Main = new function () {
 	this.list = new BangumiList("plugin",new CommitCallback());
 	this.settings = new SettingsConnector();
 	this.startCheck = function (){
+		Main.settings.reload();
 		if(Main.settings.get("logs.logNext")){
 			var logger = new Logger(4096);
+			Main.settings.set("logs.logNext", false);
+			if(!Main.settings.commit()){
+				console.log("[War]UnsetLog:Failed");
+				logger.log("[War](Logger)UnsetLog:Failed");
+			}
 		}
 		var createSectTask = function (section){
 			var worker = new SectionWorker(section, Main.list);
@@ -58,7 +64,11 @@ var Main = new function () {
 										jsPoll.push(task);
 										inst.complete();
 									},1000 * Math.pow(2,local.retryCount));
+									if(logger != null)
+										logger.log("[War](API)Hit Limit(" + local.retryCount + ")");
 								}else{
+									if(logger != null)
+										logger.log("[Err](API)E_LIMIT_OVER");
 									console.log("[Err](API)Resp: E_LIMIT_OVER");
 									/* Flush the worker */
 									worker.flush();
@@ -352,6 +362,15 @@ chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
 			return;
 		}
 		switch(request.method){
+			case "refreshSettings":{
+				if(Main.settings != null){
+					Main.settings.reload();
+				}else{
+					Main.settings = new SettingsConnector();
+				}
+				sendResponse({});
+				return;
+			}break;
 			case "addFollowDlg":{
 				var trans = new TransientPrayer();
 				var matchingSection = Main.settings.get("matcher.tid");
@@ -379,11 +398,15 @@ chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
 				return;
 			}break;
 			case "invokeRecache":{
-				if( request.feedStatus == true )
-					Main.recache(function(status){
-						sendResponse(status);
+				if( request.isConservative == true){
+					//Only fix what is necessary
+					Main.cacheClean({
+						remove:false,
+						autofix:{missing:true, broken:true}
 					});
-				else{
+					sendResponse({});
+					return;
+				}else{
 					Main.recache();
 					sendResponse({});
 				}

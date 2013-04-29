@@ -90,9 +90,16 @@ function BangumiList(ctx, ccbo) {
         if (commitCallbackObject != null)
             commitCallbackObject.onCommit();
     };
-    this.merge = function () {
+    this.merge = function (abst1, abst2) {
         /** Perform a diff between two abstract lists **/
-
+		if(!abst2)
+			abst2 = abstraction;
+		
+		for(var x in abst1){
+			if(abst2[x] == null){
+				
+			}
+		}
     };
     this.query = function (id) {
         for (var i = 0; i < abstraction.sections.length; i++) {
