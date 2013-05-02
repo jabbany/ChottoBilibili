@@ -222,8 +222,10 @@ body {
 .progress .bar-warning:hover{
 	background:#ffc040;
 }
-.opt{
-	margin:6px 0 3px;
+.desc-tag{
+	background:#eee;
+	margin-top:4px;
+	padding:2px 2px 4px 2px;
 }
 
 h2{
@@ -234,6 +236,10 @@ h2{
 	width:320px;
 }
 
+.opt{
+	margin:6px 0 3px;
+}
+
 a{
 	outline: 0;
 	text-decoration: none;
@@ -242,17 +248,19 @@ a.redlink{
 	color:#f00;
 }
 
-
 img.preview{
 	height:40px;
 	width:53px;
 	float:left;
-	margin:1px 8px 1px 3px;
+	margin:2px 8px 2px 3px;
 	-moz-box-shadow: 1 1 3px #fff;
 	-webkit-box-shadow: 1 1 3px #fff;
 	box-shadow: 1px 1px 3px #fff;
 	border:1px solid #ccc;
 }
+
+
+/** Used  end **/
 
 .listLink{
 	max-width:230px;

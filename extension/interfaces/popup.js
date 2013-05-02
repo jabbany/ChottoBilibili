@@ -91,6 +91,20 @@ function genFunc (vid){
 	};
 }
 
+function genFuncDesc (vid, desc, img){
+	return function(){
+		try{
+			var v = cachedb.get(vid);
+			desc.innerHTML = "";
+			desc.appendChild(_t(v.description));
+			desc.style.display="";
+			
+			if(v.pic != null)
+			img.src = v.pic;
+		}catch(e){}
+	};
+}
+
 function loadRule(c, rule){
 	var container = _("div",{className:"selectable opt"},null);
 	var pvimg = _("img",{src:"",className:"preview"},null);
@@ -106,6 +120,10 @@ function loadRule(c, rule){
 	}
 	container.appendChild(pvimg);
 	container.appendChild(_t(rule.title + " (" + rule.current + "/" + rule.total + ")"));
+	var desc = _("div",{
+		"className":"desc-tag",
+		"style":{"display":"none"}
+	},_t("" + rule.desc));
 	var bar = _("div",{"className":"progress"},null);
 	for(var i = 0; i < rule.videos.length; i++){
 		var otherName = "";
@@ -123,10 +141,14 @@ function loadRule(c, rule){
 			"title":cachedb.get(vid).title,
 			"style":{"width":((smartDisplay) * 100) + "%"}},
 		_t(rule.current + i + 1));
+		
 		bar.appendChild(track);
+		
 		track.addEventListener("dblclick",genFunc(vid));
+		track.addEventListener("click",genFuncDesc(vid, desc, pvimg));
 	}
 	container.appendChild(bar);
+	container.appendChild(desc);
 	container.appendChild(_("div",{className:"clear"},null));
 	c.appendChild(container);
 };
