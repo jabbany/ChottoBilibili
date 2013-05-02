@@ -490,7 +490,14 @@ $(document).ready(function(){
 			aboutMode = -1;
 		}
 	});
-	
+	$("#btnSaveFollow").click(function(){
+		if(SC.states.currentForm == "FollowBangumi"){
+			if(SC.bgmlist != null)
+				SC.bgmlist.commit();
+			SC.states.formEdited = false;
+			alert(chrome.i18n.getMessage("general_save_success"));
+		}
+	});
 	try{
 		SC.func.fSettingsHome();
 	}catch(e){

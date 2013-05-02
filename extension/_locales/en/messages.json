@@ -43,6 +43,14 @@
 		"message":"Revert Changes",
 		"description":"String: cancel changes"
 	},
+	"general_save_success":{
+		"message":"Successfully Saved Changes!",
+		"description":"String: save changes successfully"
+	},
+	"general_save_error":{
+		"message":"Oh, dear! Something went wrong while saving.\n Please reload.",
+		"description":"String: save changes error"
+	},
 	"context_menu_search":{
 		"message":"Search Bilibili for '%s'",
 		"description":"Search context menu text"
