@@ -503,7 +503,7 @@ if(!chrome.runtime){
 		/** Remember unfinished state **/
 		Main.settings.set("logs.lastSuspSig", (new Date()).getTime());
 		Main.settings.commit();
-		chrome.alarms.create("resume",{periodInMinutes: 2});
+		chrome.alarms.create("resume",{delayInMinutes: 2});
 		jsPoll.suspendall();
 	};
 }
