@@ -187,7 +187,9 @@ function BangumiList(ctx, ccbo) {
             return false;
         if (rule.type == 3 || rule.type > 10)
             return false; // 10 and above are designated as managed by other plugins
-        if (rule.type != 1) {
+		if (rule["__disabled"])
+			return false;
+		if (rule.type != 1) {
             if (rule.type == 2) {
                 var timediff = (Math.floor((new Date()).getTime() / 1000) - rule.last);
                 if (timediff >= rule.interval)
@@ -282,6 +284,37 @@ function BangumiList(ctx, ccbo) {
         /** Gets a safe implementation of sections **/
         return abstraction.sections.slice(0);
     };
+	this.reassignId = function (node) {
+		/** Reassigns the id for the node **/
+		var oldId = node.id;
+		abstraction["lastId"]++;
+		node.id == abstraction["lastId"];
+		callEventListener("reorder", {
+			"node":node,
+			"oldId":oldId,
+			"newId":node.id
+		});
+	};
+	this.getSp = function (){
+		if(abstraction.special != null)
+			return abstraction.special.slice(0);
+		else
+			return [];
+	}
+	this.removeSp = function(spid){
+		if(abstraction.special == null)
+			return;
+		for(var i = 0; i < abstraction.special.length; i++){
+			if(abstraction.special[i] != null){
+				var s = abstraction.special[i];
+				if(s.spid == spid){
+					abstraction.splice(i,1);
+					return;
+				}
+			}
+		}
+		return;
+	}
     /* Loading Fin */
     this.refresh();
     /* Refreshd */

@@ -9,7 +9,9 @@ function _(type,init,inner){
 			}
 		}
 	}
-	if(inner!=null)
+	if(typeof inner == "string")
+		elem.appendChild(document.createTextNode(inner));
+	else if(typeof inner != "undefined" && inner != null)
 		elem.appendChild(inner);
 	return elem;
 }
@@ -62,8 +64,25 @@ var SC = {
 		var r_actions = row.insertCell(3);
 		row.className = "";
 		r_id.appendChild(document.createTextNode(rule.id != null ? rule.id : "0"));
+		if(rule["__disabled"]){
+			var icon = _("i",{
+				"className":"icon-exclamation-sign",
+				"title":chrome.i18n.getMessage("bangumi_disabled"),
+				"data-toggle":"tooltip"
+			},null);
+			r_id.appendChild(icon);
+			icon.addEventListener("mouseover",function(){
+				$(this).tooltip({"placement":"bottom"});
+				$(this).tooltip("toggle");
+			});
+			icon.addEventListener("dblclick", function(){
+				delete rule["__disabled"];
+				$(this).hide();
+				SC.states.formEdited = true;
+			});
+		}
 		r_desc.className = "follow-record";
-		var img = _("img",{src:"", className:"follow-image"});
+		var img = _("img",{src:"", className:"follow-image"}, null);
 		if(rule.img != null)
 			img.src = rule.img;
 		else{
@@ -173,12 +192,12 @@ var SC = {
 			maxLength(rule.matcher.e == null ? "" : rule.matcher.e, 12))));
 		if(rule.type == 2){
 			var housou = _("p",{},document.createTextNode("周期："));
-			housou.appendChild(_("code",{},rule.interval == null ? "0" : rule.interval / (3600 * 24)));
+			housou.appendChild(_("code",{},_t(rule.interval == null ? "0" : ("" + (rule.interval / (3600 * 24))) )));
 			r_expr.appendChild(housou);
 		}
 		
 		// Add buttons
-		var btngrp = _("div",{className:"btn-group"});
+		var btngrp = _("div",{className:"btn-group"}, null);
 		var edit = _("a",{className:"btn btn-small"},document.createTextNode(
 			chrome.i18n.getMessage("general_edit")));
 		var del = _("a",{className:"btn btn-danger btn-small"},document.createTextNode(
@@ -186,6 +205,7 @@ var SC = {
 		
 		edit.addEventListener("click",function(){
 			SC.states.formEdited = true;
+			$("#editDlg").modal("toggle");
 		});
 		del.addEventListener("click",function(){
 			if(rule.id != null && typeof rule.id == "number"){
@@ -500,6 +520,19 @@ $(document).ready(function(){
 			alert(chrome.i18n.getMessage("general_save_success"));
 		}
 	});
+	
+	$("#editHide").click(function(){
+		$("#editDlg").modal('hide');
+	});
+	
+	$("#editCancel").click(function(){
+		$("#editDlg").modal('hide');
+	});
+	
+	$("#editSave").click(function(){
+		$("#editDlg").modal('hide');
+	});
+	
 	try{
 		SC.func.fSettingsHome();
 	}catch(e){

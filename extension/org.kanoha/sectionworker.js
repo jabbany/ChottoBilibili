@@ -48,6 +48,7 @@ function SectionWorker(boundSection, bgmlist) {
     };
     this.matchInstance = function (inst) {
         /** Matches the Data to commit **/
+		var foundMatch = false;
         try {
             if (logger != null)
                 logger.log("[Log](" + boundSection + ":av" + inst.aid + ") " + inst.title);
@@ -83,7 +84,7 @@ function SectionWorker(boundSection, bgmlist) {
                         this.cacheRefresh(refreshList[i]);
                         if (cacheDB.get("img:" + refreshList[i].id) == null) {
                             cacheDB.write("img:" + refreshList[i].id, inst.pic);
-                            cacahDB.commit();
+                            cacheDB.commit();
                         }
                         if (refreshList[i].cache != null) {
                             if (refreshList[i].cache[rIdx] == null) {
@@ -91,7 +92,9 @@ function SectionWorker(boundSection, bgmlist) {
                                 cacheDB.write("av" + inst.aid, inst);
                                 cacheDB.commit();
                             } else if (refreshList[i].cache[rIdx] != "av" + inst.aid &&
-                                refreshList[i].cache[rIdx] != "-av" + inst.aid) {
+                                refreshList[i].cache[rIdx] != "-av" + inst.aid && 
+								!/\u751F\u8089/.test(inst.title)) {
+								// Replace the original if this is not a raw
                                 refreshList[i].cache[rIdx] = "av" + inst.aid;
                                 cacheDB.write("av" + inst.aid, inst);
                                 cacheDB.commit();
@@ -100,17 +103,30 @@ function SectionWorker(boundSection, bgmlist) {
                         }
                     } else {
                         /* Watched and recorded */
+						if (cacheDB.get("img:" + refreshList[i].id) == null) {
+                            cacheDB.write("img:" + refreshList[i].id, inst.pic);
+                        }
+						cacheDB.write("av" + inst.aid, inst);
+						cacheDB.commit();
+						if(refreshList[i].type == 2){
+							refreshList[i].last = Math.floor((new Date()).getTime() / 1000);
+						}
                         refreshList.splice(i, 1);
                         bgml.commit();
                     }
+					foundMatch = true;
                     break;
                 }
-
             } catch (e) {
                 /* Wrong Rules. */
                 console.log("[War](Worker)Rule Error");
             }
         }
+		
+		if(!foundMatch){
+			cacheDB.write("av" + inst.aid, inst);
+			cacheDB.archive(["av" + inst.aid]);
+		}
     };
     this.getSection = function () {
         return boundSection;
@@ -137,6 +153,18 @@ function SectionWorker(boundSection, bgmlist) {
         bgml.commit();
         cacheDB.commit();
     };
+	this.markAsBad = function () {
+		/** Since the runner iterates through the entire db, to prevent 
+		side effects, we more or less have to mark some as bad **/
+		if(logger != null)
+			logger.log("[Not](Bad_Rule) Marking remaining " + refreshList.length + " rules as bad");
+		if(refreshList.length == 0)
+			return;
+		for(var i = 0; i < refreshList.length; i++){
+			refreshList[i]["__disabled"] = true;
+		}
+		bgml.commit();
+	};
     this.getRemRules = function () {
         var ids = [];
         for (var i = 0; i < refreshList.length; i++) {
