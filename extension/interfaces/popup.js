@@ -29,6 +29,8 @@ function clearElem(e){
 /** End Base Toolkit **/
 var bgml = new BangumiList("plugin",null);
 var tp = new TransientPrayer();
+var cachedb = new CacheDB();
+
 var MenuItem = new function(){
 	var menuitems = {
 		follow:function(){},
@@ -65,12 +67,29 @@ var MenuItem = new function(){
 				$(m).className = "selected";
 			}
 		}
-		//try{
+		try{
 			menuitems[elem]();
-		//}catch(e){console.log("MenuData Error");}
+		}catch(e){console.log("MenuData Error");}
 		this.onSelect(elem);
 	};
 };
+function genFunc (vid){
+	return function(){
+		var obj = this;
+		chrome.tabs.create({
+			url:"http://www.bilibili.tv/video/" + vid + "/",
+			active:false
+		});
+		chrome.extension.sendMessage({
+			"method":"updateProgress",
+			"avid":vid
+		},function(resp){
+			if(resp.status == 200){
+				obj.className = "bar bar-warning";
+			}
+		});
+	};
+}
 
 function loadRule(c, rule){
 	var container = _("div",{className:"selectable opt"},null);
@@ -87,6 +106,27 @@ function loadRule(c, rule){
 	}
 	container.appendChild(pvimg);
 	container.appendChild(_t(rule.title + " (" + rule.current + "/" + rule.total + ")"));
+	var bar = _("div",{"className":"progress"},null);
+	for(var i = 0; i < rule.videos.length; i++){
+		var otherName = "";
+		if(rule.total - rule.current - rule.videos.length > 3) 
+			var smartDisplay = 1 / (rule.videos.length);
+		else
+			var smartDisplay = 1 / (rule.total - rule.current);
+		if(rule.current + i + 1 == rule.total){
+			//This is the end
+			otherName = " bar-success";
+		}
+		var vid = rule.videos[i].substring(0,1) == "-" ? rule.videos[i].substring(1) : rule.videos[i];
+		var track = _("div",{
+			"className":"bar" + otherName,
+			"title":cachedb.get(vid).title,
+			"style":{"width":((smartDisplay) * 100) + "%"}},
+		_t(rule.current + i + 1));
+		bar.appendChild(track);
+		track.addEventListener("dblclick",genFunc(vid));
+	}
+	container.appendChild(bar);
 	container.appendChild(_("div",{className:"clear"},null));
 	c.appendChild(container);
 };

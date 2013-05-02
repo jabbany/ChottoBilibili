@@ -110,6 +110,7 @@ var SC = {
 				document.createTextNode(rule.current + "/" + rule.total)));
 		try{
 			var genFunction = function (vid){
+				vid = vid.substring(0,1) == "-" ? vid.substring(1) : vid;
 				return function(){
 					var vidData = SC.cdb.get(vid);
 					if(vidData != null){
@@ -123,14 +124,15 @@ var SC = {
 				return function(){
 					var obj = this;
 					chrome.tabs.create({
-						url:"http://www.bilibili.tv/video/" + videoId + "/"
+						url:"http://www.bilibili.tv/video/" + videoId + "/",
+						active:false
 					});
 					//Also mark this as saved, send a message to main extension
 					chrome.extension.sendMessage({
 						"method":"updateProgress",
 						"avid":videoId
 					},function(resp){
-						if(resp.code == 200){
+						if(resp.status == 200){
 							obj.className = "bar bar-watchlist bar-success";
 						}
 					});

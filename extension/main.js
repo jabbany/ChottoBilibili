@@ -421,6 +421,48 @@ chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
 				}
 				return;
 			}break;
+			case "updateProgress":{
+				if(typeof request.section == "number"){
+					//Search by section
+					Main.list.refresh();//Just to be safe since we are editing
+					var rules = Main.list.getRulesBySection(request.section);
+					for(var i = 0; i < rules.length; i++){
+						if(request.avid != null && 
+							rules[i].cache != null && 
+							rules[i].cache.indexOf(request.avid) >= 0){
+							//Found! Heh!
+							var index = rules[i].cache.indexOf(request.avid);
+							if(index != 0){
+								if(rules[i].cache[index].substring(0,1) == "-"){
+									sendResponse({"status":304}); // Unchanged
+									return;
+								}
+								rules[i].cache[index] = "-" + rules[i].cache[index];
+								Main.list.commit();//Save data
+								sendResponse({"status":304}); // Unchanged
+								return;
+							}else{
+								//Delete from the cache and progress the rule's curr
+								while(rules[i].cache[0].substring(0,1) == "-"){
+									rules[i].cache.splice(0,1);
+									rules[i].current++;
+								}
+								sendResponse({"status":200});
+								return;
+							}
+						}else if(request.avid == null){
+							//No avid to work with, damn
+							//We must then match with the rule to find progress
+						}
+					}
+				}else if(request.avid != null){
+					//Check avid
+					sendResponse({"status":200});
+					return;
+				}
+				sendResponse({"status":404});
+				return;
+			}break;
 			case "quickUpdate":{
 				//Quick Updates
 				sendResponse({"status":200});
