@@ -100,6 +100,9 @@ function SectionWorker(boundSection, bgmlist) {
                         }
                     } else {
                         /* Watched and recorded */
+						if(refreshList[i].type == 2){
+							refreshList[i].last = Math.floor((new Date()).getTime() / 1000);
+						}
                         refreshList.splice(i, 1);
                         bgml.commit();
                     }
