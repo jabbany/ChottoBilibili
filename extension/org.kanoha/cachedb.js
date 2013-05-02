@@ -14,7 +14,15 @@ function CacheDB(dbName) {
         db[index] = record;
     };
     this.get = function (index) {
-        return db[index];
+		if(typeof db[index] == "undefined"){
+			if(typeof db["__archive"] != "undefined"){
+				if(db["__archive"].indexOf(index) >= 0){
+					return {code:301, msg:"Archived"};
+				}else
+					return null;
+			}
+		}else
+			return db[index];
     };
     this.search = function (colname, filter) {
         var r = [];
@@ -40,10 +48,12 @@ function CacheDB(dbName) {
                 delete db[elm];
         }
     };
-    this.getIndex = function (index) {
+    this.getIndex = function (index, showHidden) {
         var list = [];
         for (elm in db) {
-            list.push(elm);
+			if(elm.substring(0,2) != "__" && !showHidden){
+				list.push(elm);
+			}
         }
         return list;
     };
@@ -58,6 +68,44 @@ function CacheDB(dbName) {
             }
         }
     };
+	this.archive = function (list){
+		//Throws the list of keys and objects into an indexed db
+		if(db["__archive"] == null){
+			db["__archive"] = [];
+			db["__archive_version"] = 1;
+		}
+		var idb = window.indexedDB;
+		if(idb == null)
+			return;
+		
+		var req = idb.open("cachedb:" + databaseName, db["__archive_version"]);
+		var ref = this;
+		req.onupgradeneeded = function(e){
+			var xdb = e.target.result;
+			if(!xdb.objectStoreNames.contains("dbstore")){
+				var store = xdb.createObjectStore("dbstore",{keyPath: "id"});
+			}else{
+				var store = xdb.getObjectStore("dbstore","readwrite");
+			}
+			
+		};
+		req.onsuccess = function(e) {
+			xdb = e.target.result;
+			var trans = xdb.transaction(["dbstore"], "readwrite");
+			var store = trans.objectStore("dbstore");
+			for(var i = 0; i < list.length; i++){
+				if(typeof db[list[i]] != "undefined"){
+					db["__archive"].push(list[i]);
+					store.add({
+						"id":list[i],
+						"data":db[list[i]]
+					});
+					delete db[list[i]];
+				}
+			}
+			ref.commit();
+		};
+	};
     this.refresh = function (callback) {
         db = JSON.parse(localStorage["db:" + databaseName]);
         if (callback != null)

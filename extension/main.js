@@ -3,6 +3,9 @@ var Main = new function () {
 	this.settings = new SettingsConnector();
 	this.startCheck = function (){
 		Main.settings.reload();
+		var maxIterations = Main.settings.get("watchlist.disableCutoff");
+		if(maxIterations == null)
+			maxIterations = 60;
 		if(Main.settings.get("logs.logNext")){
 			var logger = new Logger(4096);
 			Main.settings.set("logs.logNext", false);
@@ -92,6 +95,14 @@ var Main = new function () {
 						local.curpage++;
 						if(!worker.done()){
 							if(local.rempages > 0){
+								if((local.curpage - 1) > maxIterations){
+									worker.markAsBad();
+									worker.flush();
+									inst.complete();
+									return;
+								}
+								if(local.retryCount > 0)
+									local.retryCount--;
 								setTimeout(function(){
 									jsPoll.push(task);
 									inst.complete();
@@ -390,6 +401,15 @@ chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
 				var sObj = (Main == null) ? new SettingsConnector() : Main.settings;
 				var val = sObj.get(request.key);
 				sendResponse({value:val});
+				return;
+			}break;
+			case "invokeCheck":{
+				if(Main.settings == null) Main.settings = new SettingsConnector();
+				else Main.settings.reload(); 
+				//Makes sure the settings are fresh, since this is only manually called
+				Main.settings.set("logs.lastStartCheck", (new Date()).getTime());
+				Main.startCheck();
+				sendResponse({});
 				return;
 			}break;
 			case "invokeSync":{

@@ -180,7 +180,18 @@ $(window).addEventListener("load",function(){
 		}
 		alert("Optimize finished.");
 	});
-	
+	$("btnCheckNow").addEventListener("click",function(){
+		if(confirm("Are you sure you wish to initiate check NOW?")){
+			try{
+				chrome.extension.sendMessage({"method": "invokeCheck"}, function(resp){
+					alert("Check Invoked!");
+				});
+			}catch(e){
+				//Exceptions
+				console.log(e);
+			}
+		}
+	});
 	$("command-line").addEventListener("keydown",function(e){
 		if(e.keyCode == 13){
 			try{

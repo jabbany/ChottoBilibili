@@ -83,7 +83,7 @@ function SectionWorker(boundSection, bgmlist) {
                         this.cacheRefresh(refreshList[i]);
                         if (cacheDB.get("img:" + refreshList[i].id) == null) {
                             cacheDB.write("img:" + refreshList[i].id, inst.pic);
-                            cacahDB.commit();
+                            cacheDB.commit();
                         }
                         if (refreshList[i].cache != null) {
                             if (refreshList[i].cache[rIdx] == null) {
@@ -100,6 +100,11 @@ function SectionWorker(boundSection, bgmlist) {
                         }
                     } else {
                         /* Watched and recorded */
+						if (cacheDB.get("img:" + refreshList[i].id) == null) {
+                            cacheDB.write("img:" + refreshList[i].id, inst.pic);
+                        }
+						cacheDB.write("av" + inst.aid, inst);
+						cacheDB.commit();
 						if(refreshList[i].type == 2){
 							refreshList[i].last = Math.floor((new Date()).getTime() / 1000);
 						}
@@ -140,6 +145,18 @@ function SectionWorker(boundSection, bgmlist) {
         bgml.commit();
         cacheDB.commit();
     };
+	this.markAsBad = function () {
+		/** Since the runner iterates through the entire db, to prevent 
+		side effects, we more or less have to mark some as bad **/
+		if(logger != null)
+			logger.log("[Not](Bad_Rule) Marking remaining " + refreshList.length + " rules as bad");
+		if(refreshList.length == 0)
+			return;
+		for(var i = 0; i < refreshList.length; i++){
+			refreshList[i]["__disabled"] = true;
+		}
+		bgml.commit();
+	};
     this.getRemRules = function () {
         var ids = [];
         for (var i = 0; i < refreshList.length; i++) {
