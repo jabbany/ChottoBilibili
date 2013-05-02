@@ -23,6 +23,14 @@
 		"message":"Save",
 		"description":"String: save"
 	},
+	"general_edit":{
+		"message":"Edit",
+		"description":"String: edit"
+	},
+	"general_delete":{
+		"message":"Delete",
+		"description":"String: delete"
+	},
 	"general_save_settings":{
 		"message":"Save",
 		"description":"String: save settings"
@@ -34,6 +42,14 @@
 	"general_cancel_settings":{
 		"message":"Revert Changes",
 		"description":"String: cancel changes"
+	},
+	"general_save_success":{
+		"message":"Successfully Saved Changes!",
+		"description":"String: save changes successfully"
+	},
+	"general_save_error":{
+		"message":"Oh, dear! Something went wrong while saving.\n Please reload.",
+		"description":"String: save changes error"
 	},
 	"context_menu_search":{
 		"message":"Search Bilibili for '%s'",

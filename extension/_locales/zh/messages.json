@@ -23,6 +23,14 @@
 		"message":"保存",
 		"description":"字符串：保存"
 	},
+	"general_edit":{
+		"message":"编辑",
+		"description":"字符串：编辑"
+	},
+	"general_delete":{
+		"message":"删除",
+		"description":"字符串：删除"
+	},
 	"general_save_settings":{
 		"message":"保存设置",
 		"description":"字符串：保存设置"
@@ -34,6 +42,14 @@
 	"general_cancel_settings":{
 		"message":"取消更改",
 		"description":"字符串：取消更改"
+	},
+	"general_save_success":{
+		"message":"保存信息成功！",
+		"description":"字符串：保存成功"
+	},
+	"general_save_error":{
+		"message":"啊呜！好像出了点什么问题。。。\n请重新加载一下页面。",
+		"description":"字符串：保存失败"
 	},
 	"context_menu_search":{
 		"message":"用 哔哩哔哩 搜索 “%s”",

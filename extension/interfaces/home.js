@@ -13,7 +13,14 @@ function _(type,init,inner){
 		elem.appendChild(inner);
 	return elem;
 }
+function maxLength (text, len){
+	if(text.length <= len)
+		return text;
+	else 
+		return text.substring(0, len-3) + "...";
+}
 function _e(e){ return document.getElementById(e); }
+function _t(t) { return document.createTextNode(t); }
 function is_true(bool, t ,f){return bool ? t : f;}
 var SC = {
 	cdb:new CacheDB(),
@@ -96,13 +103,14 @@ var SC = {
 		progress.appendChild(_("div",{
 					"className":"bar bar-watchlist bar-success", 
 					"style":{
-						width:(rule.current * 100 / rule.total) + "%"
+						width:(rule.total <= 25 ? (rule.current * 100 / rule.total) : 40) + "%"
 					},
 					"title":rule.current + "/" + rule.total
 					},
 				document.createTextNode(rule.current + "/" + rule.total)));
 		try{
 			var genFunction = function (vid){
+				vid = vid.substring(0,1) == "-" ? vid.substring(1) : vid;
 				return function(){
 					var vidData = SC.cdb.get(vid);
 					if(vidData != null){
@@ -111,19 +119,94 @@ var SC = {
 					$(this).tooltip("toggle");
 				};
 			}
+			var genClickFunction = function (vid){
+				var videoId = vid.substring(0,1) == "-" ? vid.substring(1) : vid;
+				return function(){
+					var obj = this;
+					chrome.tabs.create({
+						url:"http://www.bilibili.tv/video/" + videoId + "/",
+						active:false
+					});
+					//Also mark this as saved, send a message to main extension
+					chrome.extension.sendMessage({
+						"method":"updateProgress",
+						"avid":videoId
+					},function(resp){
+						if(resp.status == 200){
+							obj.className = "bar bar-watchlist bar-success";
+						}
+					});
+				}
+			};
 			for(var i = 0; i < rule.cache.length; i++){
 				var vdata = SC.cdb.get(rule.cache[i]);
+				var displayText = true;
+				if(rule.total > 25 && rule.total - rule.current > 12)
+					displayText = false;
+				var appStyle = "";
+				if(rule.cache[i] != null && rule.cache[i].substring(0,1) == "-"){
+					appStyle = " bar-success";
+				}else if(i != rule.cache.length - 1)
+					appStyle = " bar-warning";
+					
 				var b = _("div",{
 							"title":(vdata != null ? vdata.title : rule.cache[i]),
 							"data-toggle":"tooltip",
-							"className":"bar bar-watchlist" + (i == rule.cache.length - 1 ? "" : " bar-warning"), 
-							"style":{width:(100 / rule.total) + "%"}
-						},rule.total > 40 ? null : document.createTextNode(rule.current + i + 1));
+							"className":"bar bar-watchlist" + appStyle, 
+							"style":{width:(rule.total > 25 ? 60 / (rule.total - rule.current):(100 / rule.total)) + "%"}
+						},displayText ? document.createTextNode(rule.current + i + 1) : null);
 				b.addEventListener("mouseover",genFunction(rule.cache[i]));
+				b.addEventListener("click",genClickFunction(rule.cache[i]));
 				progress.appendChild(b);
 			}
 		}catch(e){console.log("Cache Error");}
 		r_desc.appendChild(info);
+		
+		// Add regex
+		var regx = _("p",{},document.createTextNode("匹配式："));
+		var rexcl = _("p",{},document.createTextNode("排除式："));
+		r_expr.appendChild(regx);
+		r_expr.appendChild(rexcl);
+		regx.appendChild(_("code",{},document.createTextNode(
+			maxLength(rule.matcher.m == null ? rule.matcher : rule.matcher.m, 12))));
+		rexcl.appendChild(_("code",{},document.createTextNode(
+			maxLength(rule.matcher.e == null ? "" : rule.matcher.e, 12))));
+		if(rule.type == 2){
+			var housou = _("p",{},document.createTextNode("周期："));
+			housou.appendChild(_("code",{},rule.interval == null ? "0" : rule.interval / (3600 * 24)));
+			r_expr.appendChild(housou);
+		}
+		
+		// Add buttons
+		var btngrp = _("div",{className:"btn-group"});
+		var edit = _("a",{className:"btn btn-small"},document.createTextNode(
+			chrome.i18n.getMessage("general_edit")));
+		var del = _("a",{className:"btn btn-danger btn-small"},document.createTextNode(
+			chrome.i18n.getMessage("general_delete")));
+		
+		edit.addEventListener("click",function(){
+			SC.states.formEdited = true;
+		});
+		del.addEventListener("click",function(){
+			if(rule.id != null && typeof rule.id == "number"){
+				SC.states.formEdited = true;
+				SC.bgmlist.remove(rule.id);
+			}else{
+				//Give this rule a temporary id
+				var alloc = 4000;
+				while(SC.bgmlist.query(alloc) != null) alloc++;
+				rule.id = alloc;
+				SC.bgmlist.remove(rule.id);
+				SC.states.formEdited = true;
+			}
+			table.deleteRow(row.rowIndex);
+		});
+		
+		
+		btngrp.appendChild(edit);
+		btngrp.appendChild(del);
+		
+		r_actions.appendChild(btngrp);
 	},
 	func:{
 		"null":function(){return true;},
@@ -188,6 +271,8 @@ var SC = {
 				SC.states.formEdited = !confirm("是否放弃现在的更改？");
 				if(SC.states.formEdited)
 					return false;
+				SC.bgmlist.refresh(); //Reload the BGMlist
+				SC.opt.reload(); //Reload the settings
 				return true;
 			}
 			return true;
@@ -301,7 +386,7 @@ var SC = {
 			SC.func.setNewForm("FollowBangumi");
 			SC.func.hideAllBut("FollowBangumi");
 			var tbl = $("#flBangumiTbl")[0];
-			if(tbl != null && tbl.rows.length > 1){
+			if(tbl != null){
 				while(tbl.rows.length > 1){
 					tbl.deleteRow(1);
 				}
@@ -330,6 +415,33 @@ var SC = {
 				return false;
 			SC.func.setNewForm("ServiceConnect");
 			SC.func.hideAllBut("ServiceConnect");
+			//Load the table
+			var tbl = _e("pluginTbl");
+			if(tbl != null){
+				while(tbl.rows.length > 1){
+					tbl.deleteRow(1);
+				}
+				//Add everything back in
+				if(Plugins != null)
+					var plug = Plugins.getAll();
+				else
+					var plug = [];
+				for(var i = 0; i < plug.length; i++){
+					var row = tbl.insertRow(i+1);
+					var r_name = row.insertCell(0);
+					var r_ver = row.insertCell(1);
+					var r_key = row.insertCell(2);
+					var r_priv = row.insertCell(3);
+					var r_action = row.insertCell(4);
+					r_name.appendChild(_t(plug[i].name));
+					r_ver.appendChild(_t(plug[i].version));
+					r_key.appendChild(_t(plug[i].id));
+					console.log(plug[i]);
+					for(var j = 0; j < plug[i].permissions.length; j++)
+						r_priv.appendChild(_t("+" + plug[i].permissions[j] + "\u00a0"));
+					r_action.appendChild(_t(chrome.i18n.getMessage("general_delete")));
+				}
+			}
 			return true;
 		},
 		"fServiceDonate":function(){
@@ -380,6 +492,19 @@ $(document).ready(function(){
 			aboutMode = -1;
 		}
 	});
+	$("#btnSaveFollow").click(function(){
+		if(SC.states.currentForm == "FollowBangumi"){
+			if(SC.bgmlist != null)
+				SC.bgmlist.commit();
+			SC.states.formEdited = false;
+			alert(chrome.i18n.getMessage("general_save_success"));
+		}
+	});
+	try{
+		SC.func.fSettingsHome();
+	}catch(e){
+		console.log("Unloaded Default loader");
+	}
 	var keys = [65, 66, 39, 37, 39, 37, 40, 40, 38, 38];
 	$(document).keydown(function(e){
 		if(e.keyCode == keys[keys.length - 1]){
