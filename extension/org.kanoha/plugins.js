@@ -1,4 +1,3 @@
-/** Plugin manager **/
 var Plugins = new function () {
         var s = new SettingsConnector();
         var plugins = s.get("plugins");
@@ -66,5 +65,19 @@ var Plugins = new function () {
         };
         this.exists = function (pluginId) {
             return plugins["p:" + pluginId] != null;
+        };
+        this.getAll = function (){
+        	var p = [];
+        	for(var x in plugins){
+        		if(x.substring(0,2) == "p:")
+        			p.push({
+        				"name":plugins[x].name,
+        				"version":plugins[x].version,
+        				"permissions":plugins[x].permissions,
+        				"key":plugins[x].key,
+        				"id":x.substring(2)
+        			});
+        	}
+        	return p;
         };
     }

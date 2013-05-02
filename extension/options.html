@@ -10,6 +10,7 @@
 	<script src="assets/js/jquery.js"></script>
 	<script src="org.kanoha/crypto.js"></script>
 	<script src="org.kanoha/settings.js"></script>
+	<script src="org.kanoha/plugins.js"></script>
 	<script src="org.kanoha/cachedb.js"></script>
 	<script src="org.kanoha/bangumi.js"></script>
 	<script src="interfaces/home.js"></script>
@@ -95,7 +96,7 @@
           </div><!--/.well -->
         </div><!--/span-->
 		<!-- Hidden Sections -->
-        <div class="span9" id="viewSettingsHome" style="display:none;">
+        <div class="span9" id="viewSettingsHome" style="display:;">
 			<!-- #UNIT: settingsHome -->
           <div class="hero-unit">
 			<div id="homeHdr" style="width:1100px;float:right;height:216px;">
@@ -290,52 +291,13 @@
 			</div>
 		</div>
 		
-		<div class="span9" id="viewFollowBangumi" style="display:;">
+		<div class="span9" id="viewFollowBangumi" style="display:none;">
 			<!-- #UNIT: followBangumi -->
 			<div class="row-fluid">
 				<div class="span12">
 					<h1 class="page-header">追番列表 <small>自动追番设置</small></h1>
 					<table class="table table-bordered follow-table" id="flBangumiTbl">
 						<thead><tr><th width="20">ID</th><th>番组名称</th><th width="200">匹配方式</th><th width="100">操作</th></tr></thead>
-						<tr>
-							<td>1<br></td>
-							<td class="follow-record">
-								<img class="follow-image" src="http://i0.hdslb.com/u_f/191cbf52a9a7bdecc757101282d5c128.jpg"/>
-								<div class="follow-image-shadow"><div></div></div>
-								<div class="follow-info">
-									<p class="title">
-										<span class="label label-info">新番二次元</span> 我的代码不可能那么多 <small>(这里是备注名称)</small>
-									</p>
-									<p class="descr">这里是描述</p>
-									<div class="progress progress-striped min-margin"><div class="bar" style="width:50%">7/13</div></div>
-								</div>
-							</td>
-							<td><p>匹配式：<code>测试 (\d+)</code></p><p>排除式：<code></code></p>
-							<p class="no-margin">放送周期：<code>5天</code></p></td>
-							<td><div class="btn-group"><a class="btn btn-small">编辑</a><a class="btn btn-danger btn-small">删除</a></div></td>
-						</tr>
-						<tr>
-							<td>2<br></td>
-							<td class="follow-record">
-								<img class="follow-image" src="http://i1.hdslb.com/u_f/76478f2205b62f4ef813ef96cc6d00e0.jpg"/>
-								<div class="follow-image-shadow"><div></div></div>
-								<div class="follow-info">
-									<p class="title">
-										<span class="label label-info">期刊</span> 你妹的这是毛期刊啊！！ <small>(何ですか！！これ！！)</small>
-									</p>
-									<p class="descr">少年制作伪期刊，暂且先追。</p>
-									<div class="progress progress-striped min-margin">
-										<div class="bar bar-success" style="width:30%">4/13</div>
-										<div class="bar bar-warning" style="width:10%">5</div>
-										<div class="bar bar-warning" style="width:10%">6</div>
-										<div class="bar bar-warning" style="width:10%">7</div>
-										<div class="bar" style="width:10%">8</div>
-									</div>
-								</div>
-							</td>
-							<td><p></p></td>
-							<td><div class="btn-group"><a class="btn btn-small">编辑</a><a class="btn btn-danger btn-small">删除</a></div></td>
-						</tr>
 					</table>
 					<div class="form-actions">
 						<button type="submit" id="btnAddFollow" class="btn btn-primary">添加追番系列</button>

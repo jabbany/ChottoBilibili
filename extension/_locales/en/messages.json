@@ -23,6 +23,14 @@
 		"message":"Save",
 		"description":"String: save"
 	},
+	"general_edit":{
+		"message":"Edit",
+		"description":"String: edit"
+	},
+	"general_delete":{
+		"message":"Delete",
+		"description":"String: delete"
+	},
 	"general_save_settings":{
 		"message":"Save",
 		"description":"String: save settings"

@@ -23,6 +23,14 @@
 		"message":"保存",
 		"description":"字符串：保存"
 	},
+	"general_edit":{
+		"message":"编辑",
+		"description":"字符串：编辑"
+	},
+	"general_delete":{
+		"message":"删除",
+		"description":"字符串：删除"
+	},
 	"general_save_settings":{
 		"message":"保存设置",
 		"description":"字符串：保存设置"
