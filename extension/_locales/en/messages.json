@@ -55,6 +55,10 @@
 		"message":"Search Bilibili for '%s'",
 		"description":"Search context menu text"
 	},
+	"bangumi_disabled":{
+		"message":"This item has been disabled",
+		"description":"Disabled"
+	},
 	"content_collect":{
 		"message":"+Follow",
 		"description":"Add to collection"

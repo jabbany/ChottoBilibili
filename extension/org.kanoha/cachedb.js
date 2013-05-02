@@ -48,13 +48,22 @@ function CacheDB(dbName) {
                 delete db[elm];
         }
     };
-    this.getIndex = function (index, showHidden) {
+    this.getIndex = function (showHidden, includeArchives) {
         var list = [];
         for (elm in db) {
-			if(elm.substring(0,2) != "__" && !showHidden){
+			if(elm.substring(0,2) != "__"){
+				list.push(elm);
+			}else if(showHidden){
 				list.push(elm);
 			}
         }
+		if(includeArchives){
+			if(db["__archive"]){
+				for(var i = 0; i < db["__archive"].length; i++){
+					list.push(db["__archive"][i]);
+				}
+			}
+		}
         return list;
     };
     this.truncate = function (chk) {
@@ -68,6 +77,11 @@ function CacheDB(dbName) {
             }
         }
     };
+	this.unarchive = function (list){
+		//Fetches a list of objects from the archives and throws them back in 
+		//the working db
+		
+	};
 	this.archive = function (list){
 		//Throws the list of keys and objects into an indexed db
 		if(db["__archive"] == null){

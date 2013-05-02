@@ -543,9 +543,13 @@ if(!chrome.runtime){
 		Main.startCheck();
 	},duration * 60000); 
 }else{
-	var delay = Main.settings.get("timers.refresh");
-	delay = (delay == null ? 15 : delay);
-	chrome.alarms.create('refresh',{periodInMinutes: delay});
+	chrome.alarms.get("refresh", function(alarm){
+		if(typeof alarm == "undefined"){ 
+			var delay = Main.settings.get("timers.refresh");
+			delay = (delay == null ? 15 : delay);
+			chrome.alarms.create('refresh',{periodInMinutes: delay});
+		}
+	});
 	chrome.alarms.onAlarm.addListener(function(a){
 		if(a.name == "refresh"){
 			Main.settings.set("logs.lastStartCheck", (new Date()).getTime());

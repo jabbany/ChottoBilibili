@@ -55,6 +55,10 @@
 		"message":"用 哔哩哔哩 搜索 “%s”",
 		"description":"搜索菜单文字"
 	},
+	"bangumi_disabled":{
+		"message":"该项目已被停用",
+		"description":"停用"
+	},
 	"content_collect":{
 		"message":"+系列",
 		"description":"收集按钮"

@@ -48,6 +48,7 @@ function SectionWorker(boundSection, bgmlist) {
     };
     this.matchInstance = function (inst) {
         /** Matches the Data to commit **/
+		var foundMatch = false;
         try {
             if (logger != null)
                 logger.log("[Log](" + boundSection + ":av" + inst.aid + ") " + inst.title);
@@ -91,7 +92,9 @@ function SectionWorker(boundSection, bgmlist) {
                                 cacheDB.write("av" + inst.aid, inst);
                                 cacheDB.commit();
                             } else if (refreshList[i].cache[rIdx] != "av" + inst.aid &&
-                                refreshList[i].cache[rIdx] != "-av" + inst.aid) {
+                                refreshList[i].cache[rIdx] != "-av" + inst.aid && 
+								!/\u751F\u8089/.test(inst.title)) {
+								// Replace the original if this is not a raw
                                 refreshList[i].cache[rIdx] = "av" + inst.aid;
                                 cacheDB.write("av" + inst.aid, inst);
                                 cacheDB.commit();
@@ -111,14 +114,19 @@ function SectionWorker(boundSection, bgmlist) {
                         refreshList.splice(i, 1);
                         bgml.commit();
                     }
+					foundMatch = true;
                     break;
                 }
-
             } catch (e) {
                 /* Wrong Rules. */
                 console.log("[War](Worker)Rule Error");
             }
         }
+		
+		if(!foundMatch){
+			cacheDB.write("av" + inst.aid, inst);
+			cacheDB.archive(["av" + inst.aid]);
+		}
     };
     this.getSection = function () {
         return boundSection;
