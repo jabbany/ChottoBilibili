@@ -182,6 +182,16 @@ function BangumiList(ctx, ccbo) {
         }
         return ret;
     };
+    this.countUnwatched = function (){
+    	var cached = this.getAllCached();
+    	var count = 0;
+    	for(var i = 0; i < cached.length; i++){
+    		if(cached[i].substring(0,1) != "-"){
+    			count++;
+    		}
+    	} 
+    	return count;
+    };
     this.needsRefresh = function (rule) {
         if (rule.total == null || rule.current == null)
             return false;

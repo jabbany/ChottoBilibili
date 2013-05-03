@@ -48,7 +48,6 @@ function SectionWorker(boundSection, bgmlist) {
     };
     this.matchInstance = function (inst) {
         /** Matches the Data to commit **/
-		var foundMatch = false;
         try {
             if (logger != null)
                 logger.log("[Log](" + boundSection + ":av" + inst.aid + ") " + inst.title);
@@ -83,12 +82,15 @@ function SectionWorker(boundSection, bgmlist) {
                         }
                         this.cacheRefresh(refreshList[i]);
                         if (cacheDB.get("img:" + refreshList[i].id) == null) {
+                        	console.log("[Log] CacheImg:" + refreshList[i].id);
+                        	cacheDB.refresh();
                             cacheDB.write("img:" + refreshList[i].id, inst.pic);
                             cacheDB.commit();
                         }
                         if (refreshList[i].cache != null) {
                             if (refreshList[i].cache[rIdx] == null) {
                                 refreshList[i].cache[rIdx] = "av" + inst.aid;
+                                cacheDB.refresh();
                                 cacheDB.write("av" + inst.aid, inst);
                                 cacheDB.commit();
                             } else if (refreshList[i].cache[rIdx] != "av" + inst.aid &&
@@ -96,6 +98,7 @@ function SectionWorker(boundSection, bgmlist) {
 								!/\u751F\u8089/.test(inst.title)) {
 								// Replace the original if this is not a raw
                                 refreshList[i].cache[rIdx] = "av" + inst.aid;
+                                cacheDB.refresh();
                                 cacheDB.write("av" + inst.aid, inst);
                                 cacheDB.commit();
                             } else
@@ -103,6 +106,7 @@ function SectionWorker(boundSection, bgmlist) {
                         }
                     } else {
                         /* Watched and recorded */
+                        cacheDB.refresh();
 						if (cacheDB.get("img:" + refreshList[i].id) == null) {
                             cacheDB.write("img:" + refreshList[i].id, inst.pic);
                         }
@@ -114,7 +118,6 @@ function SectionWorker(boundSection, bgmlist) {
                         refreshList.splice(i, 1);
                         bgml.commit();
                     }
-					foundMatch = true;
                     break;
                 }
             } catch (e) {
@@ -122,11 +125,6 @@ function SectionWorker(boundSection, bgmlist) {
                 console.log("[War](Worker)Rule Error");
             }
         }
-		
-		if(!foundMatch){
-			cacheDB.write("av" + inst.aid, inst);
-			cacheDB.archive(["av" + inst.aid]);
-		}
     };
     this.getSection = function () {
         return boundSection;

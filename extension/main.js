@@ -1,8 +1,18 @@
 var Main = new function () {
 	this.list = new BangumiList("plugin",new CommitCallback());
 	this.settings = new SettingsConnector();
+	this.updateBadge = function(){
+		this.list.refresh();
+		var num = this.list.countUnwatched();
+		if(num > 0){
+			chrome.browserAction.setBadgeText({text:"" + num});
+		}else{
+			chrome.browserAction.setBadgeText({text:""});
+		}
+	};
 	this.startCheck = function (){
 		Main.settings.reload();
+		Main.list.refresh();
 		var maxIterations = Main.settings.get("watchlist.disableCutoff");
 		if(maxIterations == null)
 			maxIterations = 60;
@@ -99,6 +109,7 @@ var Main = new function () {
 									worker.markAsBad();
 									worker.flush();
 									inst.complete();
+									Main.updateBadge();
 									return;
 								}
 								if(local.retryCount > 0)
@@ -108,11 +119,13 @@ var Main = new function () {
 									inst.complete();
 								},500);
 							}else{
+								Main.updateBadge();
 								worker.flush();
 								inst.complete();
 							}
 						}else{
 							/* Worker is done! */
+							Main.updateBadge();
 							inst.complete();
 						}
 						console.log("[Log] Batch " + worker.getSection() + ":" + (local.curpage - 1)); 
@@ -543,6 +556,7 @@ if(!chrome.runtime){
 		Main.startCheck();
 	},duration * 60000); 
 }else{
+	Main.updateBadge();
 	chrome.alarms.get("refresh", function(alarm){
 		if(typeof alarm == "undefined"){ 
 			var delay = Main.settings.get("timers.refresh");
@@ -554,7 +568,11 @@ if(!chrome.runtime){
 		if(a.name == "refresh"){
 			Main.settings.set("logs.lastStartCheck", (new Date()).getTime());
 			Main.startCheck();
-			Main.settings.commit();
+			if(!Main.settings.commit()){
+				Main.settings.reload();
+				Main.settings.set("logs.lastStartCheck", (new Date()).getTime());
+				Main.settings.commit();
+			}
 		}else if(a.name == "resume"){
 			chrome.alarms.clear("resume");
 			Main.resumeHold();
