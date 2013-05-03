@@ -89,9 +89,10 @@ var SC = {
 			if(SC.cdb == null)
 				SC.cdb = new CacheDB();
 			if(rule.cache != null){
-				if(rule.cache.length == 0)
-					img.src = SC.cdb.get("img:" + rule.id);
-				else{
+				if(rule.cache.length == 0){
+					var prev = SC.cdb.get("img:" + rule.id);
+					img.src = prev == null ? "/assets/img/noexist.png" : prev;
+				}else{
 					var vidid = rule.cache[rule.cache.length - 1];
 					try{
 						var video = SC.cdb.get(vidid);

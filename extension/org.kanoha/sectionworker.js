@@ -54,6 +54,27 @@ function SectionWorker(boundSection, bgmlist) {
         } catch (e) {}
         for (var i = 0; i < refreshList.length; i++) {
             try {
+            	if (refreshList[i].type == 8){
+            		var aid = typeof inst.aid != "number"? parseInt(inst.aid) : inst.aid;
+            		if(refreshList[i].last == null)
+            			refreshList[i].last = 0;
+            		if(refreshList[i].tlast == null)
+            			refreshList[i].tlast = refreshList[i].last;
+            		if(aid > refreshList[i].tlast)
+            			refreshList[i].tlast = aid;
+            		else{
+            			if(aid <= refreshList[i].last){
+							//We've hit the last record, do not check anymore!
+							refreshList[i].last = refreshList[i].tlast;
+							delete refreshList[i].tlast;
+							refreshList.splice(i, 1);
+							bgml.commit();
+							console.log("[Log] Rule Fast-Finish");
+							i--;
+							continue;
+            			}
+            		}
+            	}
                 if (typeof refreshList[i].matcher == "string") {
                     var matcher = new RegExp(refreshList[i].matcher);
                 } else {
@@ -101,8 +122,19 @@ function SectionWorker(boundSection, bgmlist) {
                                 cacheDB.refresh();
                                 cacheDB.write("av" + inst.aid, inst);
                                 cacheDB.commit();
-                            } else
+                            } else {
+                            	//Found a cached version here
+                            	if(refreshList[i].type == 2){
+									refreshList[i].last = Math.floor((new Date()).getTime() / 1000);
+									bgml.commit();
+								}else if(refreshList[i].type == 8){
+									refreshList[i].last = refreshList[i].tlast;
+									delete refreshList[i].tlast;
+									bgml.commit();
+								}
                                 refreshList.splice(i, 1);
+                                i--;
+                            }
                         }
                     } else {
                         /* Watched and recorded */
@@ -114,8 +146,12 @@ function SectionWorker(boundSection, bgmlist) {
 						cacheDB.commit();
 						if(refreshList[i].type == 2){
 							refreshList[i].last = Math.floor((new Date()).getTime() / 1000);
+						}else if(refreshList[i].type == 8){
+							refreshList[i].last = refreshList[i].tlast;
+							delete refreshList[i].tlast;
 						}
                         refreshList.splice(i, 1);
+                        i--;
                         bgml.commit();
                     }
                     break;
@@ -136,7 +172,6 @@ function SectionWorker(boundSection, bgmlist) {
             if (nc == true)
                 return true;
             bgml.commit();
-            cacheDB.commit();
             return true;
         }
         return false;
@@ -149,7 +184,6 @@ function SectionWorker(boundSection, bgmlist) {
         if (logger != null)
             logger.log("[War](" + boundSection + ")Worker Flushed!");
         bgml.commit();
-        cacheDB.commit();
     };
 	this.markAsBad = function () {
 		/** Since the runner iterates through the entire db, to prevent 

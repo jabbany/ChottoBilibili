@@ -197,6 +197,8 @@ function BangumiList(ctx, ccbo) {
             return false;
         if (rule.type == 3 || rule.type > 10)
             return false; // 10 and above are designated as managed by other plugins
+        if (rule.type == 8)
+        	return true; // 8 is managed internally in the worker
 		if (rule["__disabled"])
 			return false;
 		if (rule.type != 1) {
