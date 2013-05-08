@@ -186,7 +186,7 @@ function BangumiList(ctx, ccbo) {
     	var cached = this.getAllCached();
     	var count = 0;
     	for(var i = 0; i < cached.length; i++){
-    		if(cached[i].substring(0,1) != "-"){
+    		if(cached[i] != null && cached[i].substring(0,1) != "-"){
     			count++;
     		}
     	} 

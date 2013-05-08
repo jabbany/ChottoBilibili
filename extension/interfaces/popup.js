@@ -135,6 +135,8 @@ function loadRule(c, rule){
 			//This is the end
 			otherName = " bar-success";
 		}
+		if(rule.videos[i] == null)
+			continue;
 		var vid = rule.videos[i].substring(0,1) == "-" ? rule.videos[i].substring(1) : rule.videos[i];
 		var track = _("div",{
 			"className":"bar" + otherName,
