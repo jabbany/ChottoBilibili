@@ -421,6 +421,7 @@ chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
 				else Main.settings.reload(); 
 				//Makes sure the settings are fresh, since this is only manually called
 				Main.settings.set("logs.lastStartCheck", (new Date()).getTime());
+				Main.settings.commit();
 				Main.startCheck();
 				sendResponse({});
 				return;
@@ -569,6 +570,7 @@ if(!chrome.runtime){
 			Main.settings.set("logs.lastStartCheck", (new Date()).getTime());
 			Main.startCheck();
 			if(!Main.settings.commit()){
+				console.log("[Err]TimeLog Concurrency");
 				Main.settings.reload();
 				Main.settings.set("logs.lastStartCheck", (new Date()).getTime());
 				Main.settings.commit();

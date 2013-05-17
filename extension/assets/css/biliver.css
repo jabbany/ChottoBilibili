@@ -102,3 +102,7 @@ td.follow-record .follow-info{
 .bar-watchlist.bar-success:hover{
 	background:#7ed97e;
 }
+
+.bar-watchlist.bar-danger:hover{
+	background:#ed615c;
+}

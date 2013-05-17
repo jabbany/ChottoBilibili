@@ -73,7 +73,11 @@ var CONSOLE_FIX_DEFAULTS = {
 					"av(\\d+)":"http://www.bilibili.tv/video/av{1}"
 				}
 			},
-			"condensed":true
+			"condensed":true,
+			"player":{
+				"nolicense":true,
+				"html5":false
+			}
 		},
 		"sync":{
 			"enabled":false,

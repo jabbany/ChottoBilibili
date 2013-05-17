@@ -29,6 +29,6 @@ chrome.extension.sendMessage({
     "method": "getSetting",
     "key": "privacy.history.allow"
 }, function (resp) {
-    if (resp != null && resp.value == "true")
+    if (resp != null && resp.value)
         hookStalkModule();
 });

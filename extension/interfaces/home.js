@@ -130,13 +130,16 @@ var SC = {
 				document.createTextNode(rule.current + "/" + rule.total)));
 		try{
 			var genFunction = function (vid){
-				vid = vid.substring(0,1) == "-" ? vid.substring(1) : vid;
+				if(vid != null)
+					vid = vid.substring(0,1) == "-" ? vid.substring(1) : vid;
 				return function(){
+					$(this).tooltip("toggle");
+					if(vid == null)
+						return;
 					var vidData = SC.cdb.get(vid);
 					if(vidData != null){
 						img.src = vidData.pic;
 					}
-					$(this).tooltip("toggle");
 				};
 			}
 			var genClickFunction = function (vid){
@@ -159,24 +162,29 @@ var SC = {
 				}
 			};
 			for(var i = 0; i < rule.cache.length; i++){
-				var vdata = SC.cdb.get(rule.cache[i]);
+				var vdata = rule.cache[i] != null ? SC.cdb.get(rule.cache[i]) : null;
 				var displayText = true;
-				if(rule.total > 25 && rule.total - rule.current > 12)
+				if(rule.total > 25 && rule.total - rule.current > 15)
 					displayText = false;
 				var appStyle = "";
-				if(rule.cache[i] != null && rule.cache[i].substring(0,1) == "-"){
+				if(rule.cache[i] == null){
+					appStyle = " bar-danger";
+				}else if(rule.cache[i] != null && rule.cache[i].substring(0,1) == "-"){
 					appStyle = " bar-success";
 				}else if(i != rule.cache.length - 1)
 					appStyle = " bar-warning";
-					
 				var b = _("div",{
-							"title":(vdata != null ? vdata.title : rule.cache[i]),
+							"title":(vdata != null ? vdata.title : (rule.cache[i] != null ? rule.cache[i] : "Error")),
 							"data-toggle":"tooltip",
 							"className":"bar bar-watchlist" + appStyle, 
 							"style":{width:(rule.total > 25 ? 60 / (rule.total - rule.current):(100 / rule.total)) + "%"}
 						},displayText ? document.createTextNode(rule.current + i + 1) : null);
-				b.addEventListener("mouseover",genFunction(rule.cache[i]));
-				b.addEventListener("click",genClickFunction(rule.cache[i]));
+				if(rule.cache[i] != null){
+					b.addEventListener("mouseover",genFunction(rule.cache[i]));
+					b.addEventListener("click",genClickFunction(rule.cache[i]));
+				}else{
+					b.addEventListener("mouseover",genFunction(null));
+				}
 				progress.appendChild(b);
 			}
 		}catch(e){console.log("Cache Error");}
@@ -379,6 +387,8 @@ var SC = {
 				{key:"watchlist.autoupdate.delay",elem:"sProgressUpdateDelay",def:5},
 				{key:"watchlist.hideRaws.series",elem:"sNoRaws",def:false},
 				{key:"watchlist.hideRaws.tags",elem:"sNoRawsTag",def:false},
+				{key:"interface.player.nolicense",elem:"sFixPlayer",def:true},
+				{key:"interface.player.html5",elem:"sHTML5",def:false},
 				{key:"privacy.history.allow",elem:"sAllowTracking",def:false},
 				{key:"interface.pnToggle",elem:"sPrevNextToggle",def:true},
 				{key:"interface.contextMenu.enabled",elem:"sClickSearchEnabled",def:true}
@@ -397,7 +407,7 @@ var SC = {
 				{key:"sync.deviceId",elem:"sSyncDevice",def:""},
 			]);
 			$("#sSyncServer").typeahead({
-				source:["sync.railgun.in","api.mymoe.com/sync/chottobilibili","tools.kanoha.org/dev/sync"]
+				source:["sync.railgun.in","api.maimoe.net/sync/chottobilibili","tools.kanoha.org/dev/sync"]
 			});
 			return true;
 		},
