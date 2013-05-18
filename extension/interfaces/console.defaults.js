@@ -50,7 +50,8 @@ var CONSOLE_FIX_DEFAULTS = {
 			"hideRaws":{
 				"series":true,
 				"tags":false
-			}
+			},
+			"disableCutoff":60
 		},
 		"privacy":{
 			"history":{

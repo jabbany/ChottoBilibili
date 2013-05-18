@@ -374,6 +374,7 @@ var SC = {
 				{key:"api.key",elem:"sApiKey",def:""},
 				{key:"timers.refresh",elem:"sRefreshRate",def:60},
 				{key:"timers.sync",elem:"sSyncInterval",def:60},
+				{key:"watchlist.disableCutoff",elem:"sMaxPages",def:60},
 			]);
 			return true;
 		},
