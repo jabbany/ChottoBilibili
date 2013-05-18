@@ -9,7 +9,7 @@
 		"48": "assets/icon-large.png",
 		"128": "assets/icon-huge.png"
 	},
-	"default_locale": "zh",
+	"default_locale": "zh_CN",
 	"browser_action": {
 		"default_icon": "assets/icon-large.png",
 		"default_title":"__MSG_browser_action_title__",
