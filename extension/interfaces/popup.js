@@ -97,10 +97,15 @@ function genFuncDesc (vid, desc, img){
 			var v = cachedb.get(vid);
 			desc.innerHTML = "";
 			desc.appendChild(_t(v.description));
+			desc.appendChild(_t(" "));
 			desc.style.display="";
-			
+			var nseen = _("a",{"href":"#"},_t(chrome.i18n.getMessage("popup_tag_seen")));
+			var nwatch = _("a",{"href":"#"},_t(chrome.i18n.getMessage("popup_tag_watched")));
+			desc.appendChild(nseen);
+			desc.appendChild(_t(" "));
+			desc.appendChild(nwatch);
 			if(v.pic != null)
-			img.src = v.pic;
+				img.src = v.pic;
 		}catch(e){}
 	};
 }
@@ -135,10 +140,18 @@ function loadRule(c, rule){
 			//This is the end
 			otherName = " bar-success";
 		}
-		if(rule.videos[i] == null)
+		if(rule.videos[i] == null){
+			var track = _("div",{
+				"className":"bar bar-error",
+				"title":"Error",
+				"style":{"width":((smartDisplay) * 100) + "%"}},
+			_t(rule.current + i + 1));
+			bar.appendChild(track);
 			continue;
+		}
 		var vid = rule.videos[i].substring(0,1) == "-" ? rule.videos[i].substring(1) : rule.videos[i];
 		var track = _("div",{
+			"id":"bar-r" + rule.id + "-v" + (rule.current + i + 1),
 			"className":"bar" + otherName,
 			"title":cachedb.get(vid).title,
 			"style":{"width":((smartDisplay) * 100) + "%"}},

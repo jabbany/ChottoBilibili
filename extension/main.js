@@ -456,6 +456,35 @@ chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
 				return;
 			}break;
 			case "updateProgress":{
+				if(typeof request.id == "number"){
+					Main.list.refresh();
+					var rule = Main.list.query(request.id);
+					if(rule != null){
+						//Found
+						if(request.avid === null){
+							//Match & Find
+						}else{
+							if(rule.cache !== null){
+								for(var i = 0; i < rule.cache.length; i++){
+									if(rule.cache[i] == null){
+										
+									}
+									if(rule.cache[i] == request.avid){
+										if(i == 0){
+											rule.current++;
+											rule.cache.splice(0,1);
+											break;
+										}else{
+											rule.cache[i] = rule.cache[i]
+										}
+									}
+								}
+							}
+						}
+						sendResponse({"status":200});
+						return;
+					}
+				}
 				if(typeof request.section == "number"){
 					//Search by section
 					Main.list.refresh();//Just to be safe since we are editing
@@ -487,6 +516,15 @@ chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
 						}else if(request.avid == null){
 							//No avid to work with, damn
 							//We must then match with the rule to find progress
+							var titl = request.title;
+							var matcher = rules[i].matcher;
+							if(matcher == null)
+								continue; //Eh
+							if(typeof matcher == "string"){
+								
+							}else if(typeof matcher == "object"){
+								//Find and match
+							}
 						}
 					}
 				}else if(request.avid != null){

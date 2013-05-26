@@ -338,13 +338,17 @@ var SC = {
 			var hdr = _e("homeHdr");
 			if(hdr != null){
 				var pq = new PQueue();
+				var hashed = {};
 				SC.cdb.reduce(function(record, base){
 					if(record.pic != null){
 						if(record.aid == null)
-							record.aid = 0;
-						pq.insertWithPriority(record.pic, parseInt(record.aid));
+							record.aid = "0";
+						if(!hashed[record.pic]){
+							pq.insertWithPriority(record.pic, parseInt(record.aid));
+							hashed[record.pic] = true;
+						}
 						if(pq.size() > 30){
-							pq.poll();
+							hashed[pq.poll()] = false;
 						}
 					}
 				}, null);

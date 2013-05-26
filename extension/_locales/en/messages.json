@@ -90,5 +90,13 @@
 	"dialog_import_old":{
 		"message":"Import old watchlist?",
 		"description":"Import old watchlist prompt"
+	},
+	"popup_tag_seen":{
+		"message":"[Watched]",
+		"description":"Mark as watched"
+	},
+	"popup_tag_watched":{
+		"message":"[Last Watched]",
+		"description":"Watched to current"
 	}
 }

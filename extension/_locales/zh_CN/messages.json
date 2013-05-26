@@ -90,5 +90,13 @@
 	"dialog_import_old":{
 		"message":"导入旧版追番进度？",
 		"description":"导入旧版进度对话框"
+	},
+	"popup_tag_seen":{
+		"message":"【看过】",
+		"description":"提示里面的按钮"
+	},
+	"popup_tag_watched":{
+		"message":"【看到】",
+		"description":"提示里面的按钮"
 	}
 }

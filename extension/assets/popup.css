@@ -243,6 +243,7 @@ h2{
 a{
 	outline: 0;
 	text-decoration: none;
+	color: #0187C5;
 }
 a.redlink{
 	color:#f00;
@@ -261,7 +262,6 @@ img.preview{
 
 
 /** Used  end **/
-
 .listLink{
 	max-width:230px;
 	overflow:hidden;

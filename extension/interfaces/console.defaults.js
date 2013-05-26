@@ -96,7 +96,7 @@ var CONSOLE_FIX_DEFAULTS = {
 		},
 		"api":{
 			"key":"",
-			"hardFailLimit":""
+			"hardFailLimit":100
 		}
 	},
 	"transient":{},
