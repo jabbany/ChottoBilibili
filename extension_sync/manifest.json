@@ -10,7 +10,11 @@
 	"default_locale": "zh",
 	"background": {
 		"persistent": false,
-		"scripts": ["main.js"]
+		"scripts": [
+			"tv.bgm.api/settings.js",
+			"tv.bgm.api/bangumi.js",
+			"main.js"
+		]
 	},
 	"incognito": "spanning",
 	"minimum_chrome_version": "20.0",
