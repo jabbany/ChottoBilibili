@@ -379,175 +379,213 @@ chrome.contextMenus.onClicked.addListener(function(clickData, tab){
 
 /** ADD LISTENERS FOR INCOMING REQUESTS **/
 chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
-	if(sender.tab){
-		if(request.method == null){
-			console.log("[War](Msg)Illegal Msg.Intern");
-			sendResponse({});//Snub it
+	if(request.method == null){
+		console.log("[War](Msg)Illegal Msg.Intern");
+		sendResponse({});//Snub it
+		return;
+	}
+	switch(request.method){
+		case "refreshSettings":{
+			if(Main.settings != null){
+				Main.settings.reload();
+			}else{
+				Main.settings = new SettingsConnector();
+			}
+			sendResponse({});
 			return;
-		}
-		switch(request.method){
-			case "refreshSettings":{
-				if(Main.settings != null){
-					Main.settings.reload();
-				}else{
-					Main.settings = new SettingsConnector();
+		}break;
+		case "addFollowDlg":{
+			var trans = new TransientPrayer();
+			var matchingSection = Main.settings.get("matcher.tid");
+			trans.set("add.data",{
+				"title":request.title,
+				"section": Tools.sectionToId(matchingSection, request.section),
+				"avid":request.avid
+			});
+			sendResponse({"accepted":true});
+			return;
+		}break;
+		case "biliStalker":{
+			if(request.url != null && /av\d+/.test(request.url)){
+				var sectId = (request.section == "" ? 0 : 
+								Tools.sectionToId(Main.settings.get("matcher.tid"), request.section));
+				var allotZone = "";
+				switch(sectId){
+					case 33:
+						allotZone = "bangumi";
+						break;
+					case 1:
+					case 24:
+					case 25:
+					case 26:
+					case 27:
+						allotZone = "douga";
+						break;
+					case 28:
+					case 29:
+					case 30:
+					case 31:
+					case 3:
+						allotZone = "music";
+						break;
+					case 11:
+					case 15:
+					case 32:
+						allotZone = "collection";
+						break;
+					default:
+						allotZone = "other";
 				}
-				sendResponse({});
-				return;
-			}break;
-			case "addFollowDlg":{
-				var trans = new TransientPrayer();
-				var matchingSection = Main.settings.get("matcher.tid");
-				trans.set("add.data",{
-					"title":request.title,
-					"section": Tools.sectionToId(matchingSection, request.section),
-					"avid":request.avid
-				});
-				sendResponse({"accepted":true});
-				return;
-			}break;
-			case "biliStalker":{
-				sendResponse({});
-				return;
-			}break;
-			case "getSetting":{
-				var sObj = (Main == null) ? new SettingsConnector() : Main.settings;
-				var val = sObj.get(request.key);
-				sendResponse({value:val});
-				return;
-			}break;
-			case "invokeCheck":{
-				if(Main.settings == null) Main.settings = new SettingsConnector();
-				else Main.settings.reload(); 
-				//Makes sure the settings are fresh, since this is only manually called
-				Main.settings.set("logs.lastStartCheck", (new Date()).getTime());
+				
+				Main.settings.reload();
+				var curval = Main.settings.get("privacy.history." + allotZone);
+				if(curval == null)
+					curval = 0;
+				if(typeof request.duration != "number" || request.duration < 0)
+					request.duration = 0; 
+				Main.settings.set("privacy.history." + allotZone, curval + request.duration);
 				Main.settings.commit();
-				Main.startCheck();
+			}
+			sendResponse({});
+			return;
+		}break;
+		case "getSetting":{
+			var sObj = (Main == null) ? new SettingsConnector() : Main.settings;
+			var val = sObj.get(request.key);
+			sendResponse({value:val});
+			return;
+		}break;
+		case "invokeCheck":{
+			if(Main.settings == null) Main.settings = new SettingsConnector();
+			else Main.settings.reload(); 
+			//Makes sure the settings are fresh, since this is only manually called
+			Main.settings.set("logs.lastStartCheck", (new Date()).getTime());
+			Main.settings.commit();
+			Main.startCheck();
+			sendResponse({});
+			return;
+		}break;
+		case "invokeSync":{
+			//Invoke a sync operation
+			sendResponse({});
+			return;
+		}break;
+		case "invokeRecache":{
+			if( request.isConservative == true){
+				//Only fix what is necessary
+				Main.cacheClean({
+					remove:false,
+					autofix:{missing:true, broken:true}
+				});
 				sendResponse({});
 				return;
-			}break;
-			case "invokeSync":{
-				//Invoke a sync operation
+			}else{
+				Main.recache();
 				sendResponse({});
-				return;
-			}break;
-			case "invokeRecache":{
-				if( request.isConservative == true){
-					//Only fix what is necessary
-					Main.cacheClean({
-						remove:false,
-						autofix:{missing:true, broken:true}
-					});
-					sendResponse({});
-					return;
-				}else{
-					Main.recache();
-					sendResponse({});
-				}
-				return;
-			}break;
-			case "getBangumiList":{
-				try{
-					var bgml = JSON.parse(localStorage["bangumi"]);
-					sendResponse(bgml);
-				}catch(e){
-					sendResponse({});
-				}
-				return;
-			}break;
-			case "updateProgress":{
-				if(typeof request.id == "number"){
-					Main.list.refresh();
-					var rule = Main.list.query(request.id);
-					if(rule != null){
-						//Found
-						if(request.avid === null){
-							//Match & Find
-						}else{
-							if(rule.cache !== null){
-								for(var i = 0; i < rule.cache.length; i++){
-									if(rule.cache[i] == null){
-										
-									}
-									if(rule.cache[i] == request.avid){
-										if(i == 0){
-											rule.current++;
-											rule.cache.splice(0,1);
-											break;
-										}else{
-											rule.cache[i] = rule.cache[i]
-										}
-									}
+			}
+			return;
+		}break;
+		case "getBangumiList":{
+			try{
+				var bgml = JSON.parse(localStorage["bangumi"]);
+				sendResponse(bgml);
+			}catch(e){
+				sendResponse({});
+			}
+			return;
+		}break;
+		case "updateProgress":{
+			if(typeof request.id == "number"){
+				Main.list.refresh();
+				var rule = Main.list.query(request.id);
+				if(rule != null){
+					//Found
+					if(request.avid === null){
+						//Match & Find
+					}else{
+						if(rule.cache !== null){
+							for(var i = 0; i < rule.cache.length; i++){
+								if(rule.cache[i] == null){
+									continue;
 								}
-							}
-						}
-						sendResponse({"status":200});
-						return;
-					}
-				}
-				if(typeof request.section == "number"){
-					//Search by section
-					Main.list.refresh();//Just to be safe since we are editing
-					var rules = Main.list.getRulesBySection(request.section);
-					for(var i = 0; i < rules.length; i++){
-						if(request.avid != null && 
-							rules[i].cache != null && 
-							rules[i].cache.indexOf(request.avid) >= 0){
-							//Found! Heh!
-							var index = rules[i].cache.indexOf(request.avid);
-							if(index != 0){
-								if(rules[i].cache[index].substring(0,1) == "-"){
-									sendResponse({"status":304}); // Unchanged
+								if(rule.cache[i] == request.avid){
+									rule.cache[i] = "-" + rule.cache[i];
+									while(rule.cache[0] != null && rule.cache[0].substring(0, 1) == "-"){
+										rule.cache.splice(0,1);
+										rule.current++;
+									}
+									Main.list.commit();
+									Main.updateBadge();
+									sendResponse({"status":200});
 									return;
 								}
-								rules[i].cache[index] = "-" + rules[i].cache[index];
-								Main.list.commit();//Save data
-								sendResponse({"status":304}); // Unchanged
-								return;
-							}else{
-								//Delete from the cache and progress the rule's curr
-								while(rules[i].cache[0].substring(0,1) == "-"){
-									rules[i].cache.splice(0,1);
-									rules[i].current++;
-								}
-								sendResponse({"status":200});
-								return;
-							}
-						}else if(request.avid == null){
-							//No avid to work with, damn
-							//We must then match with the rule to find progress
-							var titl = request.title;
-							var matcher = rules[i].matcher;
-							if(matcher == null)
-								continue; //Eh
-							if(typeof matcher == "string"){
-								
-							}else if(typeof matcher == "object"){
-								//Find and match
 							}
 						}
 					}
-				}else if(request.avid != null){
-					//Check avid
-					sendResponse({"status":200});
-					return;
 				}
-				sendResponse({"status":404});
+				sendResponse({"status":301});
 				return;
-			}break;
-			case "quickUpdate":{
-				//Quick Updates
+			}
+			if(typeof request.section == "number"){
+				//Search by section
+				Main.list.refresh();//Just to be safe since we are editing
+				var rules = Main.list.getRulesBySection(request.section);
+				for(var i = 0; i < rules.length; i++){
+					if(request.avid != null && 
+						rules[i].cache != null && 
+						rules[i].cache.indexOf(request.avid) >= 0){
+						//Found! Heh!
+						var index = rules[i].cache.indexOf(request.avid);
+						if(index != 0){
+							if(rules[i].cache[index].substring(0,1) == "-"){
+								sendResponse({"status":304}); // Unchanged
+								return;
+							}
+							rules[i].cache[index] = "-" + rules[i].cache[index];
+							Main.list.commit();//Save data
+							sendResponse({"status":304}); // Unchanged
+							return;
+						}else{
+							//Delete from the cache and progress the rule's curr
+							while(rules[i].cache[0].substring(0,1) == "-"){
+								rules[i].cache.splice(0,1);
+								rules[i].current++;
+							}
+							sendResponse({"status":200});
+							return;
+						}
+					}else if(request.avid == null){
+						//No avid to work with, damn
+						//We must then match with the rule to find progress
+						var titl = request.title;
+						var matcher = rules[i].matcher;
+						if(matcher == null)
+							continue; //Eh
+						if(typeof matcher == "string"){
+							
+						}else if(typeof matcher == "object"){
+							//Find and match
+						}
+					}
+				}
+			}else if(request.avid != null){
+				//Check avid
 				sendResponse({"status":200});
 				return;
-			}break;
-			case "quickCheck":{
-				//Invoke a quick action check
-				sendResponse({"status":404});
-				return;
-			}break;
-		}
-	}else{
-		
+			}
+			sendResponse({"status":404});
+			return;
+		}break;
+		case "quickUpdate":{
+			//Quick Updates
+			sendResponse({"status":200});
+			return;
+		}break;
+		case "quickCheck":{
+			//Invoke a quick action check
+			sendResponse({"status":404});
+			return;
+		}break;
 	}
 	sendResponse({});/* Snub them */
 });

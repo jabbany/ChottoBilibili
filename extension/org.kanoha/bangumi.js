@@ -36,7 +36,9 @@ function BangumiList(ctx, ccbo) {
             } catch (e) {}
         }
     };
-
+	this.getVersion = function (){
+		return abstraction["version"];
+	};
     this.addEventListener = function (evt, listener) {
         /** Add an event listener.
 		  Listeners are stacked so beware of call stack overflow **/
@@ -77,8 +79,26 @@ function BangumiList(ctx, ccbo) {
             });
         }
     };
+    
+    this.checkLatest = function(){
+    	try{
+    		var tmp = JSON.parse(localStorage["bangumi"]);
+    		if(tmp.version != null && tmp.version > this.getVersion()){
+    			return false;
+    		}
+    		return true;
+    	}catch(e){
+    		return true;
+    	}
+    }
+    
     this.commit = function () {
         /** Commits changes of the abstraction to file **/
+        if(!this.checkLatest()){
+        	console.log("[War]VersionConflict:BangumiList");
+        	return false;
+        }
+        abstraction.version = (typeof abstraction.version == "number") ? abstraction.version++ : 1; 
         if (context == "plugin") {
             localStorage['bangumi'] = JSON.stringify(abstraction);
         } else {
@@ -89,6 +109,7 @@ function BangumiList(ctx, ccbo) {
         }
         if (commitCallbackObject != null)
             commitCallbackObject.onCommit();
+        return true;
     };
     this.merge = function (abst1, abst2) {
         /** Perform a diff between two abstract lists **/
@@ -147,6 +168,7 @@ function BangumiList(ctx, ccbo) {
     };
     this.create = function () {
         return {
+        	version: 1,
             sections: [],
             lastId: 0
         };

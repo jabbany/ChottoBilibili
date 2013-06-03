@@ -73,7 +73,7 @@ var MenuItem = new function(){
 		this.onSelect(elem);
 	};
 };
-function genFunc (vid){
+function genFunc (vid, rid){
 	return function(){
 		var obj = this;
 		chrome.tabs.create({
@@ -82,7 +82,8 @@ function genFunc (vid){
 		});
 		chrome.extension.sendMessage({
 			"method":"updateProgress",
-			"avid":vid
+			"avid":vid,
+			"id":((typeof rid == "number")? rid : null)
 		},function(resp){
 			if(resp.status == 200){
 				obj.className = "bar bar-warning";
@@ -101,6 +102,8 @@ function genFuncDesc (vid, desc, img){
 			desc.style.display="";
 			var nseen = _("a",{"href":"#"},_t(chrome.i18n.getMessage("popup_tag_seen")));
 			var nwatch = _("a",{"href":"#"},_t(chrome.i18n.getMessage("popup_tag_watched")));
+			
+			
 			desc.appendChild(nseen);
 			desc.appendChild(_t(" "));
 			desc.appendChild(nwatch);
@@ -159,7 +162,7 @@ function loadRule(c, rule){
 		
 		bar.appendChild(track);
 		
-		track.addEventListener("dblclick",genFunc(vid));
+		track.addEventListener("dblclick",genFunc(vid, rule.id));
 		track.addEventListener("click",genFuncDesc(vid, desc, pvimg));
 	}
 	container.appendChild(bar);

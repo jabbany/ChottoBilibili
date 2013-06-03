@@ -15,7 +15,6 @@ function checkReplace(){
 		if (resp != null && resp.value)	{
 			console.log("Replace with non-licensed player. Please respect mainland licensing.");
 			fixPlayer();
-			
 		}
 	});
 }

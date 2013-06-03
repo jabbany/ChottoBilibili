@@ -28,6 +28,7 @@ function SettingsConnector() {
             return false;
         }
         abs[".head"]++;
+        abs[".head"] = abs[".head"] % 2147483648;
         localStorage["settings"] = JSON.stringify(abs);
         return true;
     };

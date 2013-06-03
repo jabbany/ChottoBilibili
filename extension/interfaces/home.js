@@ -142,7 +142,7 @@ var SC = {
 					}
 				};
 			}
-			var genClickFunction = function (vid){
+			var genClickFunction = function (vid, rid){
 				var videoId = vid.substring(0,1) == "-" ? vid.substring(1) : vid;
 				return function(){
 					var obj = this;
@@ -153,7 +153,8 @@ var SC = {
 					//Also mark this as saved, send a message to main extension
 					chrome.extension.sendMessage({
 						"method":"updateProgress",
-						"avid":videoId
+						"avid":videoId,
+						"id":((typeof rid == "number") ? rid : null)
 					},function(resp){
 						if(resp.status == 200){
 							obj.className = "bar bar-watchlist bar-success";
@@ -162,7 +163,10 @@ var SC = {
 				}
 			};
 			for(var i = 0; i < rule.cache.length; i++){
-				var vdata = rule.cache[i] != null ? SC.cdb.get(rule.cache[i]) : null;
+				var videoId = rule.cache[i];
+				if(videoId != null)
+					videoId = (videoId.substring(0,1) == "-") ? videoId.substring(1) : videoId;
+				var vdata = (videoId != null) ? SC.cdb.get(videoId) : null;
 				var displayText = true;
 				if(rule.total > 25 && rule.total - rule.current > 15)
 					displayText = false;
@@ -181,7 +185,7 @@ var SC = {
 						},displayText ? document.createTextNode(rule.current + i + 1) : null);
 				if(rule.cache[i] != null){
 					b.addEventListener("mouseover",genFunction(rule.cache[i]));
-					b.addEventListener("click",genClickFunction(rule.cache[i]));
+					b.addEventListener("dblclick",genClickFunction(rule.cache[i], rule.id));
 				}else{
 					b.addEventListener("mouseover",genFunction(null));
 				}
@@ -195,6 +199,14 @@ var SC = {
 		var rexcl = _("p",{},document.createTextNode("排除式："));
 		r_expr.appendChild(regx);
 		r_expr.appendChild(rexcl);
+		switch(rule.type){
+			case 8:
+				var rtyp = _("p",{},document.createTextNode("最后检查到：av" + rule.last));
+				r_expr.appendChild(rtyp);
+				break;
+			default:
+		}
+		
 		regx.appendChild(_("code",{},document.createTextNode(
 			maxLength(rule.matcher.m == null ? rule.matcher : rule.matcher.m, 12))));
 		rexcl.appendChild(_("code",{},document.createTextNode(
