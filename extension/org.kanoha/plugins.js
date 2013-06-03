@@ -41,9 +41,9 @@ var Plugins = new function () {
         };
         this.install = function (plugin) {
             if (plugin == null || plugin.id == null)
-                return false;
+                return {success:false,id:400};
             if (this.exists(plugin.id)) {
-                return false;
+                return {success:false,id:409};
             } else {
                 if (checkValid(plugin)) {
                     plugins["p:" + plugin.id] = {
@@ -54,9 +54,9 @@ var Plugins = new function () {
                     };
                     if (!commit())
                         this.install(plugin); //Call self again
-                    return true;
+                    return {success:true,id:200};
                 } else {
-                    return false;
+                    return {success:false,id:400};
                 }
             }
         };

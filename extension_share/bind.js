@@ -1,4 +1,4 @@
-var parentExtensionId = "pgcobehcmjndpjmglaeiipckahfmmpga";
+var parentExtensionId = "imnpnkekmhafpbpdalpikoenniilllcj";
 function bindToParent(callback){
 	if(localStorage["bindParent"] != null)
 		var bind = localStorage["bindParent"];
@@ -6,17 +6,20 @@ function bindToParent(callback){
 		var bind = parentExtensionId;
 	//Create binding
 	
-	chrome.extension.sendMessage(bind, {
+	chrome.runtime.sendMessage(bind, {
 		method:"prompt-install",
 		name:chrome.i18n.getMessage("extension_name"),
 		key:"",
 		permissions:["offer-data","shared-settings"],
 		version:0.9
 	},function(response) {
+		console.log(response);
 		if(response == null || response.error != null){
 			localStorage["isBound"] = "false";
 		}else{
-			localStorage["isBound"] = response.installed ? "true" : "false";
+			localStorage["isBound"] = 
+				(response.installed || 
+					(!response.installed && response.code == 409)) ? "true" : "false";
 		}
 		if(callback != null)
 			callback();

@@ -600,15 +600,16 @@ chrome.extension.onMessageExternal.addListener(
 			sendResponse({"error":"Method not provided"});
 		switch(request.method){
 			case "prompt-install":{
-				var success = Plugins.install({
-					id:sender.id,
-					name:request.name,
-					key:request.key,
-					permissions:request.permissions,
-					version:request.version
+				var status = Plugins.install({
+					"id" : sender.id,
+					"name" : request.name,
+					"key" : request.key,
+					"permissions" : request.permissions,
+					"version" : request.version
 				});
 				sendResponse({
-					installed: success
+					"installed": status.success,
+					"code": status.id
 				});
 			}return;
 			case "has-permission":{
