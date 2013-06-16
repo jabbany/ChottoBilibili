@@ -94,6 +94,8 @@ var SC = {
 					img.src = prev == null ? "/assets/img/noexist.png" : prev;
 				}else{
 					var vidid = rule.cache[rule.cache.length - 1];
+					if(vidid != null && vidid.substring(0,1) == "-")
+						vidid = vidid.substring(1);
 					try{
 						var video = SC.cdb.get(vidid);
 						img.src = video != null ? video.pic : "";
@@ -107,8 +109,11 @@ var SC = {
 		r_desc.appendChild(_("div",{className:"follow-image-shadow"},_("div")));
 		var info = _("div",{className:"follow-info"},null);
 		var title = _("p",{className:"title"},
-				_("span",{className:"label label-info"},
-						document.createTextNode(SC.bgmlist.lookupSectionName(sid))));
+				(
+					sid >= 0 ? (_("span",{className:"label label-info"},
+						document.createTextNode(SC.bgmlist.lookupSectionName(sid))))
+					: null
+				));
 		title.appendChild(document.createTextNode(" " + rule.name + " "));
 		info.appendChild(title);
 		if(rule.desc != null){
@@ -232,6 +237,7 @@ var SC = {
 			if(rule.id != null && typeof rule.id == "number"){
 				SC.states.formEdited = true;
 				SC.bgmlist.remove(rule.id);
+
 			}else{
 				//Give this rule a temporary id
 				var alloc = 4000;
@@ -424,7 +430,24 @@ var SC = {
 				{key:"sync.deviceId",elem:"sSyncDevice",def:""},
 			]);
 			$("#sSyncServer").typeahead({
-				source:["sync.railgun.in","api.maimoe.net/sync/chottobilibili","tools.kanoha.org/dev/sync"]
+				source:["sync.railgun.in","api.maimoe.net/sync/chottobilibili","tools.kanoha.org/dev/sync","matoi.railgun.in/chottobilibili"]
+			});
+			
+			$("#sSyncEnabled").click(function(){
+				if(this.checked){
+					var self = this;
+					chrome.permissions.request({
+						permissions: [],
+						origins: ['*://*/*']
+					}, function(granted) {
+						if (granted) {
+							//Done
+						} else {
+							self.checked = null;
+							//$(self).removeAttr("checked");
+						}
+					});
+				}
 			});
 			return true;
 		},
@@ -559,6 +582,43 @@ $(document).ready(function(){
 	
 	$("#editSave").click(function(){
 		$("#editDlg").modal('hide');
+	});
+	
+	_e("fSearch").addEventListener("keyup",function(evt){
+		if(evt.keyCode == 13){
+			if(SC.bgmlist != null){
+				/** Invoke Search **/
+				var s = _e("fSearch").value;
+				if(s.length == 0) return;
+				if(s.replace(/\s/,"").length == 0) return;
+				
+				var keywords = s.split(" ");
+				var srch = {
+					dregex : [],
+					tags : []
+				}
+				for(var i = 0; i < keywords.length; i++){
+					if(/^#.+#$/.test(keywords[i])){
+						var t = keywords[i].replace(/^#/,"").replace(/#$/,"");
+						srch.tags.push(t);
+					}else{
+						srch.dregex.push(keywords[i]);
+					}
+				}
+				
+				var results = SC.bgmlist.filterFor(srch);
+				var tbl = $("#flBangumiTbl")[0];
+				if(tbl != null){
+					while(tbl.rows.length > 1){
+						tbl.deleteRow(1);
+					}
+					var index = 1;
+					for(var i = 0; i < results.length; i++){
+						SC.insertRow(tbl, index++, results[i], -1);
+					}
+				}
+			}
+		}
 	});
 	
 	try{

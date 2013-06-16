@@ -121,6 +121,8 @@ function loadRule(c, rule){
 	}else{
 		var cdb = new CacheDB();
 		var vidid = rule.videos[rule.videos.length - 1];
+		if(vidid != null && vidid.substring(0,1) == "-")
+			vidid = vidid.substring(1);
 		cdb.refresh(function(){
 			var video = cdb.get(vidid);
 			pvimg.src = video != null ? video.pic : "";
@@ -141,16 +143,19 @@ function loadRule(c, rule){
 			var smartDisplay = 1 / (rule.total - rule.current);
 		if(rule.current + i + 1 == rule.total){
 			//This is the end
-			otherName = " bar-success";
+			otherName = " bar-warning";
 		}
 		if(rule.videos[i] == null){
 			var track = _("div",{
-				"className":"bar bar-error",
+				"className":"bar bar-danger",
 				"title":"Error",
 				"style":{"width":((smartDisplay) * 100) + "%"}},
 			_t(rule.current + i + 1));
 			bar.appendChild(track);
 			continue;
+		}else{
+			if(rule.videos[i].substring(0,1) == "-")
+				otherName += " bar-success";
 		}
 		var vid = rule.videos[i].substring(0,1) == "-" ? rule.videos[i].substring(1) : rule.videos[i];
 		var track = _("div",{

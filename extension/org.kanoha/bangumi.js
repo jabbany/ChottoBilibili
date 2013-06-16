@@ -83,7 +83,7 @@ function BangumiList(ctx, ccbo) {
     this.checkLatest = function(){
     	try{
     		var tmp = JSON.parse(localStorage["bangumi"]);
-    		if(tmp.version != null && tmp.version > this.getVersion()){
+    		if(tmp.version != null && tmp.version != this.getVersion()){
     			return false;
     		}
     		return true;
@@ -92,13 +92,13 @@ function BangumiList(ctx, ccbo) {
     	}
     }
     
-    this.commit = function () {
+    this.commit = function (overrides) {
         /** Commits changes of the abstraction to file **/
-        if(!this.checkLatest()){
+        if(!overrides && !this.checkLatest()){
         	console.log("[War]VersionConflict:BangumiList");
         	return false;
         }
-        abstraction.version = (typeof abstraction.version == "number") ? abstraction.version++ : 1; 
+        abstraction.version = (typeof abstraction.version == "number") ? abstraction.version + 1 : 1; 
         if (context == "plugin") {
             localStorage['bangumi'] = JSON.stringify(abstraction);
         } else {
@@ -317,6 +317,58 @@ function BangumiList(ctx, ccbo) {
     this.getSections = function () {
         /** Gets a safe implementation of sections **/
         return abstraction.sections.slice(0);
+    };
+    
+    this.flatten = function(){
+    	/** Produces an array of everything **/
+    	var x = [];
+    	for(var k in abstraction){
+    		if(k.substring(0,2) == "s:" && 
+    			abstraction[k] != null){
+    			for(var m in abstraction[k])
+    				x.push(abstraction[k][m]);
+    		}
+    	}
+    	return x;
+    };
+    
+    this.filterFor = function(filter){
+    	/** Does a primitive search filter **/
+    	var everything = this.flatten();
+    	var results = [];
+    	
+    	for(var i = 0; i < everything.length; i++){
+    		var curr = everything[i];
+    		var desc = curr.name + " " + (curr.desc != null ? curr.desc : "");
+    		/** Tests to see if this hits filter **/
+    		if(filter.dregex != null){
+    			for(var j = 0; j < filter.dregex.length; j++){
+    				
+    				if((new RegExp(filter.dregex[j])).test(desc)){
+    					results.push(curr);
+    					curr = null;
+    					break;
+    				}
+    			}
+    			if(curr == null)
+    				continue;
+    		}
+    		
+    		if(filter.tags != null){
+    			for(var j = 0; j < filter.tags.length; j++){
+    				if(curr.tags != null && 
+    					curr.tags.indexOf(filter.tags[j]) >= 0){
+    					results.push(curr);
+    					curr = null;
+    					break;
+    				}
+    			}
+    			if(curr == null)
+    				continue;
+    		}
+    	}
+    	
+    	return results;
     };
 	this.reassignId = function (node) {
 		/** Reassigns the id for the node **/
