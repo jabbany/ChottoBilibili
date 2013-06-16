@@ -1,0 +1,76 @@
+body{
+	margin:0px;
+	padding:0px;
+	background:#FFF;
+	font-size:12px;
+	font-family:"Lucida Grande",Arial,Helvetica,Verdana,sans-serif,"Hiragino Sans GB";
+	line-height:150%
+}
+body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,select,textarea,p,blockquote,th,td{
+	margin:0;padding:0
+}
+input,select{
+	vertical-align:baseline}
+
+textarea{
+	font-family:"Lucida Grande",Arial,Helvetica,Verdana,sans-serif}
+
+input[type=text],input[type=password],textarea{
+	background:#fff;color:#000;font-size:12px}
+
+label{cursor:pointer}
+
+table{border-collapse:collapse;border-spacing:0;font-size:100%}
+
+fieldset,img{border:0}
+
+address,caption,cite,code,dfn,em,th,var{font-style:normal;font-weight:normal}
+
+strong{font-weight:bold;font-style:normal}
+
+em{font-weight:normal;font-style:italic}
+
+ul{list-style:none}
+
+small{-webkit-text-size-adjust:none;text-size-adjust:none}
+
+q::before,q::after{content:""}
+
+.clear{clear:both;line-height:0;font-size:0}
+.clearit:after{content:".";display:block;height:0;clear:both;visibility:hidden}
+.clearit{zoom:1}
+.rr{float:right}
+.ll{float:left}
+
+::-moz-focus-inner{border:none;padding:0}
+a:link,a:active,a:visited{text-decoration:none;color:#444}
+a:hover{text-decoration:none;color:#02A3FB}
+
+#wrapper{
+	background: transparent url('bg_header_v2.png') repeat-x;
+}
+
+#header{
+	line-height: 100%;
+	height: 50px;
+	background: transparent url('bg_musume_v3.png') no-repeat right;
+}
+
+#header .title{
+	line-height: 2em;
+	font-size:1.8em;
+	padding:4px 15px 0 15px;
+}
+
+#wrapper-inner{
+	padding:0 50px 0 50px;
+}
+
+h3{
+	font-size:1.5em;
+}
+#footer, h3{
+	margin-top:30px;
+	padding:5px 0 5px 10px;
+	border-left:5px solid #F09199;
+}
