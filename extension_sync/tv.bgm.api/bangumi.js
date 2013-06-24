@@ -3,7 +3,7 @@ function BangumiCore(settings){
 	var apiroot = "http://api.bgm.tv";
 	var auth = null;
 	var globalGet = {
-		"source":encodeURIComponent("ChottoBilibili/0.8")
+		"source":encodeURIComponent("BangumiJS-Core/0.8")
 	}
 	if(settings == null)
 		settings = new SettingsConnector();
@@ -122,11 +122,11 @@ function BangumiCore(settings){
 	};
 	
 	this.saveAuth = function(){
-		settings.set("auth", auth);
+		settings.set("bgm.auth", auth);
 	};
 	
 	this.loadAuth = function(){
-		var t = settings.get("auth");
+		var t = settings.get("bgm.auth");
 		if(t == null || t.auth == null)
 			auth = null;
 		else
@@ -148,7 +148,16 @@ function BangumiCore(settings){
 				if(typeof callback == "function"){
 					callback(JSON.parse(response));
 				}
+			}else{
+				if(typeof callback == "function")
+					callback(null);
 			}
 		});
+	};
+	
+	this.clearAuth = function(clearSettings){
+		this.auth = null;
+		if(clearSettings)
+			settings.set("bgm.auth", null);
 	};
 }

@@ -2,7 +2,7 @@ body{
 	margin:0px;
 	padding:0px;
 	background:#FFF;
-	font-size:12px;
+	font-size:14px;
 	font-family:"Lucida Grande",Arial,Helvetica,Verdana,sans-serif,"Hiragino Sans GB";
 	line-height:150%
 }
@@ -16,7 +16,8 @@ textarea{
 	font-family:"Lucida Grande",Arial,Helvetica,Verdana,sans-serif}
 
 input[type=text],input[type=password],textarea{
-	background:#fff;color:#000;font-size:12px}
+	background:#fff;color:#000;font-size:14px
+}
 
 label{cursor:pointer}
 
@@ -32,11 +33,13 @@ em{font-weight:normal;font-style:italic}
 
 ul{list-style:none}
 
-small{-webkit-text-size-adjust:none;text-size-adjust:none}
+abbr{border-bottom:1px dashed #000;}
 
+small{-webkit-text-size-adjust:none;text-size-adjust:none}
+p{margin:5px 10px 5px 15px;}
 q::before,q::after{content:""}
 
-.clear{clear:both;line-height:0;font-size:0}
+.clear{clear:both;}
 .clearit:after{content:".";display:block;height:0;clear:both;visibility:hidden}
 .clearit{zoom:1}
 .rr{float:right}
@@ -59,7 +62,7 @@ a:hover{text-decoration:none;color:#02A3FB}
 #header .title{
 	line-height: 2em;
 	font-size:1.8em;
-	padding:4px 15px 0 15px;
+	padding:0 15px 0 15px;
 }
 
 #wrapper-inner{
@@ -69,8 +72,88 @@ a:hover{text-decoration:none;color:#02A3FB}
 h3{
 	font-size:1.5em;
 }
-#footer, h3{
+
+h3{
 	margin-top:30px;
 	padding:5px 0 5px 10px;
 	border-left:5px solid #F09199;
+}
+#footer{
+	margin-top:30px;
+	padding:5px 10px 5px 0;
+	border-right:5px solid #F09199;
+	position:fixed;
+	bottom:15px;
+	right:15px;
+}
+#footer p{ margin:0; }
+
+
+form{
+	margin:20px;
+}
+
+form label{
+	float: left;
+	width: 140px;
+	text-align: right;
+}
+form.login{
+	width:800px;
+}
+
+form.login input[type=text],form.login input[type=password]{
+	padding:2px 5px 2px 5px;
+	border: 1px solid #F19299;
+	background: rgba(255,255,255,0.8);
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;
+	-moz-box-shadow: 0px 1px 0 rgba(255,255,255,0.3), 0px 0 2px rgba(0, 0, 0, 0.3) inset;
+	-webkit-box-shadow: 0px 1px 0 rgba(255,255,255,0.3), 0px 0 2px rgba(0, 0, 0, 0.3) inset;
+	box-shadow: 0 0 1px rgba(0, 0, 0, 0.3) inset, 0px 1px 0 rgba(255,255,255,0.3);
+	line-height:1.6em;
+	
+	width:300px;
+}
+.userbox, .clearbox{
+	border: 1px solid #DDD;
+	background: #FCFCFC;
+	padding: 5px 10px;
+	font-size: 12px;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	border-radius: 4px;
+	-webkit-box-shadow: 0px 0px 4px #EAEAEA, inset 0 1px 1px rgba(255,255,255,0.3);
+	-moz-box-shadow: 0px 0px 4px #EAEAEA, inset 0 1px 1px rgba(255,255,255,0.3);
+	box-shadow: 0px 0px 4px #EAEAEA, inset 0 1px 1px rgba(255,255,255,0.3);	
+}
+.clearbox{
+	margin:0 0 10px 15px;
+	min-width:200px;
+	float:left;
+}
+.userbox{
+	min-width:200px;
+	margin:5px 20px 15px 0px;
+}
+.avatar{
+	width:64px;
+	height:64px;
+}
+img.b-icon{
+	width:40px;height:40px; 
+}
+
+.img-wrap{
+	margin-right:5px;
+	padding-left:5px;
+	border-left:5px solid #F09199;
+	clear:both;
+}
+.avatar.pad{
+	margin-right:15px;
+}
+div.control-group{
+	margin-bottom: 18px;
 }
