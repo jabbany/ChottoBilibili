@@ -63,6 +63,14 @@ var Plugins = new function () {
         this.getPriv = function (pluginId) {
             return plugins["p:" + pluginId].permissions;
         };
+        this.checkPerm = function (pluginId, permission) {
+        	if(plugins["p:" + pluginId] == null)
+        		return false;
+        	var perms = this.getPriv(pluginId);
+        	if(perms.indexOf(permission) >= 0)
+        		return true;
+        	return false;
+        };
         this.exists = function (pluginId) {
             return plugins["p:" + pluginId] != null;
         };

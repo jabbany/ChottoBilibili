@@ -614,14 +614,28 @@ chrome.extension.onMessageExternal.addListener(
 			}return;
 			case "has-permission":{
 				if(Plugins.exists(sender.id)){
-					var Priv = Plugins.getPriv(sender.id);
 					sendResponse({
-						has:(Priv.indexOf(request["permission"]) >= 0)
+						code:200,
+						has:Plugins.checkPerm(sender.id, request["permission"])
 					});
 					return;
 				}
-				sendResponse({has:false});
+				sendResponse({code:200,has:false});
 			}return;
+			default:{
+				if(!Plugins.exists(sender.id)){
+					sendResponse({
+						"code":401,
+						"error":"Not Authorized"
+					});
+					return;
+				}else{
+					sendResponse({
+						"code":200,
+						"message":"No-Operation."
+					});
+				}
+			}
 		}
 	});
 
@@ -645,13 +659,13 @@ if(!chrome.runtime){
 	chrome.alarms.onAlarm.addListener(function(a){
 		if(a.name == "refresh"){
 			Main.settings.set("logs.lastStartCheck", (new Date()).getTime());
-			Main.startCheck();
 			if(!Main.settings.commit()){
 				console.log("[Err]TimeLog Concurrency");
 				Main.settings.reload();
 				Main.settings.set("logs.lastStartCheck", (new Date()).getTime());
 				Main.settings.commit();
 			}
+			Main.startCheck();
 		}else if(a.name == "resume"){
 			chrome.alarms.clear("resume");
 			Main.resumeHold();

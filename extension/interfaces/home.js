@@ -444,7 +444,6 @@ var SC = {
 							//Done
 						} else {
 							self.checked = null;
-							//$(self).removeAttr("checked");
 						}
 					});
 				}
