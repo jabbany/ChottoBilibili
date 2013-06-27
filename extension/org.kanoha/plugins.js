@@ -60,6 +60,13 @@ var Plugins = new function () {
                 }
             }
         };
+        this.uninstall = function (pluginId){
+        	if(!this.exists(pluginId)) return false;
+        	delete plugins["p:" + pluginId];
+        	if(!commit())
+        		this.uninstall(pluginId);
+        	return true;
+        };
         this.getPriv = function (pluginId) {
             return plugins["p:" + pluginId].permissions;
         };

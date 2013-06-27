@@ -597,7 +597,7 @@ chrome.extension.onMessageExternal.addListener(
 		if (blacklist != null && blacklist.indexOf(sender.id) >= 0)
 			return;
 		if(request.method == null)
-			sendResponse({"error":"Method not provided"});
+			sendResponse({"code":400,"error":"Method not provided"});
 		switch(request.method){
 			case "prompt-install":{
 				var status = Plugins.install({
@@ -621,6 +621,41 @@ chrome.extension.onMessageExternal.addListener(
 					return;
 				}
 				sendResponse({code:200,has:false});
+			}return;
+			case "get-folist":{
+				if(Plugins.exists(sender.id) &&
+					Plugins.checkPerm(sender.id, "query-watchlist")){
+					Main.list.refresh();
+					var tmp = Main.list.flatten();
+					var bgms = [];
+					for(var i = 0; i < tmp.length; i++){
+						var eps = {
+							"id":tmp[i]["id"],
+							"name":tmp[i]["name"],
+							"desc":tmp[i]["desc"],
+							"current":tmp[i]["current"],
+							"total":tmp[i]["total"]
+						}
+						if(tmp[i].img != null){
+							eps.cover = tmp[i]["img"];
+						}else{
+							var cdb = new CacheDB();
+							if(tmp[i]["cache"] != null && tmp[i]["cache"].length > 0){
+								var vidid = tmp[i]["cache"][tmp[i]["cache"].length - 1];
+								if(vidid != null && vidid.substring(0,1) == "-")
+									vidid = vidid.substring(1);
+								var etmp = cdb.get(vidid);
+								eps.cover = etmp != null ? etmp.pic : "";
+							}else{
+								eps.cover = cdb.get("img:" + tmp[i]["id"]);
+							}
+						}
+						bgms.push(eps);
+					}
+					sendResponse({code:200,bangumi:bgms});
+					return;
+				}
+				sendResponse({"code":401, "error":"Not Authorized"});
 			}return;
 			default:{
 				if(!Plugins.exists(sender.id)){

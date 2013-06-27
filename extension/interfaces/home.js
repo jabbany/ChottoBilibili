@@ -487,6 +487,16 @@ var SC = {
 			SC.func.setNewForm("ServiceConnect");
 			SC.func.hideAllBut("ServiceConnect");
 			//Load the table
+			var genFunction = function(pluginId){
+				return function(e){
+					if(e != null && e.preventDefault != null)
+						e.preventDefault();
+					if(confirm("Are you sure you wish to disable this plugin?")){
+						if(Plugins == null)	return;
+						Plugins.uninstall( pluginId );
+					}
+				};
+			};
 			var tbl = _e("pluginTbl");
 			if(tbl != null){
 				while(tbl.rows.length > 1){
@@ -510,7 +520,9 @@ var SC = {
 					console.log(plug[i]);
 					for(var j = 0; j < plug[i].permissions.length; j++)
 						r_priv.appendChild(_t("+" + plug[i].permissions[j] + "\u00a0"));
-					r_action.appendChild(_t(chrome.i18n.getMessage("general_delete")));
+					var a_delete = _("a",{"href":"#"},_t(chrome.i18n.getMessage("general_delete")));
+					a_delete.addEventListener("click",genFunction(plug[i].id));
+					r_action.appendChild(a_delete);
 				}
 			}
 			return true;

@@ -17,18 +17,55 @@ var _ = function ( type, init, inner ){
 	return elem;
 }
 
-function createTile(eps){
+function toggle(elem, className){
+	var classNames = elem.className.split(" ");
+	for(var i = 0; i < classNames.length; i++){
+		if(classNames[i] == className){
+			classNames.splice(i,1);
+			elem.className = classNames.join(" ");
+			return;
+		}
+	}
+	classNames.push(className);
+	elem.className = classNames.join(" ");
+	return;
+}
+
+function bgmToTile(eps){
+	return {
+		image: eps.subject.images.grid,
+		title: eps.name,
+		current: eps.ep_status,
+		total: eps.subject.eps,
+		type: "bangumi"
+	};
+}
+
+function biliToTile(eps){
+	return {
+		image: eps.cover,
+		title: eps.name,
+		current: eps.current,
+		total: eps.total,
+		type: "bili"
+	}
+}
+
+function createTile(epst){
 	var tile =_("div",{"className":"clearbox"});
-	var imgwrp = _("div",{"className":"img-wrap ll"});
-	var img = _("img",{"src":eps.subject.images.grid, "className":"b-icon"});
-	var nm = document.createTextNode(eps.name);
-	var status = document.createTextNode("当前进度：" + eps.ep_status);
+	var imgwrp = _("div",{"className":"img-wrap ll " + epst.type});
+	var img = _("img",{"src":epst.image, "className":"b-icon"});
+	var nm = document.createTextNode(epst.title);
+	var status = document.createTextNode("当前进度：" + epst.current + " / " + epst.total);
 	imgwrp.appendChild(img);
 	tile.appendChild(imgwrp);
 	tile.appendChild(nm);
 	tile.appendChild(_("br",{}));
 	tile.appendChild(status);
 	tile.appendChild(_("div",{"style":{"clear":"both"}}));
+	tile.addEventListener("click", function(){
+		toggle(this, "selected");
+	});
 	return tile;
 }
 
@@ -85,10 +122,49 @@ window.addEventListener('load', function(){
 			bgml.innerHTML = "";
 			if(results != null){
 				for(var i = 0; i < results.length; i++){
-					bgml.appendChild(createTile(results[i]));
+					console.log(results[i]);
+					bgml.appendChild(createTile(bgmToTile(results[i])));
 				}
 				bgml.appendChild(_("div",{"className":"clear"}));
 			}
 		});
+	}
+	
+	/** Check to see if we're already installed **/
+	if(!SC.get("binding.installed", false)){
+		//Initiate Install
+		installPlugin(function(){
+			if(SC.get("binding.installed", false))
+				window.location.reload();
+			else{
+				alert("Install plugin failed! Please accept at prompt");
+			}
+		});
+	}else{
+		//We can fetch the watchlist
+		try{
+			chrome.runtime.sendMessage(SC.get("parent.id",""), {
+				"method":"get-folist"
+			},function(response){
+				if(response == null || response.code == 401){
+					SC.set("binding.installed", false);
+					alert("Main plugin disabled binding!");
+				}else if(response.code == 200){
+					//We will recieve the list here
+					var bili = $("uListsBili");
+					if(bili == null) return;
+					bili.innerHTML = "";
+					for(var i = 0; i < response.bangumi.length; i++){
+						bili.appendChild(createTile(biliToTile(response.bangumi[i])));
+					}
+					console.log(response.bangumi);
+				}else{
+					alert("Error " + response.code + " : " + response.error);
+				}
+			});
+		}catch(e){
+			SC.set("binding.installed", false);
+			alert("Main plugin disabled binding!");
+		}
 	}
 });

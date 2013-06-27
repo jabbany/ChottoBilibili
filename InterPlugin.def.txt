@@ -50,5 +50,10 @@ InterPlugin Data Tunnels API
 
 Permissions
  * shared-settings
+ * offer-data
+ * query-watchlist
+ * query-plugins
+ * hook-watchlist
+ * hook-oncheck
 
 

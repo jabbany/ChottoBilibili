@@ -1,10 +1,3 @@
-function installPlugin(callback){
-	//Sends an installation request to the host plugin
-	
-}
-
-
-
 chrome.extension.onMessageExternal.addListener(
 	function(request, sender, sendResponse) {
 		var settings = new SettingsConnector();
