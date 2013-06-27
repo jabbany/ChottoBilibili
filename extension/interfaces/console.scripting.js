@@ -669,6 +669,11 @@ var ScriptingEngine = function(iv){
 											createVar(command[4], a == b);
 									}else
 										print_r(a == b);
+								}else if(command[1] == "!="){
+									if(command[3] == ">"){
+											createVar(command[4], a != b);
+									}else
+										print_r(a != b);
 								}else if (command[1] == "<"){
 									if(typeof a != "number")
 										print("Illegal operation, comparison on non-numbers");

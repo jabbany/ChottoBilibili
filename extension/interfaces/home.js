@@ -238,6 +238,7 @@ var SC = {
 				SC.states.formEdited = true;
 				SC.bgmlist.remove(rule.id);
 
+
 			}else{
 				//Give this rule a temporary id
 				var alloc = 4000;
@@ -585,6 +586,11 @@ $(document).ready(function(){
 	
 	_e("fSearch").addEventListener("keyup",function(evt){
 		if(evt.keyCode == 13){
+			if(_e("fSearch").value == ""){
+				if(typeof SC.func["fFollowBangumi"] == "function")
+					SC.func["fFollowBangumi"]();
+				return;
+			}
 			if(SC.bgmlist != null){
 				/** Invoke Search **/
 				var s = _e("fSearch").value;
