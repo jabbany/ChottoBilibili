@@ -388,6 +388,43 @@ var SC = {
 						hdr.childNodes[0]);
 				}
 			}
+			/** Create the watching tally **/
+			var viewTally = SC.opt.get("privacy.history");
+			var getHMD = function(time){
+				var d = Math.floor(time / (3600 * 24));
+				time -= d * 3600 * 24;
+				var h = Math.floor(time / 3600);
+				time -= h * 3600;
+				var m = Math.floor(time / 60);
+				time -= m * 60;
+				var s = time;
+				if(d > 0){
+					return d +"d" + h + "h";
+				}else if(h > 0){
+					return h + "h" + m + "m";
+				}else{
+					return m + "m" + s + "s";
+				}
+			};
+			if(viewTally === null || viewTally.allow === false){
+				_e("dViewTally").style.display = "none";
+			}else{
+				var totalT = viewTally.bangumi + viewTally.douga + viewTally.collection + viewTally.music + viewTally.other;
+				if(totalT === 0 || totalT === NaN){
+					_e("dViewTally").style.display = "none";
+				}else{
+					_e("dVBangumi").style.width = (100 * viewTally.bangumi / totalT) + "%";
+					_e("dVCollection").style.width = (100 * viewTally.collection / totalT) + "%";
+					_e("dVDouga").style.width = (100 * viewTally.douga / totalT) + "%";
+					_e("dVOther").style.width = (100 * viewTally.other / totalT) + "%";
+					_e("dVMusic").style.width = (100 * viewTally.music / totalT) + "%";
+					_e("dVBT").innerText = getHMD(viewTally.bangumi);
+					_e("dVCT").innerText = getHMD(viewTally.collection);
+					_e("dVOT").innerText = getHMD(viewTally.other);
+					_e("dVDT").innerText = getHMD(viewTally.douga);
+					_e("dVMT").innerText = getHMD(viewTally.music);
+				}
+			}
 			SC.func.setNewForm("SettingsHome");
 			SC.func.hideAllBut("SettingsHome");
 			return true;
@@ -558,7 +595,7 @@ $(document).ready(function(){
 		$("#menu" + ln).click(SC.menuHook(ln,lf));
 	}
 	$("#btnEnterBangumi").click(function(){
-		SC.menuHook("FollowBangumi","fFollowBangumi");
+		_e("menuFollowBangumi").click();
 	});
 	var aboutMode = 0;
 	$("#home-nav").click(function(){
