@@ -51,6 +51,10 @@
 		"message":"啊呜！好像出了点什么问题。。。\n请重新加载一下页面。",
 		"description":"字符串：保存失败"
 	},
+	"general_no_results":{
+		"message":"啊嘞？你的搜索在本世界线上好像没有找到结果。尝试一下新的搜索关键词？",
+		"description":"String: search empty"
+	},
 	"context_menu_search":{
 		"message":"用 哔哩哔哩 搜索 “%s”",
 		"description":"搜索菜单文字"

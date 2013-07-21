@@ -206,7 +206,11 @@ var SC = {
 		r_expr.appendChild(rexcl);
 		switch(rule.type){
 			case 8:
-				var rtyp = _("p",{},document.createTextNode("最后检查到：av" + rule.last));
+				var rtyp = _("p",{
+					style:{
+						margin:"0px"
+					}
+				},document.createTextNode("最后检查到：av" + rule.last));
 				r_expr.appendChild(rtyp);
 				break;
 			default:
@@ -234,15 +238,13 @@ var SC = {
 			$("#editDlg").modal("toggle");
 		});
 		del.addEventListener("click",function(){
-			if(rule.id != null && typeof rule.id == "number"){
+			if(rule.id !== null && typeof rule.id === "number"){
 				SC.states.formEdited = true;
 				SC.bgmlist.remove(rule.id);
-
-
 			}else{
 				//Give this rule a temporary id
 				var alloc = 4000;
-				while(SC.bgmlist.query(alloc) != null) alloc++;
+				while(SC.bgmlist.query(alloc) !== null) alloc++;
 				rule.id = alloc;
 				SC.bgmlist.remove(rule.id);
 				SC.states.formEdited = true;
@@ -319,8 +321,10 @@ var SC = {
 				SC.states.formEdited = !confirm("是否放弃现在的更改？");
 				if(SC.states.formEdited)
 					return false;
-				SC.bgmlist.refresh(); //Reload the BGMlist
-				SC.opt.reload(); //Reload the settings
+				if(SC.bgmlist !== null)
+					SC.bgmlist.refresh(); //Reload the BGMlist
+				if(SC.opt !== null)
+					SC.opt.reload(); //Reload the settings
 				return true;
 			}
 			return true;
@@ -431,10 +435,10 @@ var SC = {
 				{key:"sync.deviceId",elem:"sSyncDevice",def:""},
 			]);
 			$("#sSyncServer").typeahead({
-				source:["sync.railgun.in","api.maimoe.net/sync/chottobilibili","tools.kanoha.org/dev/sync","matoi.railgun.in/chottobilibili"]
+				source:["http://sync.railgun.in","http://api.maimoe.net/sync/chottobilibili","http://tools.kanoha.org/dev/sync","http://matoi.railgun.in/chottobilibili"]
 			});
 			
-			$("#sSyncEnabled").click(function(){
+			$("#sSyncEnabled").bind('click',function(){
 				if(this.checked){
 					var self = this;
 					chrome.permissions.request({
@@ -465,9 +469,14 @@ var SC = {
 					SC.bgmlist = new BangumiList();
 				var sections = SC.bgmlist.getSections();
 				var index = 1;
+				var omitFinished = SC.opt.get("interface.omitFinished");
+				if(omitFinished === null)
+					omitFinished = true;
 				for(var i = 0; i < sections.length; i++){
 					var rules = SC.bgmlist.getRulesBySection(sections[i], true);
 					for(var j = 0; j < rules.length; j++){
+						if(omitFinished && rules[j].current == rules[j].total)
+							continue;
 						SC.insertRow(tbl, index++, rules[j], sections[i]);
 					}
 				}
@@ -511,6 +520,7 @@ var SC = {
 					var row = tbl.insertRow(i+1);
 					var r_name = row.insertCell(0);
 					var r_ver = row.insertCell(1);
+
 					var r_key = row.insertCell(2);
 					var r_priv = row.insertCell(3);
 					var r_action = row.insertCell(4);
@@ -595,7 +605,9 @@ $(document).ready(function(){
 	$("#editSave").click(function(){
 		$("#editDlg").modal('hide');
 	});
-	
+	$("#btnSaveSettingsSync").click(function(){
+		
+	});
 	_e("fSearch").addEventListener("keyup",function(evt){
 		if(evt.keyCode == 13){
 			if(_e("fSearch").value == ""){
@@ -632,6 +644,12 @@ $(document).ready(function(){
 					var index = 1;
 					for(var i = 0; i < results.length; i++){
 						SC.insertRow(tbl, index++, results[i], -1);
+					}
+					if(index === 1){
+						var r = tbl.insertRow(index);
+						var c = r.insertCell(0);
+						c.appendChild(_("i",{},document.createTextNode(chrome.i18n.getMessage("general_no_results"))));
+						c.colSpan = 4;
 					}
 				}
 			}

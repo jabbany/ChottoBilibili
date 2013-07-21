@@ -2,10 +2,17 @@ var $ = function(e){return document.getElementById(e);};
 function trimtitle(text, soft){
 	if(!soft){
 		text = text.replace(/^\u3010(?:(?!\u3010).)+?\u3011/g, "");
+	}else{
+		text = text.replace(/^\u3010\d+\u6708\u3011/g, "");
 	}
 	text = text.replace(/\u3010(?:(?!\u3010).)+?\u3011$/g, "");
 	text = text.replace(/\s»$/,"");
 	text = text.replace(/^«\s/,"");
+	if(!soft){
+		text = text.replace(/\d+\s*$/,"");
+		text = text.replace(/\s*$/,"");
+		text = text.replace(/\u7B2C.+?$/,"");
+	}
 	return text;
 }
 
@@ -58,7 +65,7 @@ window.addEventListener("load", function(){
 		}
 	});
 	
-	var found = match(data.title);
+	var found = match(trimtitle(data.title, true));
 	if(found.length == 0){
 		//Could Not even find a suitable thing
 		$("cg_regex").className = "control-group error";
@@ -70,6 +77,33 @@ window.addEventListener("load", function(){
 		
 		$("pProgress").value = current;
 		$("pTotal").value = guessTotal;
+		
+		//Make sure that progress cannot be non-number
+		$("pProgress").addEventListener("keyup",function(){
+			this.value = this.value.replace(/[^0-9]/,"");
+			if(this.value === "")
+				return;
+			try{
+				this.value = parseInt(this.value);
+			}catch(e){
+				this.value = "0";
+			} 
+		});
+		$("pTotal").addEventListener("keyup",function(){
+			this.value = this.value.replace(/[^0-9]/,"");
+			if(this.value === "")
+				return;
+			try{
+				if($("pProgress") !== null && $("pProgress").value !== ""){
+					this.value = Math.max(parseInt(this.value), parseInt($("pProgress").value));
+				}else{
+					this.value = parseInt(this.value);
+				}
+			}catch(e){
+				this.value = "0";
+			} 
+		});
+		
 		
 		//Create the rule
 		var modTitle = trimtitle(data.title, true);
@@ -87,4 +121,50 @@ window.addEventListener("load", function(){
 		
 		$("pRegexp").value = rule;
 	}
+	
+	$("btnSubmit").addEventListener("click",function(evt){
+		//Create the rule based on the current information;
+		if(evt !== null && evt.preventDefault !== null){
+			evt.preventDefault();
+		}
+		var rule = {};
+		if(data.avid !== null && data.avid[1] != null && /^\d+$/.test(data.avid[1])){
+			rule.type = 8;
+		}else{
+			rule.type = 1;
+		}
+		try{
+			if($("pTotal").value !== "" && $("pProgress").value !== ""){
+				if(parseInt($("pTotal").value) < parseInt($("pProgress").value)){
+					alert(chrome.i18n.getMessage("prompt_progress_too_large"));
+					return;
+				}else{
+					rule.current = parseInt($("pProgress").value);
+					rule.total = parseInt($("pTotal").value)
+				}
+			}else{
+				alert(chrome.i18n.getMessage("prompt_progress_blank"));
+				return;
+			}
+		}catch(e){
+			alert(chrome.i18n.getMessage("prompt_progress_err"));
+			return;
+		}
+		if($("pComments") !== null && $("pComments").value !== ""){
+			rule.desc = $("pComments").value;
+		}
+		rule.name = $("pBangumiName").value;
+		rule.matcher = {
+			"m":$("pRegexp").value,
+			"e":""
+		};
+		if(rule.type === 8){
+			rule.last = parseInt(data.avid[1]);
+		}
+		//Create new instance of bgml
+		var bgml = new BangumiList();
+		bgml.add(rule, data.section);
+		bgml.commit();
+		window.close();
+	});
 });

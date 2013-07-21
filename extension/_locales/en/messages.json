@@ -51,6 +51,10 @@
 		"message":"Oh, dear! Something went wrong while saving.\n Please reload.",
 		"description":"String: save changes error"
 	},
+	"general_no_results":{
+		"message":"Sorry, I couldn't find any results for your search terms.",
+		"description":"String: search empty"
+	},
 	"context_menu_search":{
 		"message":"Search Bilibili for '%s'",
 		"description":"Search context menu text"
@@ -98,5 +102,17 @@
 	"popup_tag_watched":{
 		"message":"[Last Watched]",
 		"description":"Watched to current"
+	},
+	"prompt_progress_too_large":{
+		"message":"Hey there! The current episode number you've entered is greater than the total number of anticipated episodes. Please fix it!",
+		"description":"current too large"
+	},
+	"prompt_progress_blank":{
+		"message":"You've left the current episode or total count blank. Please fill in a value.",
+		"description":"current or total empty"
+	},
+	"prompt_progress_err":{
+		"message":"Please make sure you've entered a numerical value for the current or total.",
+		"description":"current or total illegal"
 	}
 }
