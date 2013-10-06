@@ -9,7 +9,7 @@ var infoblock = document.getElementsByClassName("info");
 if(infoblock != null && infoblock.length > 0){
 	var title = infoblock[0].getElementsByTagName("h2");
 	if(title != null && title.length > 0){
-		bilividata.title = title[0].innerText + " - 嗶哩嗶哩";
+		bilividata.title = title[0].innerText;
 	}
 }
 

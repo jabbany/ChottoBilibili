@@ -24,6 +24,19 @@ chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
 		}
 	}else{
 		switch(request.method){
+			case "saveScreenshot":{
+				console.log("[Log] Save File Init");
+				var url = window.webkitURL || window.URL || window.mozURL || window.msURL;
+				var saveLink = document.createElement('a');
+				saveLink.download = request.filename;
+				saveLink.href = request.dataUrl;
+				saveLink.dataset.downloadUrl = ['png', saveLink.download, saveLink.href].join(':');
+				document.body.appendChild(saveLink);
+				saveLink.click();
+				document.body.removeChild(saveLink);
+				sendResponse({});
+				return;
+			}break;
 			default:break;
 		}
 	}
