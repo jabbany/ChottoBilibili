@@ -102,5 +102,21 @@
 	"popup_tag_watched":{
 		"message":"【看到】",
 		"description":"提示里面的按钮"
+	},
+	"prompt_progress_too_large":{
+		"message":"填写的目前集数大于总集数。请修改！\n注意：当你不能确定总集数时，请保证其大于目前集数，插件会自动根据播放情况进行调整。",
+		"description":"current too large"
+	},
+	"prompt_progress_blank":{
+		"message":"总集数或者目前集数为空！\n注意：当你不能确定总集数时，请保证其大于目前集数，插件会自动根据播放情况进行调整。",
+		"description":"current or total empty"
+	},
+	"prompt_progress_err":{
+		"message":"请确认你在集数信息里填写的是数字",
+		"description":"current or total illegal"
+	},
+	"prompt_existing_record":{
+		"message":"喂喂！少年，你已经在追一个同名系列了。\n你确定要继续添加同名记录？",
+		"description":"existing record found"
 	}
 }

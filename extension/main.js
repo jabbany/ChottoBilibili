@@ -528,8 +528,11 @@ chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
 			}
 			if(typeof request.section == "number"){
 				//Search by section
+				console.log("Foo");
 				Main.list.refresh();//Just to be safe since we are editing
 				var rules = Main.list.getRulesBySection(request.section);
+				if(request.avid != null && request.avid.substring(0,1) == "-")
+					request.avid = request.avid.substring(1);
 				for(var i = 0; i < rules.length; i++){
 					if(request.avid != null && 
 						rules[i].cache != null && 
@@ -551,6 +554,7 @@ chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
 								rules[i].cache.splice(0,1);
 								rules[i].current++;
 							}
+							Main.list.commit();
 							sendResponse({"status":200});
 							return;
 						}
@@ -584,6 +588,20 @@ chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
 		case "quickCheck":{
 			//Invoke a quick action check
 			sendResponse({"status":404});
+			return;
+		}break;
+		case "openPopup":{
+		    console.log(request.left);
+			chrome.windows.create({
+				url:request.url,
+				'type':'popup',
+				"width":request.width,
+				"height":request.height,
+				"top":request.top,
+				"left":request.left,
+				"focused":true
+			});
+			sendResponse({});
 			return;
 		}break;
 	}

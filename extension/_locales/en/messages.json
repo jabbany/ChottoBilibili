@@ -114,5 +114,9 @@
 	"prompt_progress_err":{
 		"message":"Please make sure you've entered a numerical value for the current or total.",
 		"description":"current or total illegal"
+	},
+	"prompt_existing_record":{
+		"message":"Hey! It looks like you already have a follow record with the same name.\n Are you sure you wish to add another one?",
+		"description":"existing record found"
 	}
 }

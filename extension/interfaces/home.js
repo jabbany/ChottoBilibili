@@ -564,7 +564,6 @@ var SC = {
 					r_name.appendChild(_t(plug[i].name));
 					r_ver.appendChild(_t(plug[i].version));
 					r_key.appendChild(_t(plug[i].id));
-					console.log(plug[i]);
 					for(var j = 0; j < plug[i].permissions.length; j++)
 						r_priv.appendChild(_t("+" + plug[i].permissions[j] + "\u00a0"));
 					var a_delete = _("a",{"href":"#"},_t(chrome.i18n.getMessage("general_delete")));

@@ -5,9 +5,10 @@ function trimtitle(text, soft){
 	}else{
 		text = text.replace(/^\u3010\d+\u6708\u3011/g, "");
 	}
-	text = text.replace(/\u3010(?:(?!\u3010).)+?\u3011$/g, "");
+	text = text.replace(/(\u3010(?:(?!\u3010).)+?\u3011)+$/g, "");
 	text = text.replace(/\s»$/,"");
 	text = text.replace(/^«\s/,"");
+	text = text.replace(/\s*$/,"");
 	if(!soft){
 		text = text.replace(/\d+\s*$/,"");
 		text = text.replace(/\s*$/,"");
@@ -163,8 +164,21 @@ window.addEventListener("load", function(){
 		}
 		//Create new instance of bgml
 		var bgml = new BangumiList();
+		
+		//Check if this rule exists
+		if(bgml.query(rule.name, "name") !== null){
+			if(!confirm(chrome.i18n.getMessage("prompt_existing_record"))){
+				return;
+			}
+		}
 		bgml.add(rule, data.section);
 		bgml.commit();
 		window.close();
+	});
+	
+	document.addEventListener("keydown", function(k){
+		if(k !== null && k.keyCode === 13 && k.ctrlKey === true){
+			$("btnSubmit").click();
+		}
 	});
 });

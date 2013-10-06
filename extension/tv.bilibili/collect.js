@@ -7,8 +7,16 @@ var $c = function (c) {
 
 function openPopup(pageURL, title, w, h) {
     var left = (screen.width / 2) - (w / 2), top = (screen.height / 2) - (h / 2);
-    var targetWin = window.open(pageURL, title, 'toolbar=no, location=no, directories=no, status=no, menubar=no, resizable=no, width=' + w + ', height=' + h + ', top=' + top + ', left=' + left);
-    return targetWin;
+    console.log("Left:" + left + " Top:" + top);
+    chrome.extension.sendMessage({
+        "method": "openPopup",
+        "width":w,
+		"height":h,
+		"top":top,
+		"left":left,
+		url:pageURL,
+    }, function(resp){});
+    return null;
 }
 
 function addCollectInterface() {
@@ -46,11 +54,20 @@ function addCollectInterface() {
                     "avid": avid
                 }, function (response) {
                     if (response.accepted) {
+                    	
+                        console.log(chrome.extension.getURL("addprompt.html"));
                         var w = openPopup(chrome.extension.getURL("addprompt.html"), "", 600, 480);
                     } else {
                         alert(chrome.i18n.getMessage("add_match_not_found"));
                     }
                 });
+            });
+            document.addEventListener("keydown",function(k){
+            	if(k !== null && k.keyCode !== null && k.keyCode === 187 && k.ctrlKey === true && k.altKey === true){
+            		trigger.style.backgroundColor = "#F93";
+            		trigger.style.color = "#FFF";
+            		trigger.click();
+            	}
             });
             trigger.appendChild(document.createTextNode(
                 chrome.i18n.getMessage("content_collect")));

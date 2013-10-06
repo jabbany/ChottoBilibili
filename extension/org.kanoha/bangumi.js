@@ -94,9 +94,11 @@ function BangumiList(ctx, ccbo) {
     
     this.commit = function (overrides) {
         /** Commits changes of the abstraction to file **/
+        var retval = true;
         if(!overrides && !this.checkLatest()){
         	console.log("[War]VersionConflict:BangumiList");
-        	return false;
+        	//Actually do not fail, since each list must be explicitly locked.
+        	retval = false;
         }
         abstraction.version = (typeof abstraction.version == "number") ? abstraction.version + 1 : 1; 
         if (context == "plugin") {
@@ -109,7 +111,7 @@ function BangumiList(ctx, ccbo) {
         }
         if (commitCallbackObject != null)
             commitCallbackObject.onCommit();
-        return true;
+        return retval;
     };
     this.merge = function (abst1, abst2) {
         /** Perform a diff between two abstract lists **/
@@ -122,10 +124,11 @@ function BangumiList(ctx, ccbo) {
 			}
 		}
     };
-    this.query = function (id) {
+    this.query = function (id, field) {
+    	if(field == null) field = "id";
         for (var i = 0; i < abstraction.sections.length; i++) {
             for (var j = 0; j < abstraction["s:" + abstraction.sections[i]].length; j++) {
-                if (abstraction["s:" + abstraction.sections[i]][j].id == id)
+                if (abstraction["s:" + abstraction.sections[i]][j][field] == id)
                     return abstraction["s:" + abstraction.sections[i]][j];
             }
         }
