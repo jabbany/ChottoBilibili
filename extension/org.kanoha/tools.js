@@ -58,8 +58,8 @@ var Tools = {
             if (sectLib[sectNames[k]] != null)
                 return sectLib[sectNames[k]];
         }
-        if (sectLib[sectionName] != null)
-            return sectLib[sectionName];
+        if (sectLib[text] != null)
+            return sectLib[text];
         return 0;
     }
 };
